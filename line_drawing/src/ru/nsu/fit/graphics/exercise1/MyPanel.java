@@ -138,10 +138,9 @@ public class MyPanel extends JPanel implements MouseListener, MouseMotionListene
             addLine(startX, startY, x, y);
             startX = x;
             startY = y;
-        } else {
-            currentX = x;
-            currentY = y;
         }
+        currentX = x;
+        currentY = y;
         repaint();
     }
 }
