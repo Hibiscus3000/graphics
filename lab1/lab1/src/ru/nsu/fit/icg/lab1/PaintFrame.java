@@ -1,6 +1,7 @@
 package ru.nsu.fit.icg.lab1;
 
 import ru.nsu.fit.icg.lab1.action.ColorAction;
+import ru.nsu.fit.icg.lab1.action.InstrumentAction;
 import ru.nsu.fit.icg.lab1.instrument.FillInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
 import ru.nsu.fit.icg.lab1.instrument.LineInstrument;
@@ -45,7 +46,6 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
     private void addMenu() {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-
         JMenu fileMenu = new JMenu("Файл");
         JMenuItem openItem = new JMenuItem("Открыть");
         JMenuItem saveItem = new JMenuItem("Сохранить");
@@ -79,10 +79,16 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
         JToolBar toolBar = new JToolBar();
         toolBar.setRollover(true);
 
-        ButtonGroup colorButtonGroup = new ButtonGroup();
-        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("красным", this, "red.png"));
-        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("зеленым", this, "green.png"));
-        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("синим", this, "blue.png"));
+        ButtonGroup instrumentButtonGroup = new ButtonGroup();
+
+
+        ButtonGroup colorButtonGroup1 = new ButtonGroup();
+        ColorAction redAction = new ColorAction("красным", this, "red.png");
+        addToggleButtonToToolbar(toolBar, colorButtonGroup1, redAction);
+        ColorAction greenAction = new ColorAction("зеленым", this, "green.png");
+        addToggleButtonToToolbar(toolBar, colorButtonGroup1, greenAction);
+        ColorAction blueAction = new ColorAction("синим", this, "blue.png");
+        addToggleButtonToToolbar(toolBar, colorButtonGroup1, blueAction);
 
         add(toolBar, BorderLayout.NORTH);
     }

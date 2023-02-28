@@ -26,7 +26,10 @@ public abstract class ParametrisedInstrumentMenu extends JMenu {
         parametersItem.addActionListener(e -> changeParameters());
         useItem = new JRadioButtonMenuItem("Использовать");
         instrumentButtonGroup.add(useItem);
-        useItem.addActionListener(e -> instrumentListener.setInstrument(instrument));
+        useItem.addActionListener(e -> {
+            instrumentListener.setInstrument(instrument);
+            instrument.setSelected();
+        });
         useItem.setSelected(chosenByDefault);
         if (chosenByDefault) {
             useItem.doClick();
@@ -39,7 +42,4 @@ public abstract class ParametrisedInstrumentMenu extends JMenu {
 
     protected abstract void changeParameters();
 
-    public void setUseButtonSelected() {
-        useItem.setSelected(true);
-    }
 }
