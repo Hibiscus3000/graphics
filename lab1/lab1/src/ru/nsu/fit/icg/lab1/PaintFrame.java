@@ -1,5 +1,6 @@
 package ru.nsu.fit.icg.lab1;
 
+import ru.nsu.fit.icg.lab1.action.ColorAction;
 import ru.nsu.fit.icg.lab1.instrument.FillInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
 import ru.nsu.fit.icg.lab1.instrument.LineInstrument;
@@ -9,9 +10,10 @@ import ru.nsu.fit.icg.lab1.menu.LineMenu;
 import ru.nsu.fit.icg.lab1.menu.StampMenu;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicBorders;
 import java.awt.*;
 
-public class PaintFrame extends JFrame implements InstrumentListener{
+public class PaintFrame extends JFrame implements InstrumentListener, ColorListener {
 
     private static final int preferredSizeScale = 2;
 
@@ -31,7 +33,7 @@ public class PaintFrame extends JFrame implements InstrumentListener{
                 (int) (screenSize.getHeight() / preferredSizeScale)));
 
         addMenu();
-
+        addToolbar();
         pack();
         setLocationRelativeTo(null);
     }
@@ -64,7 +66,7 @@ public class PaintFrame extends JFrame implements InstrumentListener{
         menuBar.add(shapeMenu);
 
         JMenu selectAndFillMenu = new JMenu("Выделение и заливка");
-        FillMenu fillMenu = new FillMenu(fillInstrument, this,instrumentButtonGroup,false);
+        FillMenu fillMenu = new FillMenu(fillInstrument, this, instrumentButtonGroup, false);
         JMenuItem selectItem = new JMenuItem("Выделение");
         JMenuItem cleanItem = new JMenuItem("Очистка");
         selectAndFillMenu.add(fillMenu);
@@ -73,8 +75,31 @@ public class PaintFrame extends JFrame implements InstrumentListener{
         menuBar.add(selectAndFillMenu);
     }
 
+    private void addToolbar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setRollover(true);
+
+        ButtonGroup colorButtonGroup = new ButtonGroup();
+        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("красным", this, "red.png"));
+        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("зеленым", this, "green.png"));
+        addToggleButtonToToolbar(toolBar, colorButtonGroup, new ColorAction("синим", this, "blue.png"));
+
+        add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void addToggleButtonToToolbar(JToolBar toolBar, ButtonGroup buttonGroup, Action action) {
+        JToggleButton toggleButton = new JToggleButton(action);
+        buttonGroup.add(toggleButton);
+        toolBar.add(toggleButton);
+    }
+
     @Override
     public void setInstrument(Instrument instrument) {
+
+    }
+
+    @Override
+    public void setColor() {
 
     }
 }
