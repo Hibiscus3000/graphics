@@ -3,24 +3,21 @@ package ru.nsu.fit.icg.lab1.action;
 import ru.nsu.fit.icg.lab1.ColorListener;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
-public class ColorAction extends PropertyAction {
+public class ColorAction extends ExclusiveAction {
 
     private final ColorListener colorListener;
 
     public ColorAction(String name, String nameInstrumentalCase, Color color, ColorListener colorListener, String iconFileName) {
-        super(name,"colors/", iconFileName, "Сделать текущий цвет " + nameInstrumentalCase);
+        super(name,"color/" + iconFileName, "Сделать текущий цвет " + nameInstrumentalCase);
         this.colorListener = colorListener;
         putValue("Color", color);
     }
 
     @Override
-    public void primaryActionPerformed() {
+    public void actionPerformed(ActionEvent e) {
         colorListener.setColor((Color) getValue("Color"));
         setAllListenersSelected();
-    }
-
-    @Override
-    public void secondaryActionPerformed() {
     }
 }

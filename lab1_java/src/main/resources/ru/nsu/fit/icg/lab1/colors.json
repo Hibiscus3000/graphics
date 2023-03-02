@@ -1,0 +1,68 @@
+{
+  "colors" : [
+    {
+      "name": "Красный",
+      "nameInstrumentalCase" : "красным",
+      "red" : 255,
+      "green" : 0,
+      "blue" : 0,
+      "iconFileName" : "red.png"
+    },
+    {
+      "name": "Зеленый",
+      "nameInstrumentalCase" : "зеленым",
+      "red" : 0,
+      "green" : 255,
+      "blue" : 0,
+      "iconFileName" : "green.png"
+    },
+    {
+      "name": "Синий",
+      "nameInstrumentalCase" : "синим",
+      "red" : 0,
+      "green" : 0,
+      "blue" : 255,
+      "iconFileName" : "blue.png"
+    },
+    {
+      "name": "Желтый",
+      "nameInstrumentalCase" : "желтым",
+      "red" : 255,
+      "green" : 255,
+      "blue" : 0,
+      "iconFileName" : "red_green.png"
+    },
+    {
+      "name": "Розовый",
+      "nameInstrumentalCase" : "розовым",
+      "red" : 255,
+      "green" : 0,
+      "blue" : 255,
+      "iconFileName" : "red_blue.png"
+    },
+    {
+      "name": "Голубой",
+      "nameInstrumentalCase" : "голубым",
+      "red" : 0,
+      "green" : 255,
+      "blue" : 255,
+      "iconFileName" : "green_blue.png"
+    },
+    {
+      "name": "Черный",
+      "nameInstrumentalCase" : "черным",
+      "red" : 0,
+      "green" : 0,
+      "blue" : 0,
+      "iconFileName" : "black.png"
+    },
+    {
+      "name": "Белый",
+      "nameInstrumentalCase" : "белым",
+      "red" : 255,
+      "green" : 255,
+      "blue" : 255,
+      "iconFileName" : "white.png"
+    }
+  ]
+}

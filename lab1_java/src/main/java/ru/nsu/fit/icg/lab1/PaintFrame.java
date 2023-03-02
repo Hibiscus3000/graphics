@@ -2,11 +2,13 @@ package ru.nsu.fit.icg.lab1;
 
 import ru.nsu.fit.icg.lab1.action.*;
 import ru.nsu.fit.icg.lab1.instrument.*;
+import ru.nsu.fit.icg.lab1.menu_item.ColorMenuRadioButton;
+import ru.nsu.fit.icg.lab1.menu_item.InstrumentMenu;
+import ru.nsu.fit.icg.lab1.toggle_button.ExclusiveToggleButton;
+import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PaintFrame extends JFrame implements InstrumentListener, ColorListener {
 
@@ -65,16 +67,13 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
         addInstrumentAction(new InstrumentAction("Заливка",this,
                 new FillInstrument(),"fill.png"));
 
-        addColorAction(new ColorAction("Красный","красным",
-                new Color(255,0,0),this,"red.png"));
-        addColorAction(new ColorAction("Зеленый","зеленым",
-                new Color(0,255,0),this,"green.png"));
-        addColorAction(new ColorAction("Синий","синим",
-                new Color(0,0,255),this,"blue.png"));
-        addColorAction(new ColorAction("Желтый","желтным",
-                new Color(255,255,0),this,"red_green.png"));
-        addColorAction(new ColorAction("Розовый","розовым",
-                new Color(255,0,255),this,"red_blue.png"));
+        try {
+            for (ColorAction colorAction : ColorParser.parseColorActionsJson(this)) {
+                addColorAction(colorAction);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addFileAction(FileAction fileAction) {
@@ -86,22 +85,20 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
     }
 
     private void addInstrumentAction(InstrumentAction instrumentAction) {
-        instrumentMenu.add(new ParametrisedInstrumentMenu(instrumentAction,instrumentMenuButtonGroup));
-        addPropertyActionToolbar(instrumentAction,instrumentToolbarButtonGroup);
+        instrumentMenu.add(new InstrumentMenu(instrumentAction,instrumentMenuButtonGroup));
+        addExclusiveActionToolbar(new InstrumentToggleButton(instrumentAction),instrumentToolbarButtonGroup);
     }
 
     private void addColorAction(ColorAction colorAction) {
-        JRadioButtonMenuItem colorButton = new JRadioButtonMenuItem(colorAction);
-        colorMenuButtonGroup.add(colorButton);
-        colorMenu.add(colorButton);
-        addPropertyActionToolbar(colorAction,colorToolbarButtonGroup);
+        ColorMenuRadioButton colorMenuRadioButton = new ColorMenuRadioButton(colorAction);
+        colorMenuButtonGroup.add(colorMenuRadioButton);
+        colorMenu.add(colorMenuRadioButton);
+        addExclusiveActionToolbar(new ExclusiveToggleButton(colorAction),colorToolbarButtonGroup);
     }
 
-    private void addPropertyActionToolbar(PropertyAction propertyAction, ButtonGroup buttonGroup) {
-        PropertyToggleButton propertyToggleButton = new PropertyToggleButton(propertyAction);
-        propertyToggleButton.setName("");
-        buttonGroup.add(propertyToggleButton);
-        toolBar.add(propertyToggleButton);
+    private void addExclusiveActionToolbar(ExclusiveToggleButton exclusiveToggleButton, ButtonGroup buttonGroup) {
+        buttonGroup.add(exclusiveToggleButton);
+        toolBar.add(exclusiveToggleButton);
     }
 
     private void addMenu() {
