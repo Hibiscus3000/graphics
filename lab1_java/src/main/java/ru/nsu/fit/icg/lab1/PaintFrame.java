@@ -1,6 +1,8 @@
 package ru.nsu.fit.icg.lab1;
 
-import ru.nsu.fit.icg.lab1.action.*;
+import ru.nsu.fit.icg.lab1.action.ColorAction;
+import ru.nsu.fit.icg.lab1.action.FileAction;
+import ru.nsu.fit.icg.lab1.action.InstrumentAction;
 import ru.nsu.fit.icg.lab1.instrument.*;
 import ru.nsu.fit.icg.lab1.menu_item.ColorMenuRadioButton;
 import ru.nsu.fit.icg.lab1.menu_item.InstrumentMenu;
@@ -10,7 +12,7 @@ import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
 import javax.swing.*;
 import java.awt.*;
 
-public class PaintFrame extends JFrame implements InstrumentListener, ColorListener {
+public class PaintFrame extends JFrame {
 
     private static final int preferredSizeScale = 2;
 
@@ -21,12 +23,15 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
 
     private final JToolBar toolBar = new JToolBar();
 
+    private final PaintPanel paintPanel;
+
     public static void main(String[] args) {
         PaintFrame paintFrame = new PaintFrame();
         paintFrame.setVisible(true);
     }
 
     public PaintFrame() {
+        super();
         setTitle("ICG Paint");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -39,7 +44,8 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
         createPropertyActions();
         addMenu();
         toolBar.setRollover(true);
-        add(toolBar,BorderLayout.NORTH);
+        add(toolBar, BorderLayout.NORTH);
+        add(new JScrollPane(paintPanel = new PaintPanel()), BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(null);
     }
@@ -54,21 +60,21 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
         addFileAction(new FileAction("Сохранить","save.png"));
         addFileAction(new FileAction("Сохранить как","save_as.png"));
 
-        addInstrumentAction(new InstrumentAction("Прямая",this,
-                new StraightLineInstrument(),"straight_line.png"));
-        addInstrumentAction(new InstrumentAction("Кривая",this,
-                new CurveLineInstrument(),"curve_line.png"));
-        addInstrumentAction(new InstrumentAction("Овал",this,
-                new OvalInstrument(),"oval.png"));
-        addInstrumentAction(new InstrumentAction("Многоугольник",this,
-                new PolygonInstrument(),"polygon.png"));
-        addInstrumentAction(new InstrumentAction("Звезда",this,
-                new StarInstrument(),"star.png"));
-        addInstrumentAction(new InstrumentAction("Заливка",this,
-                new FillInstrument(),"fill.png"));
+        addInstrumentAction(new InstrumentAction("Прямая", paintPanel,
+                new StraightLineInstrument(), "straight_line.png"));
+        addInstrumentAction(new InstrumentAction("Кривая", paintPanel,
+                new CurveLineInstrument(), "curve_line.png"));
+        addInstrumentAction(new InstrumentAction("Овал", paintPanel,
+                new OvalInstrument(), "oval.png"));
+        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel,
+                new PolygonInstrument(), "polygon.png"));
+        addInstrumentAction(new InstrumentAction("Звезда", paintPanel,
+                new StarInstrument(), "star.png"));
+        addInstrumentAction(new InstrumentAction("Заливка", paintPanel,
+                new FillInstrument(), "fill.png"));
 
         try {
-            for (ColorAction colorAction : ColorParser.parseColorActionsJson(this)) {
+            for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
                 addColorAction(colorAction);
             }
         } catch (Exception e) {
@@ -106,15 +112,5 @@ public class PaintFrame extends JFrame implements InstrumentListener, ColorListe
         menuBar.add(instrumentMenu);
         menuBar.add(colorMenu);
         setJMenuBar(menuBar);
-    }
-
-    @Override
-    public void setInstrument(Instrument instrument) {
-
-    }
-
-    @Override
-    public void setColor(Color color) {
-
     }
 }
