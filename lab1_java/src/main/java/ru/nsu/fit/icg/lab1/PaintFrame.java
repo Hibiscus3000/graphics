@@ -1,9 +1,12 @@
 package ru.nsu.fit.icg.lab1;
 
+import org.json.simple.parser.ParseException;
 import ru.nsu.fit.icg.lab1.action.ColorAction;
 import ru.nsu.fit.icg.lab1.action.FileAction;
 import ru.nsu.fit.icg.lab1.action.InstrumentAction;
 import ru.nsu.fit.icg.lab1.instrument.*;
+import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersDialog;
+import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.menu_item.ColorMenuRadioButton;
 import ru.nsu.fit.icg.lab1.menu_item.InstrumentMenu;
 import ru.nsu.fit.icg.lab1.toggle_button.ExclusiveToggleButton;
@@ -11,8 +14,10 @@ import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.util.HashMap;
 
-public class PaintFrame extends JFrame {
+public class PaintFrame extends JFrame implements InstrumentParametersListener {
 
     private static final int preferredSizeScale = 2;
 
@@ -23,21 +28,26 @@ public class PaintFrame extends JFrame {
 
     private final JToolBar toolBar = new JToolBar();
 
-    private final PaintPanel paintPanel;
+    private final PaintPanel paintPanel = new PaintPanel();
 
     public static void main(String[] args) {
-        PaintFrame paintFrame = new PaintFrame();
-        paintFrame.setVisible(true);
+        PaintFrame paintFrame = null;
+        try {
+            paintFrame = new PaintFrame();
+            paintFrame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public PaintFrame() {
+    public PaintFrame() throws IOException, ParseException {
         super();
         setTitle("ICG Paint");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
-        setMinimumSize(new Dimension(640,480));
+        setMinimumSize(new Dimension(640, 480));
         setPreferredSize(new Dimension((int) (screenSize.getWidth() / preferredSizeScale),
                 (int) (screenSize.getHeight() / preferredSizeScale)));
 
@@ -45,7 +55,7 @@ public class PaintFrame extends JFrame {
         addMenu();
         toolBar.setRollover(true);
         add(toolBar, BorderLayout.NORTH);
-        add(new JScrollPane(paintPanel = new PaintPanel()), BorderLayout.CENTER);
+        add(new JScrollPane(paintPanel), BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(null);
     }
@@ -55,30 +65,26 @@ public class PaintFrame extends JFrame {
     private final ButtonGroup colorMenuButtonGroup = new ButtonGroup();
     private final ButtonGroup colorToolbarButtonGroup = new ButtonGroup();
 
-    private void createPropertyActions() {
-        addFileAction(new FileAction("Открыть","open.png"));
-        addFileAction(new FileAction("Сохранить","save.png"));
-        addFileAction(new FileAction("Сохранить как","save_as.png"));
+    private void createPropertyActions() throws IOException, ParseException {
+        addFileAction(new FileAction("Открыть", "open.png"));
+        addFileAction(new FileAction("Сохранить", "save.png"));
+        addFileAction(new FileAction("Сохранить как", "save_as.png"));
 
-        addInstrumentAction(new InstrumentAction("Прямая", paintPanel,
-                new StraightLineInstrument(), "straight_line.png"));
-        addInstrumentAction(new InstrumentAction("Кривая", paintPanel,
-                new CurveLineInstrument(), "curve_line.png"));
-        addInstrumentAction(new InstrumentAction("Овал", paintPanel,
-                new OvalInstrument(), "oval.png"));
-        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel,
-                new PolygonInstrument(), "polygon.png"));
-        addInstrumentAction(new InstrumentAction("Звезда", paintPanel,
-                new StarInstrument(), "star.png"));
-        addInstrumentAction(new InstrumentAction("Заливка", paintPanel,
-                new FillInstrument(), "fill.png"));
+        addInstrumentAction(new InstrumentAction("Прямая", paintPanel, this,
+                new StraightLineInstrument(parametersParser), "straight_line.png"));
+        addInstrumentAction(new InstrumentAction("Кривая", paintPanel, this,
+                new CurveLineInstrument(parametersParser), "curve_line.png"));
+        addInstrumentAction(new InstrumentAction("Эллипс", paintPanel, this,
+                new EllipseInstrument(parametersParser), "ellipse.png"));
+        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel, this,
+                new PolygonInstrument(parametersParser), "polygon.png"));
+        addInstrumentAction(new InstrumentAction("Звезда", paintPanel, this,
+                new StarInstrument(parametersParser), "star.png"));
+        addInstrumentAction(new InstrumentAction("Заливка", paintPanel, this,
+                new FillInstrument(parametersParser), "fill.png"));
 
-        try {
-            for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
-                addColorAction(colorAction);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
+            addColorAction(colorAction);
         }
     }
 
@@ -91,15 +97,15 @@ public class PaintFrame extends JFrame {
     }
 
     private void addInstrumentAction(InstrumentAction instrumentAction) {
-        instrumentMenu.add(new InstrumentMenu(instrumentAction,instrumentMenuButtonGroup));
-        addExclusiveActionToolbar(new InstrumentToggleButton(instrumentAction),instrumentToolbarButtonGroup);
+        instrumentMenu.add(new InstrumentMenu(instrumentAction, instrumentMenuButtonGroup));
+        addExclusiveActionToolbar(new InstrumentToggleButton(instrumentAction), instrumentToolbarButtonGroup);
     }
 
     private void addColorAction(ColorAction colorAction) {
         ColorMenuRadioButton colorMenuRadioButton = new ColorMenuRadioButton(colorAction);
         colorMenuButtonGroup.add(colorMenuRadioButton);
         colorMenu.add(colorMenuRadioButton);
-        addExclusiveActionToolbar(new ExclusiveToggleButton(colorAction),colorToolbarButtonGroup);
+        addExclusiveActionToolbar(new ExclusiveToggleButton(colorAction), colorToolbarButtonGroup);
     }
 
     private void addExclusiveActionToolbar(ExclusiveToggleButton exclusiveToggleButton, ButtonGroup buttonGroup) {
@@ -112,5 +118,20 @@ public class PaintFrame extends JFrame {
         menuBar.add(instrumentMenu);
         menuBar.add(colorMenu);
         setJMenuBar(menuBar);
+    }
+
+    private final ParametersParser parametersParser = new ParametersParser();
+    private final HashMap<String, ParametersDialog> instrumentDialogMap = new HashMap<>();
+
+    @Override
+    public void changeInstrumentParameters(Instrument instrument) {
+        ParametersDialog instrumentDialog = instrumentDialogMap
+                .get(instrument.getClass().getSimpleName());
+        if (null == instrumentDialog) {
+            instrumentDialog = new ParametersDialog(this, instrument.getName(),
+                    parametersParser.getParametersMap(instrument.getParameterGroupNames()));
+        }
+        instrumentDialog.setVisible(true);
+        instrument.changeParameters(instrumentDialog);
     }
 }

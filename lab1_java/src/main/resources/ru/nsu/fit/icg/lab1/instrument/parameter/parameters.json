@@ -1,0 +1,84 @@
+{
+  "line": [
+    {
+      "name": "width",
+      "guiName": "Ширина линии",
+      "lowerBorder": 1,
+      "upperBorder": 15,
+      "default": 1,
+      "majorTicks": 2,
+      "minorTicks": 0,
+      "requiresValue": true
+    }
+  ],
+  "rotating": [
+    {
+      "name": "turn",
+      "guiName": "Поворот (°)",
+      "lowerBorder": -179,
+      "upperBorder": 180,
+      "default": 0,
+      "majorTicks": 60,
+      "minorTicks": 5,
+      "requiresValue": true
+    }
+  ],
+  "ellipse": [
+    {
+      "name": "semiMinorAxis",
+      "guiName": "Малая полуось",
+      "lowerBorder": 5,
+      "upperBorder": 200,
+      "default": 30,
+      "majorTicks": 40,
+      "minorTicks": 5,
+      "requiresValue": false
+    },
+    {
+      "name": "semiMajorAxis",
+      "guiName": "Большая полуось",
+      "lowerBorder": 5,
+      "upperBorder": 200,
+      "default": 30,
+      "majorTicks": 40,
+      "minorTicks": 5,
+      "requiresValue": false
+    }
+  ],
+  "polygon": [
+    {
+      "name": "verticesAmount",
+      "guiName": "Количество вершин",
+      "lowerBorder": 3,
+      "upperBorder": 16,
+      "default": 5,
+      "majorTicks": 2,
+      "minorTicks": 0,
+      "requiresValue": true
+    },
+    {
+      "name": "outerRadius",
+      "guiName": "Внешний радиус",
+      "lowerBorder": 5,
+      "upperBorder": 200,
+      "default": 30,
+      "majorTicks": 40,
+      "minorTicks": 5,
+      "requiresValue": false
+    }
+  ],
+  "star": [
+    {
+      "name": "innerRadius",
+      "guiName": "Внутренний радиус",
+      "lowerBorder": 5,
+      "upperBorder": 200,
+      "default": 20,
+      "majorTicks": 40,
+      "minorTicks": 5,
+      "requiresValue": false
+    }
+  ],
+  "fill": [
+  ]
+}

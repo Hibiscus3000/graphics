@@ -30,6 +30,7 @@ public class PaintPanel extends JPanel implements InstrumentListener, ColorListe
                                 (int) Math.max(getWidth(), preferredSize.getWidth()),
                                 (int) Math.max(getHeight(), preferredSize.getHeight())));
                 resizeBufferedImage();
+                repaint();
             }
         });
     }

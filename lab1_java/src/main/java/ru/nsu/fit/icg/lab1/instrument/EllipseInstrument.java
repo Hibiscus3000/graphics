@@ -4,35 +4,36 @@ import ru.nsu.fit.icg.lab1.ArrayConcatenation;
 import ru.nsu.fit.icg.lab1.instrument.parameter.Parameters;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 
-public class PolygonInstrument extends StraightLineInstrument {
+public class EllipseInstrument extends CurveLineInstrument {
 
-    protected int verticesAmount;
-    protected int outerRadius;
-    protected int turn;
+    private int width;
+    private int semiMinorAxis;
+    private int semiMajorAxis;
+    private int turn;
 
-    public PolygonInstrument(ParametersParser parametersParser) {
+    public EllipseInstrument(ParametersParser parametersParser) {
         super(parametersParser);
-        verticesAmount = defaults.get("verticesAmount");
-        outerRadius = defaults.get("outerRadius");
+        semiMinorAxis = defaults.get("semiMinorAxis");
+        semiMajorAxis = defaults.get("semiMajorAxis");
         turn = defaults.get("turn");
     }
 
     @Override
     public void changeParameters(Parameters parameters) {
         super.changeParameters(parameters);
-        verticesAmount = parameters.getValue("verticesAmount");
-        outerRadius = parameters.getValue("outerRadius");
+        semiMinorAxis = parameters.getValue("semiMinorAxis");
+        semiMajorAxis = parameters.getValue("semiMajorAxis");
         turn = parameters.getValue("turn");
     }
 
     @Override
     public String[] getParameterGroupNames() {
-        return ArrayConcatenation.concatArrays(new String[]{"polygon", "rotating"},
+        return ArrayConcatenation.concatArrays(new String[]{"line", "rotating", "ellipse"},
                 super.getParameterGroupNames());
     }
 
     @Override
     public String getName() {
-        return "Многоугольник";
+        return "Эллипс";
     }
 }

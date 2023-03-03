@@ -1,10 +1,27 @@
 package ru.nsu.fit.icg.lab1.instrument;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
+import ru.nsu.fit.icg.lab1.instrument.parameter.Parameters;
+import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 
-public interface Instrument {
+import java.awt.*;
+import java.util.Map;
 
-    void changeProperties();
+public abstract class Instrument {
+
+    protected final Map<String, Integer> defaults;
+    protected Color color;
+
+    protected Instrument(ParametersParser parametersParser) {
+        defaults = parametersParser.getDefaults(getParameterGroupNames());
+    }
+
+    public abstract void changeParameters(Parameters parameters);
+
+    public abstract String[] getParameterGroupNames();
+
+    public abstract String getName();
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }
