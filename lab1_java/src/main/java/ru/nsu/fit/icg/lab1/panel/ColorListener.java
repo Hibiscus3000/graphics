@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab1;
+package ru.nsu.fit.icg.lab1.panel;
 
 import java.awt.*;
 

@@ -1,6 +1,6 @@
 package ru.nsu.fit.icg.lab1.action;
 
-import ru.nsu.fit.icg.lab1.ColorListener;
+import ru.nsu.fit.icg.lab1.panel.ColorListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

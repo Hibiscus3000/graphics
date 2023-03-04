@@ -10,7 +10,17 @@ public class Parameter {
     private final boolean requiresValue;
 
     private int value;
-    private boolean isSet;
+    private boolean isSet = false;
+
+    public Parameter(Parameter parameter) {
+        this.name = parameter.name;
+        this.lowerBorder = parameter.lowerBorder;
+        this.upperBorder = parameter.upperBorder;
+        this.value = parameter.value;
+        this.minorTicks = parameter.minorTicks;
+        this.majorTicks = parameter.majorTicks;
+        this.requiresValue = parameter.requiresValue;
+    }
 
     public Parameter(String name,
                      int lowerBorder,

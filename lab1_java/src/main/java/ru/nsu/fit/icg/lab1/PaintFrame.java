@@ -2,22 +2,31 @@ package ru.nsu.fit.icg.lab1;
 
 import org.json.simple.parser.ParseException;
 import ru.nsu.fit.icg.lab1.action.ColorAction;
-import ru.nsu.fit.icg.lab1.action.FileAction;
 import ru.nsu.fit.icg.lab1.action.InstrumentAction;
+import ru.nsu.fit.icg.lab1.action.file.FileAction;
+import ru.nsu.fit.icg.lab1.action.file.OpenFileAction;
+import ru.nsu.fit.icg.lab1.action.file.SaveFileAction;
 import ru.nsu.fit.icg.lab1.instrument.*;
+import ru.nsu.fit.icg.lab1.instrument.line.CurveLineInstrument;
+import ru.nsu.fit.icg.lab1.instrument.line.StraightLineInstrument;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersDialog;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.menu_item.ColorMenuRadioButton;
 import ru.nsu.fit.icg.lab1.menu_item.InstrumentMenu;
+import ru.nsu.fit.icg.lab1.panel.ColorSelectionListener;
+import ru.nsu.fit.icg.lab1.panel.PaintPanel;
 import ru.nsu.fit.icg.lab1.toggle_button.ExclusiveToggleButton;
 import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class PaintFrame extends JFrame implements InstrumentParametersListener {
+public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorSelectionListener {
 
     private static final int preferredSizeScale = 2;
 
@@ -56,6 +65,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener {
         toolBar.setRollover(true);
         add(toolBar, BorderLayout.NORTH);
         add(new JScrollPane(paintPanel), BorderLayout.CENTER);
+        menuBar.add(new JMenuItem(new ClearAction()));
         pack();
         setLocationRelativeTo(null);
     }
@@ -66,26 +76,26 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener {
     private final ButtonGroup colorToolbarButtonGroup = new ButtonGroup();
 
     private void createPropertyActions() throws IOException, ParseException {
-        addFileAction(new FileAction("Открыть", "open.png"));
-        addFileAction(new FileAction("Сохранить", "save.png"));
-        addFileAction(new FileAction("Сохранить как", "save_as.png"));
+        addFileAction(new OpenFileAction("Открыть", this));
+        addFileAction(new SaveFileAction("Сохранить", this));
 
-        addInstrumentAction(new InstrumentAction("Прямая", paintPanel, this,
-                new StraightLineInstrument(parametersParser), "straight_line.png"));
-        addInstrumentAction(new InstrumentAction("Кривая", paintPanel, this,
-                new CurveLineInstrument(parametersParser), "curve_line.png"));
-        addInstrumentAction(new InstrumentAction("Эллипс", paintPanel, this,
-                new EllipseInstrument(parametersParser), "ellipse.png"));
-        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel, this,
-                new PolygonInstrument(parametersParser), "polygon.png"));
-        addInstrumentAction(new InstrumentAction("Звезда", paintPanel, this,
-                new StarInstrument(parametersParser), "star.png"));
-        addInstrumentAction(new InstrumentAction("Заливка", paintPanel, this,
-                new FillInstrument(parametersParser), "fill.png"));
+        addInstrumentAction(new InstrumentAction("Прямая", paintPanel, this, this,
+                new StraightLineInstrument(parametersParser, paintPanel), "straight_line.png"));
+        addInstrumentAction(new InstrumentAction("Кривая", paintPanel, this, this,
+                new CurveLineInstrument(parametersParser, paintPanel), "curve_line.png"));
+        addInstrumentAction(new InstrumentAction("Эллипс", paintPanel, this, this,
+                new EllipseInstrument(parametersParser, paintPanel), "ellipse.png"));
+        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel, this, this,
+                new PolygonInstrument(parametersParser, paintPanel), "polygon.png"));
+        addInstrumentAction(new InstrumentAction("Звезда", paintPanel, this, this,
+                new StarInstrument(parametersParser, paintPanel), "star.png"));
+        addInstrumentAction(new InstrumentAction("Заливка", paintPanel, this, this,
+                new FillInstrument(parametersParser, paintPanel), "fill.png"));
 
         for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
             addColorAction(colorAction);
         }
+        colorMenu.add(new ArbitraryColorAction());
     }
 
     private void addFileAction(FileAction fileAction) {
@@ -130,8 +140,69 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener {
         if (null == instrumentDialog) {
             instrumentDialog = new ParametersDialog(this, instrument.getName(),
                     parametersParser.getParametersMap(instrument.getParameterGroupNames()));
+            instrumentDialogMap.put(instrument.getClass().getSimpleName(), instrumentDialog);
         }
         instrumentDialog.setVisible(true);
         instrument.changeParameters(instrumentDialog);
+    }
+
+    @Override
+    public void clearColorSelection() {
+        colorMenuButtonGroup.clearSelection();
+        colorToolbarButtonGroup.clearSelection();
+    }
+
+    private class ClearAction extends AbstractAction {
+
+        public ClearAction() {
+            putValue(NAME, "Очистка");
+            putValue(SHORT_DESCRIPTION, "Очистка рабочей области");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            paintPanel.clear();
+        }
+    }
+
+    private class ArbitraryColorAction extends AbstractAction {
+
+        private final JColorChooser colorChooser = new JColorChooser();
+
+        public ArbitraryColorAction() {
+            putValue(NAME, "Произвольный цвет");
+            putValue(SHORT_DESCRIPTION, "Выбор произвольного цвета");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JColorChooser.createDialog(
+                    PaintFrame.this,
+                    "Выбор произвольного цвета",
+                    true,
+                    colorChooser,
+                    event -> paintPanel.setColor(colorChooser.getColor()),
+                    null).setVisible(true);
+            clearColorSelection();
+        }
+    }
+
+    public void openImage(File file) {
+        try {
+            paintPanel.openImage(file);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Не получилось загрузить файл"
+                    + file.getName());
+        }
+    }
+
+    public File saveImage(File file) {
+        try {
+            ImageIO.write(paintPanel.getCurrentImage(), "png", file);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Не получилось сохранить файл"
+                    + file.getName());
+        }
+        return file;
     }
 }

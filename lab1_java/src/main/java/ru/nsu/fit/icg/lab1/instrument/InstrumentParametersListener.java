@@ -1,6 +1,4 @@
-package ru.nsu.fit.icg.lab1;
-
-import ru.nsu.fit.icg.lab1.instrument.Instrument;
+package ru.nsu.fit.icg.lab1.instrument;
 
 public interface InstrumentParametersListener {
 
