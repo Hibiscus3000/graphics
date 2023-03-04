@@ -53,7 +53,7 @@ public class FillInstrument extends Instrument {
             if (-1 == step) {
                 --xLeft;
             } else {
-                xRight++;
+                ++xRight;
             }
         }
 
@@ -82,6 +82,12 @@ public class FillInstrument extends Instrument {
         spanAlgorithm(bufferedImage, stack, oldRgb, newRgb);
     }
 
+    public void draw(BufferedImage bufferedImage, int x, int y) {
+        startX = x;
+        startY = y;
+        draw(bufferedImage);
+    }
+
     private void locateNewSpan(int xLeft, int xRight, int y, BufferedImage bufferedImage, Stack<Span> stack,
                                int oldRgb) {
         Span span = null;
@@ -89,14 +95,14 @@ public class FillInstrument extends Instrument {
             if (oldRgb == bufferedImage.getRGB(x, y)) {
                 if (null == span) {
                     span = new Span(x, y);
-                    if (x == xLeft) {
-                        move(x, y, -1, bufferedImage, span, oldRgb);
-                        x = xLeft;
-                    }
-                    if (x == xRight) {
-                        move(x, y, 1, bufferedImage, span, oldRgb);
-                        x = xRight;
-                    }
+                } else {
+                    span.xStep(1);
+                }
+                if (x == xLeft) {
+                    move(x, y, -1, bufferedImage, span, oldRgb);
+                }
+                if (x == xRight) {
+                    move(x, y, 1, bufferedImage, span, oldRgb);
                 }
             } else if (null != span) {
                 stack.push(span);
@@ -110,7 +116,7 @@ public class FillInstrument extends Instrument {
 
     private void move(int x, int y, int xStep, BufferedImage bufferedImage, Span span, int oldRgb) {
         while (((x >= 1 && -1 == xStep) || (x < bufferedImage.getWidth() - 1 && 1 == xStep))
-                && oldRgb == bufferedImage.getRGB(x, y)) {
+                && oldRgb == bufferedImage.getRGB(x + xStep, y)) {
             span.xStep(xStep);
             x += xStep;
         }
@@ -125,13 +131,11 @@ public class FillInstrument extends Instrument {
             for (int x = xLeft; x <= xRight; ++x) {
                 bufferedImage.setRGB(x, y, newRgb);
             }
-            ++y;
-            if (y < bufferedImage.getHeight()) {
-                locateNewSpan(xLeft, xRight, y, bufferedImage, stack, oldRgb);
+            if (y < bufferedImage.getHeight() - 1) {
+                locateNewSpan(xLeft, xRight, y + 1, bufferedImage, stack, oldRgb);
             }
-            y -= 2;
-            if (y >= 0) {
-                locateNewSpan(xLeft, xRight, y, bufferedImage, stack, oldRgb);
+            if (y > 0) {
+                locateNewSpan(xLeft, xRight, y - 1, bufferedImage, stack, oldRgb);
             }
         }
     }
