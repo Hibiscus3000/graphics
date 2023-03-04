@@ -19,13 +19,12 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
 
     private static final int maxListSize = 50;
     private final List<BufferedImage> bufferedImages = new ArrayList<>(maxListSize);
-    private int currentIndex = 0;
+    private int currentIndex = -1;
 
     private boolean callInstrument = false;
 
     public PaintPanel() {
         super();
-        bufferedImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB));
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -35,7 +34,11 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
                         new Dimension(
                                 (int) Math.max(getWidth(), preferredSize.getWidth()),
                                 (int) Math.max(getHeight(), preferredSize.getHeight())));
-                createNewBufferedImage(currentIndex, false);
+                BufferedImage resizedImage = createNewBufferedImage();
+                if (-1 != currentIndex) {
+                    drawImage(resizedImage, bufferedImages.get(currentIndex));
+                }
+                addNewImageToBuffer(resizedImage);
                 repaint();
             }
         });
@@ -46,7 +49,9 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(bufferedImages.get(currentIndex), 0, 0, this);
+        if (-1 != currentIndex) {
+            g2d.drawImage(bufferedImages.get(currentIndex), 0, 0, this);
+        }
         if (callInstrument) {
             instrument.draw(g2d);
             callInstrument = false;
@@ -62,38 +67,42 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
         addMouseListener(instrument);
     }
 
-    @Override
-    public void repaintComplete() {
-        addNewImageToBuffer(false);
-        instrument.draw(bufferedImages.get(currentIndex));
-        repaint();
+    private BufferedImage createNewBufferedImage() {
+        Dimension preferredSize = getPreferredSize();
+        BufferedImage newImage = new BufferedImage((int) preferredSize.getWidth(),
+                (int) preferredSize.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+        g2d.setPaint(new Color(255, 255, 255));
+        g2d.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
+        return newImage;
     }
 
-    private void addNewImageToBuffer(boolean clear) {
+    private void addNewImageToBuffer(BufferedImage bufferedImage) {
         currentIndex = Math.min(currentIndex + 1, maxListSize);
         if (currentIndex == maxListSize) {
             --currentIndex;
             bufferedImages.remove(0);
         }
-        createNewBufferedImage(currentIndex - 1, clear);
+        bufferedImages.add(bufferedImage);
     }
 
-    private void createNewBufferedImage(int index, boolean clear) {
-        BufferedImage newImage = new BufferedImage(getWidth(), getHeight(),
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = (Graphics2D) newImage.getGraphics();
-        g2d.setPaint(new Color(255, 255, 255));
-        g2d.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
-        BufferedImage previousBufferedImage = 0 == currentIndex || clear ? null : bufferedImages.get(index);
-        if (null != previousBufferedImage) {
-            g2d.drawImage(previousBufferedImage, 0, 0, this);
-        }
-        bufferedImages.add(currentIndex, newImage);
+    private BufferedImage drawImage(BufferedImage target, BufferedImage origin) {
+        Graphics2D g2d = (Graphics2D) target.getGraphics();
+        g2d.drawImage(origin, 0, 0, this);
+        return target;
     }
 
     @Override
     public void repaintIncomplete() {
         callInstrument = true;
+        repaint();
+    }
+
+    @Override
+    public void repaintComplete() {
+        addNewImageToBuffer(drawImage(createNewBufferedImage(), bufferedImages.get(currentIndex)));
+        instrument.draw(bufferedImages.get(currentIndex));
         repaint();
     }
 
@@ -104,13 +113,7 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
         }
     }
 
-    public void clear() {
-        addNewImageToBuffer(true);
-        repaint();
-    }
-
     public void openImage(File file) throws IOException {
-        addNewImageToBuffer(true);
 
         BufferedImage in = ImageIO.read(file);
 

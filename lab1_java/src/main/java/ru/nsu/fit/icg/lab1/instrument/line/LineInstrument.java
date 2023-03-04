@@ -34,12 +34,12 @@ public abstract class LineInstrument extends Instrument {
 
     @Override
     public void draw(Graphics2D g2d) {
-        java.util.List<ru.nsu.fit.icg.lab1.line.Point> points = line.getPoints();
+        java.util.List<Point> points = line.getPoints();
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(width));
         for (int i = 0; i < points.size() - 1; ++i) {
-            ru.nsu.fit.icg.lab1.line.Point point1 = points.get(i);
-            ru.nsu.fit.icg.lab1.line.Point point2 = points.get(i + 1);
+            Point point1 = points.get(i);
+            Point point2 = points.get(i + 1);
             g2d.drawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
         }
     }
@@ -51,21 +51,25 @@ public abstract class LineInstrument extends Instrument {
             // Bresenham
             for (int i = 0; i < points.size() - 1; ++i) {
                 Point pointI = points.get(i);
-                Point pointIPlusOne = points.get(i);
-                int x0 = pointI.getX();
-                int y0 = pointI.getY();
-                int x1 = pointIPlusOne.getX();
-                int y1 = pointIPlusOne.getY();
-                int dx = x1 - x0;
-                int dy = y1 - y0;
-                int dxAbs = Math.abs(dx);
-                int dyAbs = Math.abs(dy);
-                if (dxAbs < dyAbs) {
-                    bresenhamAlgorithmLineHigh(Math.min(x0, x1), y0,
-                            dxAbs, dyAbs, 1, 1, bufferedImage);
+                Point pointIPlusOne = points.get(i + 1);
+                int x0 = constrain(pointI.getX(), 0, bufferedImage.getWidth() - 1);
+                int y0 = constrain(pointI.getY(), 0, bufferedImage.getHeight() - 1);
+                int x1 = constrain(pointIPlusOne.getX(), 0, bufferedImage.getWidth() - 1);
+                int y1 = constrain(pointIPlusOne.getY(), 0, bufferedImage.getHeight() - 1);
+                int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(y1 - y0);
+
+                if (dxAbs > dyAbs) {
+                    if (x1 > x0) {
+                        bresenhamTanAbsLessOne(x0, y0, x1, y1, bufferedImage);
+                    } else {
+                        bresenhamTanAbsLessOne(x1, y1, x0, y0, bufferedImage);
+                    }
                 } else {
-                    bresenhamAlgorithmLineLow(Math.min(x0, x1), y0,
-                            dxAbs, dyAbs, 1, 1, bufferedImage);
+                    if (y1 > y0) {
+                        bresenhamTanAbsMoreOne(x0, y0, x1, y1, bufferedImage);
+                    } else {
+                        bresenhamTanAbsMoreOne(x1, y1, x0, y0, bufferedImage);
+                    }
                 }
             }
         } else {
@@ -74,13 +78,24 @@ public abstract class LineInstrument extends Instrument {
         }
     }
 
-    private void bresenhamAlgorithmLineLow(int x0, int y0, int dxAbs, int dyAbs,
-                                           int xStep, int yStep,
-                                           BufferedImage bufferedImage) {
+    private int constrain(int value, int lowerBorder, int upperBorder) {
+        if (value > upperBorder) {
+            return upperBorder;
+        }
+        if (value < lowerBorder) {
+            return lowerBorder;
+        }
+        return value;
+    }
+
+    private void bresenhamTanAbsLessOne(int x0, int y0, int x1, int y1,
+                                        BufferedImage bufferedImage) {
+        int dy = y1 - y0;
+        int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(dy);
         int err = -dxAbs;
-        int x = x0, y = y0;
-        for (int j = 0; j < dxAbs; ++j) {
-            x += xStep;
+        int y = y0;
+        int yStep = dy > 0 ? 1 : -1;
+        for (int x = x0; x < x1; ++x) {
             err += 2 * dyAbs;
             if (err > 0) {
                 err -= 2 * dxAbs;
@@ -90,13 +105,14 @@ public abstract class LineInstrument extends Instrument {
         }
     }
 
-    private void bresenhamAlgorithmLineHigh(int x0, int y0, int dxAbs, int dyAbs,
-                                            int xStep, int yStep,
-                                            BufferedImage bufferedImage) {
+    private void bresenhamTanAbsMoreOne(int x0, int y0, int x1, int y1,
+                                        BufferedImage bufferedImage) {
+        int dx = x1 - x0;
+        int dxAbs = Math.abs(dx), dyAbs = Math.abs(y1 - y0);
         int err = -dyAbs;
-        int x = x0, y = y0;
-        for (int j = 0; j < dyAbs; ++j) {
-            y += yStep;
+        int x = x0;
+        int xStep = dx > 0 ? 1 : -1;
+        for (int y = y0; y < y1; ++y) {
             err += 2 * dxAbs;
             if (err > 0) {
                 err -= 2 * dyAbs;

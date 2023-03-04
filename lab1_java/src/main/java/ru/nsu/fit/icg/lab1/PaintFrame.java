@@ -161,7 +161,6 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            paintPanel.clear();
         }
     }
 
