@@ -24,7 +24,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorSelectionListener {
 
@@ -40,13 +39,14 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
     private final PaintPanel paintPanel = new PaintPanel();
 
     public static void main(String[] args) {
-        PaintFrame paintFrame = null;
-        try {
-            paintFrame = new PaintFrame();
-            paintFrame.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        EventQueue.invokeLater(() -> {
+            try {
+                PaintFrame paintFrame = new PaintFrame();
+                paintFrame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public PaintFrame() throws IOException, ParseException {
@@ -90,7 +90,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addInstrumentAction(new InstrumentAction("Звезда", paintPanel, this, this,
                 new StarInstrument(parametersParser, paintPanel), "star.png"));
         addInstrumentAction(new InstrumentAction("Заливка", paintPanel, this, this,
-                new FillInstrument(parametersParser, paintPanel), "fill.png"));
+                new FillInstrument(paintPanel), "fill.png"));
 
         for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
             addColorAction(colorAction);
@@ -131,19 +131,12 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
     }
 
     private final ParametersParser parametersParser = new ParametersParser();
-    private final HashMap<String, ParametersDialog> instrumentDialogMap = new HashMap<>();
 
     @Override
     public void changeInstrumentParameters(Instrument instrument) {
-        ParametersDialog instrumentDialog = instrumentDialogMap
-                .get(instrument.getClass().getSimpleName());
-        if (null == instrumentDialog) {
-            instrumentDialog = new ParametersDialog(this, instrument.getName(),
-                    parametersParser.getParametersMap(instrument.getParameterGroupNames()));
-            instrumentDialogMap.put(instrument.getClass().getSimpleName(), instrumentDialog);
-        }
-        instrumentDialog.setVisible(true);
-        instrument.changeParameters(instrumentDialog);
+        new ParametersDialog(this, instrument.getName(),
+                parametersParser.getParametersMap(instrument.getClass().getName()))
+                .setVisible(true);
     }
 
     @Override

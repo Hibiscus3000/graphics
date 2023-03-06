@@ -9,10 +9,10 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParametersDialog extends JDialog implements Parameters {
+public class ParametersDialog extends JDialog {
 
-    private final Map<String, Parameter> parameters = new HashMap<>();
-    private final Map<String, Integer> values = new HashMap<>();
+    private final Map<String, Value> values = new HashMap<>();
+    private final Map<String, Integer> previousValues = new HashMap<>();
 
     private final JLabel warningLabel;
     private final Map<String, String> warningsMap = new HashMap<>();
@@ -24,7 +24,7 @@ public class ParametersDialog extends JDialog implements Parameters {
         dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
 
         for (Map.Entry<String, Parameter> parameterEntry : parameters.entrySet().stream().toList()) {
-            this.parameters.put(parameterEntry.getKey(), new Parameter(parameterEntry.getValue()));
+            values.put(parameterEntry.getKey(), parameterEntry.getValue().getValue());
         }
 
         warningLabel = new JLabel();
@@ -32,8 +32,8 @@ public class ParametersDialog extends JDialog implements Parameters {
 
         JButton okButton = new JButton("ОК");
         okButton.addActionListener(e -> {
-            for (Map.Entry<String, Parameter> parameterEntry : this.parameters.entrySet().stream().toList()) {
-                values.put(parameterEntry.getKey(), parameterEntry.getValue().getValue());
+            for (Map.Entry<String, Value> valueEntry : values.entrySet().stream().toList()) {
+                previousValues.put(valueEntry.getKey(), valueEntry.getValue().getValue());
             }
             setVisible(false);
         });
@@ -42,8 +42,8 @@ public class ParametersDialog extends JDialog implements Parameters {
         cancelButton.addActionListener(e -> {
             warningsMap.clear();
             setWarningMsg();
-            for (Map.Entry<String, Parameter> parameterEntry : this.parameters.entrySet().stream().toList()) {
-                parameterEntry.getValue().setValue(values.get(parameterEntry.getKey()));
+            for (Map.Entry<String, Value> valueEntry : values.entrySet().stream().toList()) {
+                previousValues.put(valueEntry.getKey(), valueEntry.getValue().getValue());
             }
             for (Map.Entry<String, JLabel> warninglabelEntry : warningLabels.entrySet().stream().toList()) {
                 warninglabelEntry.getValue().setVisible(false);
@@ -55,24 +55,30 @@ public class ParametersDialog extends JDialog implements Parameters {
         parameterPanel.setLayout(new GridBagLayout());
         int y = 0;
         boolean atLeastOnePDoesNotReqVal = false;
-        for (Map.Entry<String, Parameter> parameterEntry : this.parameters.entrySet().stream().toList()) {
-            values.put(parameterEntry.getKey(), parameterEntry.getValue().getValue());
+        for (Map.Entry<String, Parameter> parameterEntry : parameters.entrySet().stream().toList()) {
+            Value value = parameterEntry.getValue().getValue();
+            previousValues.put(parameterEntry.getKey(), value.getValue());
             Parameter parameter = parameterEntry.getValue();
+
             String name = parameter.getName();
             JLabel label = new JLabel(name);
-            JTextField textField = new JTextField(5);
-            textField.setText(String.valueOf(parameter.getValue()));
-            JSlider slider = new JSlider(parameter.getLowerBorder(), parameter.getUpperBorder(),
-                    parameter.getValue());
+
+            JSlider slider = new JSlider(parameter.getMin(), parameter.getMax(),
+                    value.getValue());
             slider.setMinorTickSpacing(parameter.getMinorTicks());
             slider.setMajorTickSpacing(parameter.getMajorTicks());
             slider.setPaintTicks(true);
             slider.setPaintLabels(true);
+
             JLabel errorLabel = new JLabel("Неверное значение!");
             errorLabel.setVisible(false);
             warningLabels.put(name, errorLabel);
+
             errorLabel.setForeground(Color.red);
             parameterPanel.add(errorLabel);
+
+            JTextField textField = new JTextField(5);
+            textField.setText(String.valueOf(value.getValue()));
             textField.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -90,15 +96,15 @@ public class ParametersDialog extends JDialog implements Parameters {
                 }
 
                 public void textChanged() {
-                    if (!parameter.setValue(textField.getText())) {
+                    if (!value.setValue(textField.getText())) {
                         String warningMsg = String.format("Значение параметра \"%s\" должно быть целым числом между %d и %d",
-                                name, parameter.getLowerBorder(), parameter.getUpperBorder());
+                                name, parameter.getMin(), parameter.getMax());
                         warningsMap.put(name, warningMsg);
                         setWarningMsg();
                         errorLabel.setVisible(true);
                         okButton.setEnabled(false);
                     } else {
-                        slider.setValue(parameter.getValue());
+                        slider.setValue(value.getValue());
                         warningsMap.remove(name);
                         setWarningMsg();
                         errorLabel.setVisible(false);
@@ -109,7 +115,7 @@ public class ParametersDialog extends JDialog implements Parameters {
 
             slider.addChangeListener(e -> {
                 parameter.setValue(slider.getValue());
-                EventQueue.invokeLater(() -> textField.setText(String.valueOf(parameter.getValue())));
+                EventQueue.invokeLater(() -> textField.setText(String.valueOf(value.getValue())));
                 warningsMap.remove(name);
                 errorLabel.setVisible(false);
                 okButton.setEnabled(true);
@@ -118,12 +124,12 @@ public class ParametersDialog extends JDialog implements Parameters {
             parameterPanel.add(textField, new GBC(1, y, 1, 1));
             parameterPanel.add(slider, new GBC(2, y, 2, 1));
             parameterPanel.add(errorLabel, new GBC(5, y, 1, 1));
-            if (!parameter.requiresValue()) {
+            if (value instanceof NotNecessaryValue) {
                 atLeastOnePDoesNotReqVal = true;
                 Checkbox checkbox = new Checkbox("Использовать со значением",
-                        this.parameters.get(parameterEntry.getKey()).isSet());
+                        ((NotNecessaryValue) value).useValue());
                 checkbox.addItemListener(e -> {
-                    parameter.valueSet(checkbox.getState());
+                    ((NotNecessaryValue) value).setUseValue(checkbox.getState());
                     textField.setEditable(checkbox.getState());
                     slider.setEnabled(checkbox.getState());
                 });
@@ -153,16 +159,6 @@ public class ParametersDialog extends JDialog implements Parameters {
             pack();
             setLocationRelativeTo(getOwner());
         });
-    }
-
-    @Override
-    public Integer getValue(String key) {
-        return values.get(key);
-    }
-
-    @Override
-    public boolean isSet(String key) {
-        return parameters.get(key).isSet();
     }
 
     private class GBC extends GridBagConstraints {

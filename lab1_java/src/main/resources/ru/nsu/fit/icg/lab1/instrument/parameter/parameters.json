@@ -3,20 +3,20 @@
     {
       "name": "width",
       "guiName": "Ширина линии",
-      "lowerBorder": 1,
-      "upperBorder": 15,
+      "min": 1,
+      "max": 15,
       "default": 1,
       "majorTicks": 2,
-      "minorTicks": 0,
+      "minorTicks": 1,
       "requiresValue": true
     }
   ],
-  "rotating": [
+  "rotatable": [
     {
-      "name": "turn",
+      "name": "angle",
       "guiName": "Поворот (°)",
-      "lowerBorder": -179,
-      "upperBorder": 180,
+      "min": -179,
+      "max": 180,
       "default": 0,
       "majorTicks": 60,
       "minorTicks": 5,
@@ -27,30 +27,32 @@
     {
       "name": "semiMinorAxis",
       "guiName": "Малая полуось",
-      "lowerBorder": 5,
-      "upperBorder": 200,
+      "min": 5,
+      "max": 200,
       "default": 30,
       "majorTicks": 40,
       "minorTicks": 5,
-      "requiresValue": false
+      "requiresValue": false,
+      "useValue": false
     },
     {
       "name": "semiMajorAxis",
       "guiName": "Большая полуось",
-      "lowerBorder": 5,
-      "upperBorder": 200,
+      "min": 5,
+      "max": 200,
       "default": 30,
       "majorTicks": 40,
       "minorTicks": 5,
-      "requiresValue": false
+      "requiresValue": false,
+      "useValue": false
     }
   ],
   "polygon": [
     {
       "name": "verticesAmount",
       "guiName": "Количество вершин",
-      "lowerBorder": 3,
-      "upperBorder": 16,
+      "min": 3,
+      "max": 16,
       "default": 5,
       "majorTicks": 2,
       "minorTicks": 0,
@@ -59,24 +61,26 @@
     {
       "name": "outerRadius",
       "guiName": "Внешний радиус",
-      "lowerBorder": 5,
-      "upperBorder": 200,
+      "min": 5,
+      "max": 200,
       "default": 30,
       "majorTicks": 40,
       "minorTicks": 5,
-      "requiresValue": false
+      "requiresValue": false,
+      "useValue": false
     }
   ],
   "star": [
     {
       "name": "innerRadius",
       "guiName": "Внутренний радиус",
-      "lowerBorder": 5,
-      "upperBorder": 200,
+      "min": 5,
+      "max": 200,
       "default": 20,
       "majorTicks": 40,
       "minorTicks": 5,
-      "requiresValue": false
+      "requiresValue": false,
+      "useValue": false
     }
   ],
   "fill": [

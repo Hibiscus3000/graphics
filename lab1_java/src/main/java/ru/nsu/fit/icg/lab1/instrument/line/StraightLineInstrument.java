@@ -21,7 +21,7 @@ public class StraightLineInstrument extends LineInstrument {
     @Override
     public void mouseDragged(MouseEvent e) {
         line.setSecondPoint(new Point(e.getX(), e.getY()));
-        instrumentUser.repaintIncomplete();
+        instrumentUser.repaintTemporary();
     }
 
     @Override

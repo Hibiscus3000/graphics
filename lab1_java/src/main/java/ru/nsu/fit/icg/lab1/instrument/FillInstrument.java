@@ -1,7 +1,5 @@
 package ru.nsu.fit.icg.lab1.instrument;
 
-import ru.nsu.fit.icg.lab1.instrument.parameter.Parameters;
-import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.panel.InstrumentUser;
 
 import java.awt.*;
@@ -9,22 +7,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
-public class FillInstrument extends Instrument {
+public class FillInstrument extends ColoredInstrument {
 
     private int startX;
     private int startY;
 
-    public FillInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
-        super(parametersParser, instrumentUser);
-    }
-
-    @Override
-    public void changeParameters(Parameters parameters) {
-    }
-
-    @Override
-    public String[] getParameterGroupNames() {
-        return new String[]{"fill"};
+    public FillInstrument(InstrumentUser instrumentUser) {
+        super(instrumentUser);
     }
 
     @Override

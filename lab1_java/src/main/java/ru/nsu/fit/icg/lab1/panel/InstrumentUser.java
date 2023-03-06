@@ -8,5 +8,7 @@ public interface InstrumentUser {
 
     void repaintComplete();
 
-    void repaintIncomplete();
+    void repaintTemporary();
+
+    void repaint();
 }

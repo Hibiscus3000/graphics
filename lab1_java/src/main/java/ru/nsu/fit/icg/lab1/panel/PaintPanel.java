@@ -1,5 +1,6 @@
 package ru.nsu.fit.icg.lab1.panel;
 
+import ru.nsu.fit.icg.lab1.instrument.ColoredInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
 
 import javax.imageio.ImageIO;
@@ -7,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -62,9 +64,15 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
     public void setInstrument(Instrument instrument) {
         removeMouseListener(this.instrument);
         removeMouseMotionListener(this.instrument);
+        if (this.instrument instanceof MouseWheelListener) {
+            removeMouseWheelListener((MouseWheelListener) this.instrument);
+        }
         this.instrument = instrument;
-        addMouseMotionListener(instrument);
         addMouseListener(instrument);
+        addMouseMotionListener(instrument);
+        if (this.instrument instanceof MouseWheelListener) {
+            addMouseWheelListener((MouseWheelListener) instrument);
+        }
     }
 
     private BufferedImage createNewBufferedImage() {
@@ -94,7 +102,7 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
     }
 
     @Override
-    public void repaintIncomplete() {
+    public void repaintTemporary() {
         callInstrument = true;
         repaint();
     }
@@ -108,8 +116,8 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
 
     @Override
     public void setColor(Color color) {
-        if (null != instrument) {
-            instrument.setColor(color);
+        if (null != instrument && instrument instanceof ColoredInstrument) {
+            ((ColoredInstrument) instrument).setColor(color);
         }
     }
 

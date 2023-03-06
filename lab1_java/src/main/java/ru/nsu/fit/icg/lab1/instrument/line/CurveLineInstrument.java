@@ -18,14 +18,14 @@ public class CurveLineInstrument extends LineInstrument {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public synchronized void mouseReleased(MouseEvent e) {
         line.addPoint(new Point(e.getX(), e.getY()));
         instrumentUser.repaintComplete();
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public synchronized void mouseDragged(MouseEvent e) {
         line.addPoint(new Point(e.getX(), e.getY()));
-        instrumentUser.repaintIncomplete();
+        instrumentUser.repaintTemporary();
     }
 }

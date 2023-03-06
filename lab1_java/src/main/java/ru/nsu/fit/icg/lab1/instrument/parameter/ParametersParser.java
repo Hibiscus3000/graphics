@@ -7,9 +7,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ParametersParser {
@@ -19,52 +17,39 @@ public class ParametersParser {
             .parse(new String(getClass().getResourceAsStream("parameters.json")
                     .readAllBytes(), StandardCharsets.UTF_8));
 
+    private final Map<String, Map<String, Parameter>> parameters = new HashMap<>();
+
     public ParametersParser() throws IOException, ParseException {
     }
 
-    private final Map<String, List<String>> parameterNameMap = new HashMap<>();
-    private final Map<String, Parameter> parametersMap = new HashMap<>();
-
-    public Map<String, Parameter> getParametersMap(String[] parameterGroupNames) {
-        Map<String, Parameter> targetGroupsParameters = new HashMap<>();
-        for (String parameterGroupName : parameterGroupNames) {
-            for (String parameterName :
-                    parameterNameMap.get(parameterGroupName)) {
-                targetGroupsParameters.put(parameterName, parametersMap.get(parameterName));
-            }
-        }
-        return targetGroupsParameters;
+    public Map<String, Parameter> getParametersMap(String instrumentName) {
+        return parameters.get(instrumentName);
     }
 
-    public Map<String, Integer> getDefaults(String[] parameterGroupNames) {
-        Map<String, Integer> targetGroupDefaults = new HashMap<>();
-
+    public Map<String, Value> getValues(String instrumentName, String[] parameterGroupNames) {
+        Map<String, Value> instrumentValues = new HashMap<>();
+        Map<String, Parameter> instrumentParameters = new HashMap<>();
         for (String parameterGroupName : parameterGroupNames) {
-            List<String> parameterNames;
-            if (null == (parameterNames = parameterNameMap.get(parameterGroupName))) {
-                parameterNames = new ArrayList<>();
-                parameterNameMap.put(parameterGroupName, parameterNames);
-                JSONArray parametersArray = (JSONArray) json.get(parameterGroupName);
-                for (Object pararameterObject : parametersArray) {
-                    JSONObject parameterJsonObject = (JSONObject) pararameterObject;
-                    String parameterName = (String) parameterJsonObject.get("name");
-                    parametersMap.put(parameterName, new Parameter(
-                            (String) parameterJsonObject.get("guiName"),
-                            (int) (long) parameterJsonObject.get("lowerBorder"),
-                            (int) (long) parameterJsonObject.get("upperBorder"),
-                            (int) (long) parameterJsonObject.get("default"),
-                            (int) (long) parameterJsonObject.get("minorTicks"),
-                            (int) (long) parameterJsonObject.get("majorTicks"),
-                            (boolean) parameterJsonObject.get("requiresValue")));
-                    parameterNames.add(parameterName);
-                }
+            JSONArray parametersArray = (JSONArray) json.get(parameterGroupName);
+            for (Object pararameterObject : parametersArray) {
+                JSONObject parameterJsonObject = (JSONObject) pararameterObject;
+                Parameter parameter;
+                String parameterName = (String) parameterJsonObject.get("name");
+                boolean requiresValue = (boolean) parameterJsonObject.get("requiresValue");
+                parameter = new Parameter(
+                        parameterName,
+                        (int) (long) parameterJsonObject.get("min"),
+                        (int) (long) parameterJsonObject.get("max"),
+                        (int) (long) parameterJsonObject.get("default"),
+                        requiresValue,
+                        requiresValue ? true : (boolean) parameterJsonObject.get("useValue"),
+                        (int) (long) parameterJsonObject.get("minorTicks"),
+                        (int) (long) parameterJsonObject.get("majorTicks"));
+                instrumentValues.put(parameterName, parameter.getValue());
+                instrumentParameters.put(parameterName, parameter);
             }
-            for (String parameterName : parameterNames) {
-                targetGroupDefaults.put(parameterName,
-                        parametersMap.get(parameterName).getValue());
-            }
-
         }
-        return targetGroupDefaults;
+        parameters.put(instrumentName, instrumentParameters);
+        return instrumentValues;
     }
 }

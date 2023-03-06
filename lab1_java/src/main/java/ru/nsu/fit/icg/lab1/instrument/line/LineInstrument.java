@@ -1,7 +1,6 @@
 package ru.nsu.fit.icg.lab1.instrument.line;
 
-import ru.nsu.fit.icg.lab1.instrument.Instrument;
-import ru.nsu.fit.icg.lab1.instrument.parameter.Parameters;
+import ru.nsu.fit.icg.lab1.instrument.ResizableInstrument;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.line.Line;
 import ru.nsu.fit.icg.lab1.line.Point;
@@ -12,19 +11,12 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public abstract class LineInstrument extends Instrument {
+public abstract class LineInstrument extends ResizableInstrument {
 
     protected Line line;
-    protected int width;
 
     public LineInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
         super(parametersParser, instrumentUser);
-        width = defaults.get("width");
-    }
-
-    @Override
-    public void changeParameters(Parameters parameters) {
-        width = parameters.getValue("width");
     }
 
     @Override
@@ -33,10 +25,13 @@ public abstract class LineInstrument extends Instrument {
     }
 
     @Override
-    public void draw(Graphics2D g2d) {
+    public synchronized void draw(Graphics2D g2d) {
+        if (null == line) {
+            return;
+        }
         java.util.List<Point> points = line.getPoints();
         g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(width));
+        g2d.setStroke(new BasicStroke(getValue("width")));
         for (int i = 0; i < points.size() - 1; ++i) {
             Point point1 = points.get(i);
             Point point2 = points.get(i + 1);
@@ -46,8 +41,11 @@ public abstract class LineInstrument extends Instrument {
 
     @Override
     public void draw(BufferedImage bufferedImage) {
+        if (null == line) {
+            return;
+        }
         List<Point> points = line.getPoints();
-        if (1 == width) {
+        if (1 == getValue("width")) {
             // Bresenham
             for (int i = 0; i < points.size() - 1; ++i) {
                 Point pointI = points.get(i);
@@ -79,13 +77,7 @@ public abstract class LineInstrument extends Instrument {
     }
 
     private int constrain(int value, int lowerBorder, int upperBorder) {
-        if (value > upperBorder) {
-            return upperBorder;
-        }
-        if (value < lowerBorder) {
-            return lowerBorder;
-        }
-        return value;
+        return Math.min(upperBorder, Math.max(value, lowerBorder));
     }
 
     private void bresenhamTanAbsLessOne(int x0, int y0, int x1, int y1,
@@ -120,6 +112,16 @@ public abstract class LineInstrument extends Instrument {
             }
             bufferedImage.setRGB(x, y, color.getRGB());
         }
+    }
+
+    @Override
+    protected void changeSize(int mouseWheelClicks) {
+        changeValue("width", mouseWheelClicks);
+    }
+
+    @Override
+    protected void repaint() {
+        instrumentUser.repaintTemporary();
     }
 
     @Override
