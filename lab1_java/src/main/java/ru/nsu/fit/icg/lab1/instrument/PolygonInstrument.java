@@ -10,10 +10,10 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.*;
 
-public class PolygonInstrument extends MultiplePointsInstrument {
+public class PolygonInstrument extends ResizableInstrument {
 
     public PolygonInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
-        super(parametersParser, instrumentUser, 2);
+        super(parametersParser, instrumentUser, 2, "outerRadius");
     }
 
     @Override

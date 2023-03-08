@@ -41,6 +41,7 @@ public class ParametersParser {
                         (int) (long) parameterJsonObject.get("min"),
                         (int) (long) parameterJsonObject.get("max"),
                         (int) (long) parameterJsonObject.get("default"),
+                        getValueType((String) parameterJsonObject.get("valueType")),
                         requiresValue,
                         requiresValue ? true : (boolean) parameterJsonObject.get("useValue"),
                         (int) (long) parameterJsonObject.get("minorTicks"),
@@ -51,5 +52,13 @@ public class ParametersParser {
         }
         parameters.put(instrumentName, instrumentParameters);
         return instrumentValues;
+    }
+
+    private Value.ValueType getValueType(String valueType) {
+        if ("modulo".equals(valueType)) {
+            return Value.ValueType.MODULO;
+        } else {
+            return Value.ValueType.BOUNDED;
+        }
     }
 }

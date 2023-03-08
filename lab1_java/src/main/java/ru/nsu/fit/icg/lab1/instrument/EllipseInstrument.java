@@ -8,10 +8,10 @@ import ru.nsu.fit.icg.lab1.panel.InstrumentUser;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class EllipseInstrument extends MultiplePointsInstrument {
+public class EllipseInstrument extends ResizableInstrument {
 
     public EllipseInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
-        super(parametersParser, instrumentUser, 3);
+        super(parametersParser, instrumentUser, 3, "semiMinorAxis", "semiMajorAxis");
     }
 
     @Override
@@ -56,6 +56,7 @@ public class EllipseInstrument extends MultiplePointsInstrument {
                     : point.getY();
         }
         endDrawing();
+        g2d.rotate(Math.toRadians(getValue("angle")), x + width / 2, y + height / 2);
         g2d.drawOval(x, y, width, height);
     }
 

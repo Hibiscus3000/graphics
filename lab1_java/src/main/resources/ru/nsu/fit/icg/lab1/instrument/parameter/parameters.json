@@ -8,6 +8,7 @@
       "default": 1,
       "majorTicks": 2,
       "minorTicks": 1,
+      "valueType": "bounded",
       "requiresValue": true
     }
   ],
@@ -19,7 +20,8 @@
       "max": 180,
       "default": 0,
       "majorTicks": 60,
-      "minorTicks": 5,
+      "minorTicks": 10,
+      "valueType": "modulo",
       "requiresValue": true
     }
   ],
@@ -33,7 +35,8 @@
       "majorTicks": 40,
       "minorTicks": 5,
       "requiresValue": false,
-      "useValue": false
+      "valueType": "bounded",
+      "useValue": true
     },
     {
       "name": "semiMajorAxis",
@@ -44,7 +47,8 @@
       "majorTicks": 40,
       "minorTicks": 5,
       "requiresValue": false,
-      "useValue": false
+      "valueType": "bounded",
+      "useValue": true
     }
   ],
   "polygon": [
@@ -56,33 +60,34 @@
       "default": 5,
       "majorTicks": 2,
       "minorTicks": 0,
-      "requiresValue": true
+      "requiresValue": true,
+      "valueType": "bounded"
     },
     {
       "name": "outerRadius",
       "guiName": "Внешний радиус",
-      "min": 5,
+      "min": 60,
       "max": 200,
-      "default": 30,
+      "default": 60,
       "majorTicks": 40,
       "minorTicks": 5,
       "requiresValue": false,
-      "useValue": false
+      "useValue": true,
+      "valueType": "bounded"
     }
   ],
   "star": [
     {
       "name": "innerRadius",
       "guiName": "Внутренний радиус",
-      "min": 5,
-      "max": 200,
-      "default": 20,
+      "min": 30,
+      "max": 100,
+      "default": 30,
       "majorTicks": 40,
       "minorTicks": 5,
       "requiresValue": false,
-      "useValue": false
+      "useValue": true,
+      "valueType": "bounded"
     }
-  ],
-  "fill": [
   ]
 }

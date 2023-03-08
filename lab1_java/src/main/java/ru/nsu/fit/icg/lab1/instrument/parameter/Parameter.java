@@ -14,6 +14,7 @@ public class Parameter {
                      int min,
                      int max,
                      int value,
+                     Value.ValueType valueType,
                      boolean requiresValue,
                      boolean valueInUse,
                      int minorTicks,
@@ -24,7 +25,7 @@ public class Parameter {
         this.minorTicks = minorTicks;
         this.majorTicks = majorTicks;
         if (requiresValue) {
-            this.value = new Value(value, minorTicks, min, max);
+            this.value = new Value(valueType, value, minorTicks, min, max);
         } else {
             this.value = new NotNecessaryValue(value, minorTicks, min, max, valueInUse);
         }

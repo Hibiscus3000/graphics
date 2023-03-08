@@ -5,7 +5,7 @@ public class NotNecessaryValue extends Value {
     private boolean useValue;
 
     public NotNecessaryValue(int value, int step, int lowerBorder, int upperBorder, boolean useValue) {
-        super(value, step, lowerBorder, upperBorder);
+        super(ValueType.BOUNDED, value, step, lowerBorder, upperBorder);
         this.useValue = useValue;
     }
 

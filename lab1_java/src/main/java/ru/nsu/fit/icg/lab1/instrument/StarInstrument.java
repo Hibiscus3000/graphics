@@ -10,10 +10,10 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.*;
 
-public class StarInstrument extends MultiplePointsInstrument {
+public class StarInstrument extends ResizableInstrument {
 
     public StarInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
-        super(parametersParser, instrumentUser, 3);
+        super(parametersParser, instrumentUser, 3, "outerRadius", "innerRadius");
     }
 
     @Override

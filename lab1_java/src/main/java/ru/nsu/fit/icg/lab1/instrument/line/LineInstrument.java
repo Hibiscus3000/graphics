@@ -1,6 +1,6 @@
 package ru.nsu.fit.icg.lab1.instrument.line;
 
-import ru.nsu.fit.icg.lab1.instrument.ResizableInstrument;
+import ru.nsu.fit.icg.lab1.instrument.ValuedInstrument;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.line.Line;
 import ru.nsu.fit.icg.lab1.line.Point;
@@ -11,17 +11,12 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public abstract class LineInstrument extends ResizableInstrument {
+public abstract class LineInstrument extends ValuedInstrument {
 
     protected Line line;
 
     public LineInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
-        super(parametersParser, instrumentUser);
-    }
-
-    @Override
-    public String[] getParameterGroupNames() {
-        return new String[]{"line"};
+        super(parametersParser, instrumentUser, "width");
     }
 
     @Override
@@ -112,11 +107,6 @@ public abstract class LineInstrument extends ResizableInstrument {
             }
             bufferedImage.setRGB(x, y, color.getRGB());
         }
-    }
-
-    @Override
-    protected void changeSize(int mouseWheelClicks) {
-        changeValue("width", mouseWheelClicks);
     }
 
     @Override
