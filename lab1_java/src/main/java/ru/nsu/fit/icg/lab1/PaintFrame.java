@@ -69,6 +69,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         add(new JScrollPane(paintPanel), BorderLayout.CENTER);
         menuBar.add(new JMenuItem(new ClearAction()));
         colorToolbarButtonGroup.getElements().nextElement().doClick();
+        instrumentMenuButtonGroup.getElements().nextElement().doClick();
         pack();
         setLocationRelativeTo(null);
     }
@@ -82,6 +83,8 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addFileAction(new OpenFileAction("Открыть", this));
         addFileAction(new SaveFileAction("Сохранить", this));
 
+        addInstrumentAction(new InstrumentAction("Ничего", this, null,
+                "fill.png"));
         addInstrumentAction(new InstrumentAction("Прямая", this,
                 new StraightLineInstrument(parametersParser, paintPanel), "straight_line.png"));
         addInstrumentAction(new InstrumentAction("Кривая", this,
@@ -137,9 +140,11 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
     @Override
     public void changeInstrumentParameters(Instrument instrument) {
-        new ParametersDialog(this, instrument.getName(),
-                parametersParser.getParametersMap(instrument.getClass().getName()))
-                .setVisible(true);
+        if (null != instrument && instrument instanceof ParameterizableInstrument) {
+            new ParametersDialog(this, instrument.getName(),
+                    parametersParser.getParametersMap(instrument.getClass().getName()))
+                    .setVisible(true);
+        }
     }
 
     private Color color;

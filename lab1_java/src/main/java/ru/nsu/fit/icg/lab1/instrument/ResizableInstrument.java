@@ -5,14 +5,13 @@ import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.line.Point;
 import ru.nsu.fit.icg.lab1.panel.InstrumentUser;
 
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public abstract class ResizableInstrument extends ValuedInstrument {
+public abstract class ResizableInstrument extends ParameterizableInstrument {
 
     protected final Semaphore paintSemaphore = new Semaphore(1);
 

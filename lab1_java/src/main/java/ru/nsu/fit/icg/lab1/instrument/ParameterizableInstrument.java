@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public abstract class ValuedInstrument extends ColoredInstrument implements MouseWheelListener {
+public abstract class ParameterizableInstrument extends ColoredInstrument implements MouseWheelListener {
 
     private final Map<String, Value> values;
     protected final int numberOfPermitsToRelease = 1;
@@ -26,7 +26,7 @@ public abstract class ValuedInstrument extends ColoredInstrument implements Mous
     private static Properties properties = new Properties();
 
     static {
-        var stream = ValuedInstrument.class.getResourceAsStream("value_listener.properties");
+        var stream = ParameterizableInstrument.class.getResourceAsStream("value_listener.properties");
         try {
             properties.load(stream);
         } catch (IOException e) {
@@ -34,8 +34,8 @@ public abstract class ValuedInstrument extends ColoredInstrument implements Mous
         }
     }
 
-    protected ValuedInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser,
-                               String... valueNames) {
+    protected ParameterizableInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser,
+                                        String... valueNames) {
         super(instrumentUser);
         for (String valueName : valueNames) {
             valueListenerList.add(getValueListener(valueName));
@@ -47,7 +47,7 @@ public abstract class ValuedInstrument extends ColoredInstrument implements Mous
     private ValueListener getValueListener(String valueName) {
         try {
             var valueListenerClass = Class.forName(properties.getProperty(valueName));
-            var constructor = valueListenerClass.getConstructor(ValuedInstrument.class);
+            var constructor = valueListenerClass.getConstructor(ParameterizableInstrument.class);
             ValueListener valueListener = (ValueListener) constructor.newInstance(this);
             return valueListener;
         } catch (Exception e) {
