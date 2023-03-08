@@ -69,6 +69,7 @@ public abstract class LineInstrument extends ValuedInstrument {
             Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
             draw(g2d);
         }
+        line = null;
     }
 
     private int constrain(int value, int lowerBorder, int upperBorder) {

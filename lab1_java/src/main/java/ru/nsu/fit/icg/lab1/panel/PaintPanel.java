@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaintPanel extends JPanel implements InstrumentUser, ColorListener {
+public class PaintPanel extends JPanel implements InstrumentUser {
 
     private Instrument instrument;
 
@@ -60,7 +60,6 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
         }
     }
 
-    @Override
     public void setInstrument(Instrument instrument) {
         removeMouseListener(this.instrument);
         removeMouseMotionListener(this.instrument);
@@ -68,10 +67,12 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
             removeMouseWheelListener((MouseWheelListener) this.instrument);
         }
         this.instrument = instrument;
-        addMouseListener(instrument);
-        addMouseMotionListener(instrument);
-        if (this.instrument instanceof MouseWheelListener) {
-            addMouseWheelListener((MouseWheelListener) instrument);
+        if (null != instrument) {
+            addMouseListener(instrument);
+            addMouseMotionListener(instrument);
+            if (this.instrument instanceof MouseWheelListener) {
+                addMouseWheelListener((MouseWheelListener) instrument);
+            }
         }
     }
 
@@ -114,7 +115,6 @@ public class PaintPanel extends JPanel implements InstrumentUser, ColorListener 
         repaint();
     }
 
-    @Override
     public void setColor(Color color) {
         if (null != instrument && instrument instanceof ColoredInstrument) {
             ((ColoredInstrument) instrument).setColor(color);

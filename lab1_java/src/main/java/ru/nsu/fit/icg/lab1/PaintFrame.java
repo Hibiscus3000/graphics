@@ -13,7 +13,7 @@ import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersDialog;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.menu_item.ColorMenuRadioButton;
 import ru.nsu.fit.icg.lab1.menu_item.InstrumentMenu;
-import ru.nsu.fit.icg.lab1.panel.ColorSelectionListener;
+import ru.nsu.fit.icg.lab1.panel.ColorListener;
 import ru.nsu.fit.icg.lab1.panel.PaintPanel;
 import ru.nsu.fit.icg.lab1.toggle_button.ExclusiveToggleButton;
 import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorSelectionListener {
+public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorListener {
 
     private static final int preferredSizeScale = 2;
 
@@ -66,6 +66,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         add(toolBar, BorderLayout.NORTH);
         add(new JScrollPane(paintPanel), BorderLayout.CENTER);
         menuBar.add(new JMenuItem(new ClearAction()));
+        colorToolbarButtonGroup.getElements().nextElement().doClick();
         pack();
         setLocationRelativeTo(null);
     }
@@ -79,20 +80,20 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addFileAction(new OpenFileAction("Открыть", this));
         addFileAction(new SaveFileAction("Сохранить", this));
 
-        addInstrumentAction(new InstrumentAction("Прямая", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Прямая", this,
                 new StraightLineInstrument(parametersParser, paintPanel), "straight_line.png"));
-        addInstrumentAction(new InstrumentAction("Кривая", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Кривая", this,
                 new CurveLineInstrument(parametersParser, paintPanel), "curve_line.png"));
-        addInstrumentAction(new InstrumentAction("Эллипс", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Эллипс", this,
                 new EllipseInstrument(parametersParser, paintPanel), "ellipse.png"));
-        addInstrumentAction(new InstrumentAction("Многоугольник", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Многоугольник", this,
                 new PolygonInstrument(parametersParser, paintPanel), "polygon.png"));
-        addInstrumentAction(new InstrumentAction("Звезда", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Звезда", this,
                 new StarInstrument(parametersParser, paintPanel), "star.png"));
-        addInstrumentAction(new InstrumentAction("Заливка", paintPanel, this, this,
+        addInstrumentAction(new InstrumentAction("Заливка", this,
                 new FillInstrument(paintPanel), "fill.png"));
 
-        for (ColorAction colorAction : ColorParser.parseColorActionsJson(paintPanel)) {
+        for (ColorAction colorAction : ColorParser.parseColorActionsJson(this)) {
             addColorAction(colorAction);
         }
         colorMenu.add(new ArbitraryColorAction());
@@ -139,10 +140,29 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
                 .setVisible(true);
     }
 
+    private Color color;
+    private Instrument instrument;
+
     @Override
-    public void clearColorSelection() {
+    public void setInstrument(Instrument instrument) {
+        if (instrument instanceof ColoredInstrument) {
+            ((ColoredInstrument) instrument).setColor(color);
+        }
+        paintPanel.setInstrument(instrument);
+        this.instrument = instrument;
+    }
+
+    private void clearColorSelection() {
         colorMenuButtonGroup.clearSelection();
         colorToolbarButtonGroup.clearSelection();
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
+        if (null != instrument && instrument instanceof ColoredInstrument) {
+            ((ColoredInstrument) instrument).setColor(color);
+        }
     }
 
     private class ClearAction extends AbstractAction {
