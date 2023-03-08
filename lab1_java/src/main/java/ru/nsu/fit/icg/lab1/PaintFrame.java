@@ -1,8 +1,10 @@
 package ru.nsu.fit.icg.lab1;
 
 import org.json.simple.parser.ParseException;
-import ru.nsu.fit.icg.lab1.action.ColorAction;
+import ru.nsu.fit.icg.lab1.action.ExclusiveAction;
 import ru.nsu.fit.icg.lab1.action.InstrumentAction;
+import ru.nsu.fit.icg.lab1.action.color.ArbitraryColorAction;
+import ru.nsu.fit.icg.lab1.action.color.ColorAction;
 import ru.nsu.fit.icg.lab1.action.file.FileAction;
 import ru.nsu.fit.icg.lab1.action.file.OpenFileAction;
 import ru.nsu.fit.icg.lab1.action.file.SaveFileAction;
@@ -96,7 +98,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         for (ColorAction colorAction : ColorParser.parseColorActionsJson(this)) {
             addColorAction(colorAction);
         }
-        colorMenu.add(new ArbitraryColorAction());
+        addColorAction(new ArbitraryColorAction(this));
     }
 
     private void addFileAction(FileAction fileAction) {
@@ -112,7 +114,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addExclusiveActionToolbar(new InstrumentToggleButton(instrumentAction), instrumentToolbarButtonGroup);
     }
 
-    private void addColorAction(ColorAction colorAction) {
+    private void addColorAction(ExclusiveAction colorAction) {
         ColorMenuRadioButton colorMenuRadioButton = new ColorMenuRadioButton(colorAction);
         colorMenuButtonGroup.add(colorMenuRadioButton);
         colorMenu.add(colorMenuRadioButton);
@@ -165,6 +167,17 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         }
     }
 
+    @Override
+    public void showColorDialog(JColorChooser colorChooser) {
+        JColorChooser.createDialog(
+                PaintFrame.this,
+                "Выбор произвольного цвета",
+                true,
+                colorChooser,
+                event -> setColor(colorChooser.getColor()),
+                null).setVisible(true);
+    }
+
     private class ClearAction extends AbstractAction {
 
         public ClearAction() {
@@ -174,28 +187,6 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
         @Override
         public void actionPerformed(ActionEvent e) {
-        }
-    }
-
-    private class ArbitraryColorAction extends AbstractAction {
-
-        private final JColorChooser colorChooser = new JColorChooser();
-
-        public ArbitraryColorAction() {
-            putValue(NAME, "Произвольный цвет");
-            putValue(SHORT_DESCRIPTION, "Выбор произвольного цвета");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JColorChooser.createDialog(
-                    PaintFrame.this,
-                    "Выбор произвольного цвета",
-                    true,
-                    colorChooser,
-                    event -> paintPanel.setColor(colorChooser.getColor()),
-                    null).setVisible(true);
-            clearColorSelection();
         }
     }
 
