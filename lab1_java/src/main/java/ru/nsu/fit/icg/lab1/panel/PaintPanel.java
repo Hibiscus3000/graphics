@@ -2,6 +2,7 @@ package ru.nsu.fit.icg.lab1.panel;
 
 import ru.nsu.fit.icg.lab1.instrument.ColoredInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
+import ru.nsu.fit.icg.lab1.instrument.ParameterizableInstrument;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ public class PaintPanel extends JPanel implements InstrumentUser {
     private int currentIndex = -1;
 
     private boolean callInstrument = false;
+    private boolean afterRedoUndo = false;
 
     public PaintPanel() {
         super();
@@ -37,6 +39,7 @@ public class PaintPanel extends JPanel implements InstrumentUser {
                 BufferedImage resizedImage = createNewBufferedImage();
                 if (-1 != currentIndex) {
                     drawImage(resizedImage, bufferedImages.get(currentIndex));
+                    --currentIndex;
                 }
                 addNewImageToBuffer(resizedImage);
                 repaint();
@@ -55,6 +58,9 @@ public class PaintPanel extends JPanel implements InstrumentUser {
         if (callInstrument) {
             instrument.draw(g2d);
             callInstrument = false;
+        } else if (afterRedoUndo && instrument instanceof ParameterizableInstrument) {
+            ((ParameterizableInstrument) instrument).repaint();
+            afterRedoUndo = false;
         }
     }
 
@@ -90,6 +96,9 @@ public class PaintPanel extends JPanel implements InstrumentUser {
         if (currentIndex == maxListSize) {
             --currentIndex;
             bufferedImages.remove(0);
+        }
+        if (currentIndex < bufferedImages.size()) {
+            bufferedImages.subList(currentIndex, bufferedImages.size()).clear();
         }
         bufferedImages.add(bufferedImage);
     }
@@ -129,5 +138,24 @@ public class PaintPanel extends JPanel implements InstrumentUser {
 
     public BufferedImage getCurrentImage() {
         return bufferedImages.get(currentIndex);
+    }
+
+    public void clear() {
+        addNewImageToBuffer(createNewBufferedImage());
+        repaint();
+    }
+
+    public void undo() {
+        currentIndex = Math.max(0, currentIndex - 1);
+        bufferedImages.add(currentIndex,
+                drawImage(createNewBufferedImage(), bufferedImages.remove(currentIndex)));
+        afterRedoUndo = true;
+        repaint();
+    }
+
+    public void redo() {
+        currentIndex = Math.min(bufferedImages.size() - 1, currentIndex + 1);
+        afterRedoUndo = true;
+        repaint();
     }
 }

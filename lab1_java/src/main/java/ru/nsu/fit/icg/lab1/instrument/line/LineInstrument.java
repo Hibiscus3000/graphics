@@ -111,7 +111,7 @@ public abstract class LineInstrument extends ParameterizableInstrument {
     }
 
     @Override
-    protected void repaint() {
+    public void repaint() {
         instrumentUser.repaintTemporary();
     }
 

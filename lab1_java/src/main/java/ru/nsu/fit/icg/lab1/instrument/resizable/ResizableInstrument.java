@@ -52,7 +52,7 @@ public abstract class ResizableInstrument extends ParameterizableInstrument {
     }
 
     @Override
-    protected void repaint() {
+    public void repaint() {
         if (points.size() == getNumOfPointsToPaintTemporary() - 1 && null != lastTempPoint) {
             try {
                 points.add(lastTempPoint);

@@ -1,13 +1,16 @@
 package ru.nsu.fit.icg.lab1;
 
 import org.json.simple.parser.ParseException;
+import ru.nsu.fit.icg.lab1.action.CommandAction;
 import ru.nsu.fit.icg.lab1.action.ExclusiveAction;
 import ru.nsu.fit.icg.lab1.action.InstrumentAction;
 import ru.nsu.fit.icg.lab1.action.color.ArbitraryColorAction;
 import ru.nsu.fit.icg.lab1.action.color.ColorAction;
-import ru.nsu.fit.icg.lab1.action.file.FileAction;
 import ru.nsu.fit.icg.lab1.action.file.OpenFileAction;
 import ru.nsu.fit.icg.lab1.action.file.SaveFileAction;
+import ru.nsu.fit.icg.lab1.action.work_area.ClearAction;
+import ru.nsu.fit.icg.lab1.action.work_area.RedoAction;
+import ru.nsu.fit.icg.lab1.action.work_area.UndoAction;
 import ru.nsu.fit.icg.lab1.instrument.ColoredInstrument;
 import ru.nsu.fit.icg.lab1.instrument.FillInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
@@ -29,7 +32,6 @@ import ru.nsu.fit.icg.lab1.toggle_button.InstrumentToggleButton;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -43,8 +45,10 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("Файл");
+    private final JMenu workAreaMenu = new JMenu("Рабочая область");
     private final JMenu instrumentMenu = new JMenu("Инструмент");
     private final JMenu colorMenu = new JMenu("Цвет");
+    private final JMenu infoMenu = new JMenu("Информация");
 
     private final JToolBar toolBar = new JToolBar();
 
@@ -87,7 +91,6 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         toolBar.setRollover(true);
         add(toolBar, BorderLayout.NORTH);
         add(new JScrollPane(paintPanel), BorderLayout.CENTER);
-        menuBar.add(new JMenuItem(new ClearAction()));
         colorToolbarButtonGroup.getElements().nextElement().doClick();
         instrumentMenuButtonGroup.getElements().nextElement().doClick();
         pack();
@@ -100,8 +103,12 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
     private final ButtonGroup colorToolbarButtonGroup = new ButtonGroup();
 
     private void createPropertyActions() throws IOException, ParseException {
-        addFileAction(new OpenFileAction("Открыть", this));
-        addFileAction(new SaveFileAction("Сохранить", this));
+        addAction(new OpenFileAction("Открыть", this), fileMenu);
+        addAction(new SaveFileAction("Сохранить", this), fileMenu);
+
+        addAction(new UndoAction(paintPanel), workAreaMenu);
+        addAction(new RedoAction(paintPanel), workAreaMenu);
+        addAction(new ClearAction(paintPanel), workAreaMenu);
 
         addInstrumentAction(new InstrumentAction("Ничего", this, null,
                 "fill.png"));
@@ -124,10 +131,10 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addColorAction(new ArbitraryColorAction(this));
     }
 
-    private void addFileAction(FileAction fileAction) {
-        JMenuItem menuItem = new JMenuItem(fileAction);
-        fileMenu.add(menuItem);
-        JButton button = new JButton(fileAction);
+    private void addAction(CommandAction commandAction, JMenu menu) {
+        JMenuItem menuItem = new JMenuItem(commandAction);
+        menu.add(menuItem);
+        JButton button = new JButton(commandAction);
         button.setText("");
         toolBar.add(button);
     }
@@ -151,8 +158,10 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
     private void addMenu() {
         menuBar.add(fileMenu);
+        menuBar.add(workAreaMenu);
         menuBar.add(instrumentMenu);
         menuBar.add(colorMenu);
+        menuBar.add(infoMenu);
         setJMenuBar(menuBar);
     }
 
@@ -160,7 +169,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
     @Override
     public void changeInstrumentParameters(Instrument instrument) {
-        if (null != instrument && instrument instanceof ParameterizableInstrument) {
+        if (instrument instanceof ParameterizableInstrument) {
             new ParametersDialog(this, instrument.getName(),
                     parametersParser.getParametersMap(instrument.getClass().getName()))
                     .setVisible(true);
@@ -198,18 +207,6 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
                 null).setVisible(true);
     }
 
-    private class ClearAction extends AbstractAction {
-
-        public ClearAction() {
-            putValue(NAME, "Очистка");
-            putValue(SHORT_DESCRIPTION, "Очистка рабочей области");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    }
-
     public void openImage(File file) {
         try {
             paintPanel.openImage(ImageIO.read(file));
@@ -221,7 +218,7 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         }
     }
 
-    public File saveImage(File file) {
+    public void saveImage(File file) {
         try {
             ImageIO.write(paintPanel.getCurrentImage(), "png", file);
         } catch (IOException e) {
@@ -229,6 +226,5 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
                             + file.getName() + "\n" + e.getMessage(),
                     "Ошибка: сохранение файла", JOptionPane.ERROR_MESSAGE);
         }
-        return file;
     }
 }

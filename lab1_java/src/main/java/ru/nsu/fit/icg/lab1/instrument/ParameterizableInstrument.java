@@ -87,7 +87,7 @@ public abstract class ParameterizableInstrument extends ColoredInstrument implem
         repaint();
     }
 
-    protected abstract void repaint();
+    public abstract void repaint();
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
