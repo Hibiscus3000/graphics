@@ -3,14 +3,12 @@ package ru.nsu.fit.icg.lab1.panel;
 import ru.nsu.fit.icg.lab1.instrument.ColoredInstrument;
 import ru.nsu.fit.icg.lab1.instrument.Instrument;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,14 +119,11 @@ public class PaintPanel extends JPanel implements InstrumentUser {
         }
     }
 
-    public void openImage(File file) throws IOException {
-
-        BufferedImage in = ImageIO.read(file);
-
-        BufferedImage currentImage = bufferedImages.get(currentIndex);
-        Graphics2D g2d = (Graphics2D) currentImage.getGraphics();
-
-        g2d.drawImage(in, 0, 0, null);
+    public void openImage(BufferedImage opened) throws IOException {
+        Dimension preferredSize = getPreferredSize();
+        setPreferredSize(new Dimension((int) Math.max(preferredSize.getWidth(), opened.getWidth()),
+                (int) Math.max(preferredSize.getHeight(), opened.getHeight())));
+        addNewImageToBuffer(drawImage(createNewBufferedImage(), opened));
         repaint();
     }
 

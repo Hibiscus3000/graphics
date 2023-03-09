@@ -47,7 +47,7 @@ public class ValueButtonPanel extends JPanel implements ValueListener {
         private final int changeAmount;
 
         public ValueButton(int changeAmount, ActionListener actionListener, boolean small) {
-            super((changeAmount > 0 ? "+" : "") + String.valueOf(changeAmount));
+            super((changeAmount > 0 ? "+" : "") + changeAmount);
             if (small) {
                 setPreferredSize(smallButtonSize);
             } else {

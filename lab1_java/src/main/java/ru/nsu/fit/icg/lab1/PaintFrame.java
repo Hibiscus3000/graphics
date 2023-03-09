@@ -30,8 +30,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+
+import static javax.swing.JOptionPane.YES_OPTION;
 
 public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorListener {
 
@@ -60,7 +64,17 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
     public PaintFrame() throws IOException, ParseException {
         super();
         setTitle("ICG Paint");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (YES_OPTION == JOptionPane.showConfirmDialog(PaintFrame.this,
+                        "Вы уверены, что хотите выйти?", "Выход",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
+                    dispose();
+                }
+            }
+        });
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
@@ -165,11 +179,6 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         this.instrument = instrument;
     }
 
-    private void clearColorSelection() {
-        colorMenuButtonGroup.clearSelection();
-        colorToolbarButtonGroup.clearSelection();
-    }
-
     @Override
     public void setColor(Color color) {
         this.color = color;
@@ -203,10 +212,12 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
 
     public void openImage(File file) {
         try {
-            paintPanel.openImage(file);
+            paintPanel.openImage(ImageIO.read(file));
+            paintPanel.revalidate();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Не получилось загрузить файл"
-                    + file.getName());
+            JOptionPane.showMessageDialog(this, "Не получилось открыть файл"
+                            + file.getName() + "\n" + e.getMessage(),
+                    "Ошибка: открытие файла", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -215,7 +226,8 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
             ImageIO.write(paintPanel.getCurrentImage(), "png", file);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Не получилось сохранить файл"
-                    + file.getName());
+                            + file.getName() + "\n" + e.getMessage(),
+                    "Ошибка: сохранение файла", JOptionPane.ERROR_MESSAGE);
         }
         return file;
     }
