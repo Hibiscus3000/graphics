@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab1.instrument;
+package ru.nsu.fit.icg.lab1.instrument.resizable;
 
 import ru.nsu.fit.icg.lab1.ArrayConcatenation;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;

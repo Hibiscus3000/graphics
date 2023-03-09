@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
+import static java.awt.event.MouseEvent.BUTTON1;
+
 public class FillInstrument extends ColoredInstrument {
 
     private int startX;
@@ -135,6 +137,9 @@ public class FillInstrument extends ColoredInstrument {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (BUTTON1 != e.getButton()) {
+            return;
+        }
         startX = e.getX();
         startY = e.getY();
         instrumentUser.repaintComplete();

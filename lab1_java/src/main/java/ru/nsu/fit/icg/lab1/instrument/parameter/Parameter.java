@@ -1,6 +1,6 @@
 package ru.nsu.fit.icg.lab1.instrument.parameter;
 
-public class Parameter {
+public class Parameter implements Comparable {
 
     private final String name;
     private final int min;
@@ -35,14 +35,6 @@ public class Parameter {
         return value;
     }
 
-    public boolean setValue(int value) {
-        return this.value.setValue(value);
-    }
-
-    public boolean setValue(String value) {
-        return this.value.setValue(value);
-    }
-
     public String getName() {
         return name;
     }
@@ -61,5 +53,12 @@ public class Parameter {
 
     public int getMajorTicks() {
         return majorTicks;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof Parameter))
+            return 1;
+        return value.compareTo(((Parameter) o).getValue());
     }
 }

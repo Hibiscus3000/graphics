@@ -1,6 +1,7 @@
-package ru.nsu.fit.icg.lab1.instrument;
+package ru.nsu.fit.icg.lab1.instrument.resizable;
 
 import ru.nsu.fit.icg.lab1.ArrayConcatenation;
+import ru.nsu.fit.icg.lab1.instrument.ParameterizableInstrument;
 import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 import ru.nsu.fit.icg.lab1.line.Point;
 import ru.nsu.fit.icg.lab1.panel.InstrumentUser;
@@ -10,6 +11,8 @@ import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
+import static java.awt.event.MouseEvent.BUTTON1;
 
 public abstract class ResizableInstrument extends ParameterizableInstrument {
 
@@ -66,6 +69,9 @@ public abstract class ResizableInstrument extends ParameterizableInstrument {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (BUTTON1 != e.getButton()) {
+            return;
+        }
         try {
             paintSemaphore.acquire();
             int numberOfUnwantedPoints = getNumberOfUnwantedPoints();

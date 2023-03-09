@@ -6,6 +6,8 @@ import ru.nsu.fit.icg.lab1.panel.InstrumentUser;
 
 import java.awt.event.MouseEvent;
 
+import static java.awt.event.MouseEvent.BUTTON1;
+
 public class CurveLineInstrument extends LineInstrument {
 
     public CurveLineInstrument(ParametersParser parametersParser, InstrumentUser instrumentUser) {
@@ -19,6 +21,9 @@ public class CurveLineInstrument extends LineInstrument {
 
     @Override
     public synchronized void mouseReleased(MouseEvent e) {
+        if (BUTTON1 != e.getButton()) {
+            return;
+        }
         line.addPoint(new Point(e.getX(), e.getY()));
         instrumentUser.repaintComplete();
     }
