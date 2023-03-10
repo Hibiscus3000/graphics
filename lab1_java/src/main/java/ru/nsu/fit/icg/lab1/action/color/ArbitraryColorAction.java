@@ -12,7 +12,7 @@ public class ArbitraryColorAction extends ExclusiveAction {
     private final JColorChooser colorChooser = new JColorChooser();
 
     public ArbitraryColorAction(ColorListener colorListener) {
-        super("Произвольный цвет", "palette.png", "Выбор произвольного цвета");
+        super("Произвольный цвет", "arbitrary.png", "Выбор произвольного цвета");
         this.colorListener = colorListener;
     }
 

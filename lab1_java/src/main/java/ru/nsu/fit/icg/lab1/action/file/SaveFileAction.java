@@ -14,7 +14,7 @@ public class SaveFileAction extends FileAction {
     private String fileName = "Безымянный";
 
     public SaveFileAction(String name, PaintFrame owner) {
-        super(name, "save.png", owner);
+        super(name, "save_as.png", owner);
         chooser.addChoosableFileFilter(pngFilter);
     }
 

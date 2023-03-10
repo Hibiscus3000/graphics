@@ -110,8 +110,8 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         addAction(new RedoAction(paintPanel), workAreaMenu);
         addAction(new ClearAction(paintPanel), workAreaMenu);
 
-        addInstrumentAction(new InstrumentAction("Ничего", this, null,
-                "fill.png"));
+        addInstrumentAction(new InstrumentAction("Мышь", this, null,
+                "mouse.png"));
         addInstrumentAction(new InstrumentAction("Прямая", this,
                 new StraightLineInstrument(parametersParser, paintPanel), "straight_line.png"));
         addInstrumentAction(new InstrumentAction("Кривая", this,

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 public class UndoAction extends WorkAreaAction {
 
     public UndoAction(PaintPanel paintPanel) {
-        super("Отменить", "fill.png", "Отменить последнее действие",
+        super("Отменить", "undo.png", "Отменить последнее действие",
                 paintPanel);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl Z"));
     }

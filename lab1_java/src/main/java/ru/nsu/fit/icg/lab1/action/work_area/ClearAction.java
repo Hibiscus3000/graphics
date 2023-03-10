@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 public class ClearAction extends WorkAreaAction {
 
     public ClearAction(PaintPanel paintPanel) {
-        super("Очистка", "fill.png", "Очистка рабочей области",
+        super("Очистка", "clear.png", "Очистка рабочей области",
                 paintPanel);
     }
 
