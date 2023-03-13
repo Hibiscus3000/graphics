@@ -6,7 +6,7 @@ import java.awt.*;
 
 public abstract class ColoredInstrument extends Instrument {
 
-    protected Color color = Color.BLACK;
+    protected Color color;
 
     protected ColoredInstrument(InstrumentUser instrumentUser) {
         super(instrumentUser);

@@ -49,8 +49,7 @@ public class Value implements Comparable {
     }
 
     public void changeValue(int amount) {
-        value = Math.max(Math.min(value + amount, max), min);
-        setAllListeners(null);
+        setValue(value + amount, null);
     }
 
     public int getValue() {

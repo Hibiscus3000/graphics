@@ -78,6 +78,7 @@ public class PaintPanel extends JPanel implements InstrumentUser {
                 addMouseWheelListener((MouseWheelListener) instrument);
             }
         }
+        setCursor(null == instrument ? Cursor.getDefaultCursor() : instrument.getCursor());
     }
 
     private BufferedImage createNewBufferedImage() {

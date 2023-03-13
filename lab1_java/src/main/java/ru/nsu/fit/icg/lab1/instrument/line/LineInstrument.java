@@ -39,29 +39,30 @@ public abstract class LineInstrument extends ParameterizableInstrument {
         if (null == line) {
             return;
         }
+        final int rgb = color.getRGB();
         List<Point> points = line.getPoints();
         if (1 == getValue("width")) {
             // Bresenham
             for (int i = 0; i < points.size() - 1; ++i) {
                 Point pointI = points.get(i);
                 Point pointIPlusOne = points.get(i + 1);
-                int x0 = constrain(pointI.getX(), 0, bufferedImage.getWidth() - 1);
-                int y0 = constrain(pointI.getY(), 0, bufferedImage.getHeight() - 1);
-                int x1 = constrain(pointIPlusOne.getX(), 0, bufferedImage.getWidth() - 1);
-                int y1 = constrain(pointIPlusOne.getY(), 0, bufferedImage.getHeight() - 1);
-                int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(y1 - y0);
+                final int x0 = constrain(pointI.getX(), 0, bufferedImage.getWidth() - 1);
+                final int y0 = constrain(pointI.getY(), 0, bufferedImage.getHeight() - 1);
+                final int x1 = constrain(pointIPlusOne.getX(), 0, bufferedImage.getWidth() - 1);
+                final int y1 = constrain(pointIPlusOne.getY(), 0, bufferedImage.getHeight() - 1);
+                final int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(y1 - y0);
 
                 if (dxAbs > dyAbs) {
                     if (x1 > x0) {
-                        bresenhamTanAbsLessOne(x0, y0, x1, y1, bufferedImage);
+                        bresenhamTanAbsLessOne(x0, y0, x1, y1, rgb, bufferedImage);
                     } else {
-                        bresenhamTanAbsLessOne(x1, y1, x0, y0, bufferedImage);
+                        bresenhamTanAbsLessOne(x1, y1, x0, y0, rgb, bufferedImage);
                     }
                 } else {
                     if (y1 > y0) {
-                        bresenhamTanAbsMoreOne(x0, y0, x1, y1, bufferedImage);
+                        bresenhamTanAbsMoreOne(x0, y0, x1, y1, rgb, bufferedImage);
                     } else {
-                        bresenhamTanAbsMoreOne(x1, y1, x0, y0, bufferedImage);
+                        bresenhamTanAbsMoreOne(x1, y1, x0, y0, rgb, bufferedImage);
                     }
                 }
             }
@@ -76,10 +77,10 @@ public abstract class LineInstrument extends ParameterizableInstrument {
         return Math.min(upperBorder, Math.max(value, lowerBorder));
     }
 
-    private void bresenhamTanAbsLessOne(int x0, int y0, int x1, int y1,
+    private void bresenhamTanAbsLessOne(int x0, int y0, int x1, int y1, int rgb,
                                         BufferedImage bufferedImage) {
-        int dy = y1 - y0;
-        int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(dy);
+        final int dy = y1 - y0;
+        final int dxAbs = Math.abs(x1 - x0), dyAbs = Math.abs(dy);
         int err = -dxAbs;
         int y = y0;
         int yStep = dy > 0 ? 1 : -1;
@@ -89,14 +90,14 @@ public abstract class LineInstrument extends ParameterizableInstrument {
                 err -= 2 * dxAbs;
                 y += yStep;
             }
-            bufferedImage.setRGB(x, y, color.getRGB());
+            bufferedImage.setRGB(x, y, rgb);
         }
     }
 
-    private void bresenhamTanAbsMoreOne(int x0, int y0, int x1, int y1,
+    private void bresenhamTanAbsMoreOne(int x0, int y0, int x1, int y1, int rgb,
                                         BufferedImage bufferedImage) {
-        int dx = x1 - x0;
-        int dxAbs = Math.abs(dx), dyAbs = Math.abs(y1 - y0);
+        final int dx = x1 - x0;
+        final int dxAbs = Math.abs(dx), dyAbs = Math.abs(y1 - y0);
         int err = -dyAbs;
         int x = x0;
         int xStep = dx > 0 ? 1 : -1;
@@ -106,7 +107,7 @@ public abstract class LineInstrument extends ParameterizableInstrument {
                 err -= 2 * dyAbs;
                 x += xStep;
             }
-            bufferedImage.setRGB(x, y, color.getRGB());
+            bufferedImage.setRGB(x, y, rgb);
         }
     }
 

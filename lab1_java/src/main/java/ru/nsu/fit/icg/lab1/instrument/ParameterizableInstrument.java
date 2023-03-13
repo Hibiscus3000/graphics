@@ -118,6 +118,11 @@ public abstract class ParameterizableInstrument extends ColoredInstrument implem
         public abstract String[] getParameterGroupNames();
     }
 
+    @Override
+    public Cursor getCursor() {
+        return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+    }
+
     protected class AngleListener extends ValueListener {
         public AngleListener() {
             super(InputEvent.CTRL_DOWN_MASK, "angle");

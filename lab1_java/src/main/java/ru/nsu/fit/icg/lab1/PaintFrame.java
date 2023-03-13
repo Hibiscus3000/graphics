@@ -8,6 +8,7 @@ import ru.nsu.fit.icg.lab1.action.color.ArbitraryColorAction;
 import ru.nsu.fit.icg.lab1.action.color.ColorAction;
 import ru.nsu.fit.icg.lab1.action.file.OpenFileAction;
 import ru.nsu.fit.icg.lab1.action.file.SaveFileAction;
+import ru.nsu.fit.icg.lab1.action.info.InfoAction;
 import ru.nsu.fit.icg.lab1.action.work_area.ClearAction;
 import ru.nsu.fit.icg.lab1.action.work_area.RedoAction;
 import ru.nsu.fit.icg.lab1.action.work_area.UndoAction;
@@ -41,7 +42,7 @@ import static javax.swing.JOptionPane.YES_OPTION;
 
 public class PaintFrame extends JFrame implements InstrumentParametersListener, ColorListener {
 
-    private static final int preferredSizeScale = 2;
+    private static final double preferredSizeScale = 0.66;
 
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("Файл");
@@ -83,8 +84,8 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
         setMinimumSize(new Dimension(640, 480));
-        setPreferredSize(new Dimension((int) (screenSize.getWidth() / preferredSizeScale),
-                (int) (screenSize.getHeight() / preferredSizeScale)));
+        setPreferredSize(new Dimension((int) (preferredSizeScale * screenSize.getWidth()),
+                (int) (preferredSizeScale * screenSize.getHeight())));
 
         createPropertyActions();
         addMenu();
@@ -105,13 +106,16 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
     private void createPropertyActions() throws IOException, ParseException {
         addAction(new OpenFileAction("Открыть", this), fileMenu);
         addAction(new SaveFileAction("Сохранить", this), fileMenu);
+        toolBar.addSeparator();
 
         addAction(new UndoAction(paintPanel), workAreaMenu);
         addAction(new RedoAction(paintPanel), workAreaMenu);
+        workAreaMenu.addSeparator();
         addAction(new ClearAction(paintPanel), workAreaMenu);
+        toolBar.addSeparator();
 
-        addInstrumentAction(new InstrumentAction("Мышь", this, null,
-                "mouse.png"));
+        addInstrumentAction(new InstrumentAction("Мышь", this,
+                null, "mouse.png"));
         addInstrumentAction(new InstrumentAction("Прямая", this,
                 new StraightLineInstrument(parametersParser, paintPanel), "straight_line.png"));
         addInstrumentAction(new InstrumentAction("Кривая", this,
@@ -124,11 +128,26 @@ public class PaintFrame extends JFrame implements InstrumentParametersListener, 
                 new StarInstrument(parametersParser, paintPanel), "star.png"));
         addInstrumentAction(new InstrumentAction("Заливка", this,
                 new FillInstrument(paintPanel), "fill.png"));
+        toolBar.addSeparator();
 
         for (ColorAction colorAction : ColorParser.parseColorActionsJson(this)) {
             addColorAction(colorAction);
         }
+        toolBar.addSeparator();
+        colorMenu.addSeparator();
         addColorAction(new ArbitraryColorAction(this));
+        toolBar.addSeparator();
+
+        addAction(new InfoAction("Руководство пользователя",
+                "guide.png",
+                "Открыть руководство пользователя",
+                "guide.txt",
+                this), infoMenu);
+        addAction(new InfoAction("О программе",
+                "about.png",
+                "Открыть описание программы",
+                "about.txt",
+                this), infoMenu);
     }
 
     private void addAction(CommandAction commandAction, JMenu menu) {

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 public class InstrumentAction extends ExclusiveAction {
 
     private final InstrumentParametersListener instrumentParametersListener;
+    private final boolean parameterizable;
 
     public InstrumentAction(String name,
                             InstrumentParametersListener instrumentParametersListener,
@@ -16,6 +17,15 @@ public class InstrumentAction extends ExclusiveAction {
         super(name, "instrument/" + iconFileName, String.format("Выбрать инструмент \"%s\"", name));
         this.instrumentParametersListener = instrumentParametersListener;
         putValue("Instrument", instrument);
+        if (null != instrument) {
+            parameterizable = true;
+        } else {
+            parameterizable = false;
+        }
+    }
+
+    public boolean isParameterizable() {
+        return parameterizable;
     }
 
     @Override

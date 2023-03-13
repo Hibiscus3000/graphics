@@ -41,4 +41,6 @@ public abstract class Instrument implements MouseListener, MouseMotionListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    public abstract Cursor getCursor();
 }
