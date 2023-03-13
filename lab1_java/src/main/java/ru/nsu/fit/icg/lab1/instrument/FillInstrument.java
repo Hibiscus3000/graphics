@@ -135,6 +135,20 @@ public class FillInstrument extends ColoredInstrument {
     public void mousePressed(MouseEvent e) {
     }
 
+    private Cursor cursor = null;
+
+    @Override
+    public Cursor getCursor() {
+        /*if (null == cursor) {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Image image = toolkit.getImage(getClass().getResource("fill.png"));
+            cursor = toolkit.createCustomCursor(image, new Point(0, 0),
+                    "FillCursor");
+        }
+        return cursor;*/
+        return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+    }
+
     @Override
     public void mouseReleased(MouseEvent e) {
         if (BUTTON1 != e.getButton()) {
