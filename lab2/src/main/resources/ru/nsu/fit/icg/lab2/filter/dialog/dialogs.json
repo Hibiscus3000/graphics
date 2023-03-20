@@ -1,0 +1,8 @@
+{
+  "filters": [
+    {
+      "name": "smoothing",
+      "dialogClass": "ru.nsu.fit.icg.lab2.filter.dialog.SmoothingDialog"
+    }
+  ]
+}
