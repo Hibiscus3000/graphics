@@ -9,6 +9,7 @@ import javafx.stage.Window;
 import ru.nsu.fit.icg.lab2.ImageBox;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public class OpenFileHandler extends FileHandler {
         if (null == openFileChooser) {
             openFileChooser = new FileChooser();
             openFileChooser.setTitle("Открыть изображение");
-            openFileChooser.setInitialDirectory(new File("."));
+            openFileChooser.setInitialDirectory(new File(initialDirectoryName));
             openFileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image file", "*.png", "*.jpeg", "*.jpg",
                             "*.bmp", "*.gif"),
@@ -39,13 +40,23 @@ public class OpenFileHandler extends FileHandler {
         File file = openFileChooser.showOpenDialog(owner);
         try {
             if (null != file) {
-                imageBox.openImage(SwingFXUtils.toFXImage(ImageIO.read(file), null));
+                BufferedImage image = ImageIO.read(file);
+                if (null == image) {
+                    showOpenErrorAlert(file.getName());
+                } else {
+                    imageBox.openImage(SwingFXUtils.toFXImage(image, null));
+                }
             }
         } catch (IOException e) {
-            Alert unableToOpenFileAlert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть файл"
-                    + file.getName(), ButtonType.OK);
-            unableToOpenFileAlert.showAndWait();
+            showOpenErrorAlert(file.getName());
         }
+    }
+
+    private void showOpenErrorAlert(String fileName) {
+        Alert unableToOpenFileAlert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть файл "
+                + fileName, ButtonType.OK);
+        unableToOpenFileAlert.setHeaderText("Ошибка!");
+        unableToOpenFileAlert.showAndWait();
     }
 
     @Override

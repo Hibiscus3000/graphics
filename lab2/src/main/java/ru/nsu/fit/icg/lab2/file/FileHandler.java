@@ -9,6 +9,7 @@ public abstract class FileHandler implements EventHandler<ActionEvent> {
 
     protected final Window owner;
     protected final ImageBox imageBox;
+    protected final String initialDirectoryName = "C:/Users/TS/Desktop/для графики";
 
     protected FileHandler(Window owner, ImageBox imageBox) {
         this.owner = owner;

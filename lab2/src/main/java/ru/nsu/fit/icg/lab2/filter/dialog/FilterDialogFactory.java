@@ -3,6 +3,7 @@ package ru.nsu.fit.icg.lab2.filter.dialog;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ru.nsu.fit.icg.lab2.filter.Filter;
 
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +27,7 @@ public class FilterDialogFactory {
                 JSONObject dialogJsonObject = (JSONObject) dialogObject;
                 Class dialogClass = Class.forName((String) dialogJsonObject.get("dialogClass"));
                 dialogConstructorsMap.put((String) dialogJsonObject.get("name"),
-                        dialogClass.getDeclaredConstructor());
+                        dialogClass.getDeclaredConstructor(Filter.class));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

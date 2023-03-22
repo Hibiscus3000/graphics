@@ -4,6 +4,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import ru.nsu.fit.icg.lab2.ImageBox;
@@ -30,7 +31,7 @@ public class SaveFileHandler extends FileHandler {
         if (null == saveFileChooser) {
             saveFileChooser = new FileChooser();
             saveFileChooser.setTitle("Сохранить изображение");
-            saveFileChooser.setInitialDirectory(new File("."));
+            saveFileChooser.setInitialDirectory(new File(initialDirectoryName));
             saveFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
         }
         File file = saveFileChooser.showSaveDialog(owner);
@@ -50,11 +51,21 @@ public class SaveFileHandler extends FileHandler {
                 }
             }
             try {
-                ImageIO.write(SwingFXUtils.fromFXImage(imageBox.getImage(), null),
-                        "png", file);
+                Image image = imageBox.getImage();
+                if (null == image) {
+                    Alert noImageToSaveAlert = new Alert(Alert.AlertType.WARNING,
+                            "Нет изображения. Сохранение отменено",
+                            ButtonType.OK);
+                    noImageToSaveAlert.setHeaderText("Предупреждение!");
+                    noImageToSaveAlert.showAndWait();
+                } else {
+                    ImageIO.write(SwingFXUtils.fromFXImage(image, null),
+                            "png", file);
+                }
             } catch (IOException e) {
                 Alert savingFileErrorAlert = new Alert(Alert.AlertType.ERROR, "Не удалось сохранить файл "
                         + name + "\n" + e.getMessage(), ButtonType.OK);
+                savingFileErrorAlert.setHeaderText("Ошибка!");
                 savingFileErrorAlert.showAndWait();
             }
         }

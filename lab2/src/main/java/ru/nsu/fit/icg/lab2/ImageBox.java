@@ -93,7 +93,7 @@ public class ImageBox extends VBox {
     }
 
     public Image getImage() {
-        return null;
+        return current;
     }
 
     public void openImage(WritableImage image) {
@@ -104,6 +104,7 @@ public class ImageBox extends VBox {
         bounds.heightProperty().bind(image.heightProperty());
         imagePane.prefWidthProperty().bind(image.widthProperty().add(2 * inset));
         imagePane.prefHeightProperty().bind(image.heightProperty().add(2 * inset));
+        filterToggleButton.setSelected(false);
     }
 
     private Filter filter;

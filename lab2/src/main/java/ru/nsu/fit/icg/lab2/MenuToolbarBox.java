@@ -70,7 +70,8 @@ public class MenuToolbarBox extends VBox {
         Menu thisFilterMenu = new Menu(filter.getName());
         Constructor dialogConstructor = FilterDialogFactory.getInstance().getConstructor(filter.getJsonName());
         if (null != dialogConstructor) {
-            thisFilterMenu.getItems().add(new FilterParametersMenuItem(dialogConstructor, filter));
+            thisFilterMenu.getItems().add(new FilterParametersMenuItem(dialogConstructor, filter,
+                    imageBox));
         }
         FilterUseMenuItem filterUseMenuItem = new FilterUseMenuItem(filter,
                 filterChangeHandler, filterMenuGroup);
