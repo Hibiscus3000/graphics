@@ -1,13 +1,13 @@
 package ru.nsu.fit.icg.lab2;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.file.FileHandler;
+import ru.nsu.fit.icg.lab2.filter.*;
 import ru.nsu.fit.icg.lab2.filter.dialog.FilterDialogFactory;
+import ru.nsu.fit.icg.lab2.filter.matrix.convolution.*;
+import ru.nsu.fit.icg.lab2.filter.matrix.dithering.FloydSteinbergFilter;
+import ru.nsu.fit.icg.lab2.filter.matrix.dithering.OrderedDitheringFilter;
 import ru.nsu.fit.icg.lab2.menu.FilterParametersMenuItem;
 import ru.nsu.fit.icg.lab2.menu.FilterUseMenuItem;
 import ru.nsu.fit.icg.lab2.toolbar.FilterToggleButton;
@@ -19,6 +19,8 @@ public class MenuToolbarBox extends VBox {
     private final MenuBar menuBar = new MenuBar();
     private final ToolBar toolBar = new ToolBar();
 
+    private final Menu fileMenu = new Menu("Файл");
+
     private final Menu filterMenu = new Menu("Фильтр");
     private final FilterChangeHandler filterChangeHandler;
     private final ToggleGroup filterMenuGroup = new ToggleGroup();
@@ -26,11 +28,36 @@ public class MenuToolbarBox extends VBox {
 
     public MenuToolbarBox(FilterChangeHandler filterChangeHandler) {
         getChildren().addAll(menuBar, toolBar);
-        menuBar.getMenus().add(filterMenu);
         this.filterChangeHandler = filterChangeHandler;
+        menuBar.getMenus().add(fileMenu);
     }
 
-    public void addFilter(Filter filter) {
+    public void addFileHandler(FileHandler fileHandler) {
+        String name = fileHandler.getName();
+        MenuItem fileMenuItem = new MenuItem(name);
+        fileMenu.getItems().add(fileMenuItem);
+        Button fileButton = new Button(name);
+        toolBar.getItems().add(fileButton);
+
+        fileMenuItem.setOnAction(fileHandler);
+        fileButton.setOnAction(fileHandler);
+    }
+
+    public void addFilters() {
+        menuBar.getMenus().add(filterMenu);
+        addFilter(new BlackWhiteFilter());
+        addFilter(new GammaFilter());
+        addFilter(new NegativeFilter());
+        addFilter(new FloydSteinbergFilter());
+        addFilter(new OrderedDitheringFilter());
+        addFilter(new EmbossingFilter());
+        addFilter(new SharpeningFilter());
+        addFilter(new SmoothingFilter());
+        addFilter(new RobertsFilter());
+        addFilter(new SobelFilter());
+    }
+
+    private void addFilter(Filter filter) {
         Menu thisFilterMenu = new Menu(filter.getName());
         Constructor dialogConstructor = FilterDialogFactory.getInstance().getConstructor(filter.getJsonName());
         if (null != dialogConstructor) {

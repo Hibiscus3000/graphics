@@ -4,6 +4,8 @@ module ru.nsu.fit.icg.lab2 {
 
     requires org.controlsfx.controls;
     requires json.simple;
+    requires java.desktop;
+    requires javafx.swing;
 
     opens ru.nsu.fit.icg.lab2 to javafx.fxml;
     exports ru.nsu.fit.icg.lab2;

@@ -2,14 +2,12 @@ package ru.nsu.fit.icg.lab2;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.nsu.fit.icg.lab2.filter.BlackWhiteFilter;
+import javafx.stage.Window;
+import ru.nsu.fit.icg.lab2.file.OpenFileHandler;
+import ru.nsu.fit.icg.lab2.file.SaveFileHandler;
 import ru.nsu.fit.icg.lab2.filter.FilterChangeHandler;
-import ru.nsu.fit.icg.lab2.filter.GammaFilter;
-import ru.nsu.fit.icg.lab2.filter.NegativeFilter;
-import ru.nsu.fit.icg.lab2.filter.matrix.convolution.*;
-import ru.nsu.fit.icg.lab2.filter.matrix.dithering.FloydSteinbergFilter;
-import ru.nsu.fit.icg.lab2.filter.matrix.dithering.OrderedDitheringFilter;
 
 public class FilterApplication extends Application {
 
@@ -22,17 +20,12 @@ public class FilterApplication extends Application {
         DrawParent drawParent = new DrawParent();
         FilterChangeHandler filterChangeHandler = new FilterChangeHandler(drawParent);
         MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler);
-        menuToolbarBox.addFilter(new BlackWhiteFilter());
-        menuToolbarBox.addFilter(new GammaFilter());
-        menuToolbarBox.addFilter(new NegativeFilter());
-        menuToolbarBox.addFilter(new FloydSteinbergFilter());
-        menuToolbarBox.addFilter(new OrderedDitheringFilter());
-        menuToolbarBox.addFilter(new EmbossingFilter());
-        menuToolbarBox.addFilter(new SharpeningFilter());
-        menuToolbarBox.addFilter(new SmoothingFilter());
-        menuToolbarBox.addFilter(new RobertsFilter());
-        menuToolbarBox.addFilter(new SobelFilter());
-        Scene scene = new Scene(menuToolbarBox);
+        Window owner = stage.getOwner();
+        menuToolbarBox.addFileHandler(new OpenFileHandler(owner, drawParent));
+        menuToolbarBox.addFileHandler(new SaveFileHandler(owner, drawParent));
+        menuToolbarBox.addFilters();
+        VBox appBox = new VBox(menuToolbarBox, drawParent);
+        Scene scene = new Scene(appBox);
         stage.setScene(scene);
         stage.show();
     }
