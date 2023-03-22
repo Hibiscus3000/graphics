@@ -1,7 +1,9 @@
 package ru.nsu.fit.icg.lab2;
 
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -23,13 +25,22 @@ public class ImageBox extends VBox {
 
     private final ImageView imageView = new ImageView();
     private WritableImage original;
-    private WritableImage processed;
+    private WritableImage filtered;
     private WritableImage current;
 
     private Double previousDragX;
     private Double previousDragY;
 
+    private final ToggleButton filterToggleButton = new ToggleButton("Фильтр");
+
     public ImageBox() {
+        VBox filterBox = new VBox(filterToggleButton);
+        filterBox.setAlignment(Pos.TOP_RIGHT);
+        filterToggleButton.setOnAction(e -> {
+            changeImage();
+            e.consume();
+        });
+
         bounds.setFill(Color.TRANSPARENT);
         bounds.getStrokeDashArray().addAll(10.0, 5.0);
         bounds.setStroke(Color.BLUE);
@@ -47,7 +58,7 @@ public class ImageBox extends VBox {
         scrollPane.layoutYProperty().set(inset);
         scrollPane.prefHeightProperty().bind(heightProperty());
         scrollPane.prefWidthProperty().bind(widthProperty());
-        getChildren().add(scrollPane);
+        getChildren().addAll(filterBox, scrollPane);
 
         imagePane.setOnDragDetected(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
@@ -61,6 +72,9 @@ public class ImageBox extends VBox {
             setCursor(Cursor.DEFAULT);
             previousDragX = null;
             previousDragY = null;
+            if (MouseButton.PRIMARY == e.getButton()) {
+                changeImage();
+            }
             e.consume();
         });
         imagePane.setOnMouseDragged(e -> {
@@ -68,8 +82,8 @@ public class ImageBox extends VBox {
                 double x = e.getSceneX();
                 double y = e.getSceneY();
                 if (null != previousDragX && null != previousDragY) {
-                    scrollPane.setHvalue(scrollPane.getHvalue() + (previousDragX - x) / current.getWidth());
-                    scrollPane.setVvalue(scrollPane.getVvalue() + (previousDragY - y) / current.getHeight());
+                    scrollPane.setHvalue(scrollPane.getHvalue() + (previousDragX - x) / scrollPane.getWidth());
+                    scrollPane.setVvalue(scrollPane.getVvalue() + (previousDragY - y) / scrollPane.getHeight());
                 }
                 previousDragX = x;
                 previousDragY = y;
@@ -84,6 +98,7 @@ public class ImageBox extends VBox {
 
     public void openImage(WritableImage image) {
         current = original = image;
+        filtered = null;
         imageView.setImage(current);
         bounds.widthProperty().bind(image.widthProperty());
         bounds.heightProperty().bind(image.heightProperty());
@@ -95,10 +110,30 @@ public class ImageBox extends VBox {
     private boolean filterChanged = true;
 
     public void setFilter(Filter filter) {
-        this.filter = filter;
+        if (filter != this.filter) {
+            this.filter = filter;
+            setFilterChanged(true);
+        }
     }
 
     public void setFilterChanged(boolean b) {
         filterChanged = b;
+    }
+
+    private void changeImage() {
+        boolean changeToFiltered = current == original && null != filter && null != original;
+        filterToggleButton.setSelected(changeToFiltered);
+        if (changeToFiltered) {
+            if (filterChanged || null == filtered) {
+                setCursor(Cursor.WAIT);
+                filtered = filter.filter(original);
+                setCursor(Cursor.DEFAULT);
+                filterChanged = false;
+            }
+            current = filtered;
+        } else {
+            current = original;
+        }
+        imageView.setImage(current);
     }
 }

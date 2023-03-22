@@ -27,15 +27,17 @@ public class MenuToolbarBox extends VBox {
 
     private final Menu filterMenu = new Menu("Фильтр");
     private final FilterChangeHandler filterChangeHandler;
+    private final ImageBox imageBox;
     private final ToggleGroup filterMenuGroup = new ToggleGroup();
     private final ToggleGroup filterToolBarGroup = new ToggleGroup();
 
-    public MenuToolbarBox(FilterChangeHandler filterChangeHandler) {
+    public MenuToolbarBox(FilterChangeHandler filterChangeHandler, ImageBox imageBox) {
         Rectangle2D screenSize = Screen.getPrimary().getBounds();
         toolBar.setPrefWidth(sizeScale * screenSize.getWidth());
 
         getChildren().addAll(menuBar, toolBar);
         this.filterChangeHandler = filterChangeHandler;
+        this.imageBox = imageBox;
         menuBar.getMenus().add(fileMenu);
     }
 

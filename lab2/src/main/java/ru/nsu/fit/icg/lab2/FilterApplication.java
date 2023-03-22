@@ -23,7 +23,7 @@ public class FilterApplication extends Application {
     public void start(Stage stage) {
         ImageBox imageBox = new ImageBox();
         FilterChangeHandler filterChangeHandler = new FilterChangeHandler(imageBox);
-        MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler);
+        MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, imageBox);
         Window owner = stage.getOwner();
         menuToolbarBox.addFileHandler(new OpenFileHandler(owner, imageBox));
         menuToolbarBox.addFileHandler(new SaveFileHandler(owner, imageBox));
