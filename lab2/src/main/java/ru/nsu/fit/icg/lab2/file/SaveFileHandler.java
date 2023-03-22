@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.DrawParent;
+import ru.nsu.fit.icg.lab2.ImageBox;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -16,8 +16,8 @@ public class SaveFileHandler extends FileHandler {
 
     private FileChooser saveFileChooser;
 
-    public SaveFileHandler(Window owner, DrawParent drawParent) {
-        super(owner, drawParent);
+    public SaveFileHandler(Window owner, ImageBox imageBox) {
+        super(owner, imageBox);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SaveFileHandler extends FileHandler {
                 }
             }
             try {
-                ImageIO.write(SwingFXUtils.fromFXImage(drawParent.getImage(), null),
+                ImageIO.write(SwingFXUtils.fromFXImage(imageBox.getImage(), null),
                         "png", file);
             } catch (IOException e) {
                 Alert savingFileErrorAlert = new Alert(Alert.AlertType.ERROR, "Не удалось сохранить файл "

@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.DrawParent;
+import ru.nsu.fit.icg.lab2.ImageBox;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -16,8 +16,8 @@ public class OpenFileHandler extends FileHandler {
 
     private FileChooser openFileChooser;
 
-    public OpenFileHandler(Window owner, DrawParent drawParent) {
-        super(owner, drawParent);
+    public OpenFileHandler(Window owner, ImageBox imageBox) {
+        super(owner, imageBox);
     }
 
     @Override
@@ -38,7 +38,9 @@ public class OpenFileHandler extends FileHandler {
         }
         File file = openFileChooser.showOpenDialog(owner);
         try {
-            drawParent.openImage(SwingFXUtils.toFXImage(ImageIO.read(file), null));
+            if (null != file) {
+                imageBox.openImage(SwingFXUtils.toFXImage(ImageIO.read(file), null));
+            }
         } catch (IOException e) {
             Alert unableToOpenFileAlert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть файл"
                     + file.getName(), ButtonType.OK);

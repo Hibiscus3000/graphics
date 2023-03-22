@@ -1,7 +1,9 @@
 package ru.nsu.fit.icg.lab2;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import ru.nsu.fit.icg.lab2.file.FileHandler;
 import ru.nsu.fit.icg.lab2.filter.*;
 import ru.nsu.fit.icg.lab2.filter.dialog.FilterDialogFactory;
@@ -16,6 +18,8 @@ import java.lang.reflect.Constructor;
 
 public class MenuToolbarBox extends VBox {
 
+    private final double sizeScale = 0.5;
+
     private final MenuBar menuBar = new MenuBar();
     private final ToolBar toolBar = new ToolBar();
 
@@ -27,6 +31,9 @@ public class MenuToolbarBox extends VBox {
     private final ToggleGroup filterToolBarGroup = new ToggleGroup();
 
     public MenuToolbarBox(FilterChangeHandler filterChangeHandler) {
+        Rectangle2D screenSize = Screen.getPrimary().getBounds();
+        toolBar.setPrefWidth(sizeScale * screenSize.getWidth());
+
         getChildren().addAll(menuBar, toolBar);
         this.filterChangeHandler = filterChangeHandler;
         menuBar.getMenus().add(fileMenu);

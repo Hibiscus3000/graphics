@@ -2,18 +2,20 @@ package ru.nsu.fit.icg.lab2.filter;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import ru.nsu.fit.icg.lab2.DrawParent;
+import ru.nsu.fit.icg.lab2.ImageBox;
 
 public class FilterChangeHandler implements EventHandler<ActionEvent> {
 
-    private final DrawParent drawParent;
+    private final ImageBox imageBox;
 
-    public FilterChangeHandler(DrawParent drawParent) {
-        this.drawParent = drawParent;
+    public FilterChangeHandler(ImageBox imageBox) {
+        this.imageBox = imageBox;
     }
 
     @Override
     public void handle(ActionEvent event) {
-        ((FilterChanger) (event.getSource())).getFilter();
+        Filter filter = ((FilterChanger) (event.getSource())).getFilter();
+        imageBox.setFilter(filter);
+        event.consume();
     }
 }
