@@ -27,7 +27,6 @@ public class GammaFilter implements Filter {
         WritableImage filteredImage = new WritableImage(width, height);
         PixelReader pixelReader = original.getPixelReader();
         PixelWriter pixelWriter = filteredImage.getPixelWriter();
-        System.out.println(gamma);
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 int argb = pixelReader.getArgb(x, y);

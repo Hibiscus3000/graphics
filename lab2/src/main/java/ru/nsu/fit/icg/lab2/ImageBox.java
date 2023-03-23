@@ -1,5 +1,7 @@
 package ru.nsu.fit.icg.lab2;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
@@ -13,6 +15,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ru.nsu.fit.icg.lab2.filter.Filter;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ImageBox extends VBox {
 
@@ -31,15 +36,23 @@ public class ImageBox extends VBox {
     private Double previousDragX;
     private Double previousDragY;
 
+    private final ExecutorService imageChanger = Executors.newSingleThreadExecutor();
     private final ToggleButton filterToggleButton = new ToggleButton("Фильтр");
+    private final EventHandler<ActionEvent> imageChangeHandler;
 
     public ImageBox() {
+        imageChangeHandler = event -> {
+            if (filterChanged) {
+                setCursor(Cursor.WAIT);
+            }
+            imageChanger.submit(ImageBox.this::changeImage);
+            if (null != event) {
+                event.consume();
+            }
+        };
         VBox filterBox = new VBox(filterToggleButton);
         filterBox.setAlignment(Pos.TOP_RIGHT);
-        filterToggleButton.setOnAction(e -> {
-            changeImage();
-            e.consume();
-        });
+        filterToggleButton.setOnAction(imageChangeHandler);
 
         bounds.setFill(Color.TRANSPARENT);
         bounds.getStrokeDashArray().addAll(10.0, 5.0);
@@ -73,7 +86,7 @@ public class ImageBox extends VBox {
             previousDragX = null;
             previousDragY = null;
             if (MouseButton.PRIMARY == e.getButton()) {
-                changeImage();
+                imageChangeHandler.handle(null);
             }
             e.consume();
         });
@@ -125,10 +138,8 @@ public class ImageBox extends VBox {
         boolean changeToFiltered = current == original && null != filter && null != original;
         filterToggleButton.setSelected(changeToFiltered);
         if (changeToFiltered) {
-            if (filterChanged || null == filtered) {
-                setCursor(Cursor.WAIT);
+            if (filterChanged) {
                 filtered = filter.filter(original);
-                setCursor(Cursor.DEFAULT);
                 filterChanged = false;
             }
             current = filtered;
@@ -136,5 +147,6 @@ public class ImageBox extends VBox {
             current = original;
         }
         imageView.setImage(current);
+        setCursor(Cursor.DEFAULT);
     }
 }

@@ -7,4 +7,9 @@ public class SmoothingDialog extends FilterDialog {
     protected SmoothingDialog(Filter filter) {
         super(filter);
     }
+
+    @Override
+    protected void changeValues() {
+
+    }
 }

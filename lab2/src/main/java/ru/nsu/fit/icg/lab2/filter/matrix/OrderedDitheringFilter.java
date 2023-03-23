@@ -1,6 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.matrix.dithering;
-
-import ru.nsu.fit.icg.lab2.filter.matrix.MatrixFilter;
+package ru.nsu.fit.icg.lab2.filter.matrix;
 
 public class OrderedDitheringFilter extends MatrixFilter {
 

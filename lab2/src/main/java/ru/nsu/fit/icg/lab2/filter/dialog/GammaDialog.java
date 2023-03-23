@@ -1,63 +1,76 @@
 package ru.nsu.fit.icg.lab2.filter.dialog;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.converter.DoubleStringConverter;
+import javafx.util.StringConverter;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 import ru.nsu.fit.icg.lab2.filter.GammaFilter;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 public class GammaDialog extends FilterDialog {
+
+    private final Spinner<Double> spinner = new Spinner();
+    private final double amountToStepBy = 0.1;
+    private final double min;
+    private final double max;
 
     public GammaDialog(Filter filter) {
         super(filter);
         GammaFilter gammaFilter = (GammaFilter) filter;
         double gamma = gammaFilter.getGamma();
 
-        setTitle("Гамма-фильтр");
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(spacing);
 
         HBox gammaBox = new HBox();
         gammaBox.setSpacing(spacing);
-        Spinner<Double> spinner = new Spinner<>();
-        Slider slider = new Slider(0.1, 10, 1);
-        slider.setBlockIncrement(0.1);
+        min = amountToStepBy;
+        max = 10;
+        Slider slider = new Slider(min, max, gamma);
+        slider.setBlockIncrement(amountToStepBy);
         spinner.setEditable(true);
-        spinner.setValueFactory(new GammaSpinnerValueFactory(0.1, 10, gamma, 0.1));
+        spinner.setValueFactory(new GammaSpinnerValueFactory(min, max, gamma, amountToStepBy));
         slider.valueProperty().asObject().bindBidirectional(spinner.getValueFactory().valueProperty());
         gammaBox.getChildren().addAll(slider, spinner);
 
-        HBox buttonBox = new HBox();
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.setSpacing(spacing);
-        Button okButton = new Button("Ок");
-        okButton.setOnAction(e -> {
-            gammaFilter.setGamma(slider.getValue());
-            System.out.println(spinner.getValue());
-            setResult(ButtonType.OK);
-            hide();
-            e.consume();
-        });
-        Button cancelButton = new Button("Отмена");
-        cancelButton.setOnAction(e -> {
-            hide();
-            setResult(ButtonType.CANCEL);
-            e.consume();
-        });
-        buttonBox.getChildren().addAll(okButton, cancelButton);
-
-        vBox.getChildren().addAll(new Label("Гамма"), gammaBox, buttonBox);
+        vBox.getChildren().addAll(new Label("Гамма"), gammaBox, getButtonBox());
         getDialogPane().setContent(vBox);
+    }
+
+    @Override
+    protected void changeValues() {
+        ((GammaFilter) filter).setGamma(spinner.getValue());
     }
 
     private class GammaSpinnerValueFactory extends SpinnerValueFactory.DoubleSpinnerValueFactory {
 
         public GammaSpinnerValueFactory(double min, double max, double initialValue, double amountToStepBy) {
             super(min, max, initialValue, amountToStepBy);
-            setConverter(new DoubleStringConverter());
+            setConverter(new StringConverter<Double>() {
+                private final MathContext mathContext = new MathContext(3, RoundingMode.HALF_EVEN);
+                private final int scale = 2;
+
+                @Override
+                public String toString(Double aDouble) {
+                    return new BigDecimal(aDouble, mathContext).setScale(scale, RoundingMode.HALF_EVEN)
+                            .toString();
+                }
+
+                @Override
+                public Double fromString(String s) {
+                    return new BigDecimal(s, mathContext).setScale(scale, RoundingMode.HALF_EVEN)
+                            .doubleValue();
+                }
+            });
         }
 
         @Override
