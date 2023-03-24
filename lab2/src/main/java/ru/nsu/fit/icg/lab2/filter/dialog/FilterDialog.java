@@ -23,13 +23,13 @@ public abstract class FilterDialog extends Dialog {
         buttonBox.setSpacing(spacing);
         Button okButton = new Button("Ок");
         okButton.setOnAction(e -> {
-            changeValues();
             setResult(ButtonType.OK);
             hide();
             e.consume();
         });
         Button cancelButton = new Button("Отмена");
         cancelButton.setOnAction(e -> {
+            cancel();
             hide();
             setResult(ButtonType.CANCEL);
             e.consume();
@@ -38,6 +38,6 @@ public abstract class FilterDialog extends Dialog {
         return buttonBox;
     }
 
-    protected abstract void changeValues();
+    protected abstract void cancel();
 
 }

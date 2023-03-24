@@ -1,15 +1,10 @@
-package ru.nsu.fit.icg.lab2.filter;
+package ru.nsu.fit.icg.lab2.filter.dithering;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.matrix.MatrixFilter;
 
-public class FloydSteinbergFilter extends MatrixFilter {
-
-    private int redQuantization = 8;
-    private int greenQuantization = 8;
-    private int blueQuantization = 8;
+public class FloydSteinbergFilter extends DitheringFilter {
 
     @Override
     public String getName() {
@@ -37,9 +32,9 @@ public class FloydSteinbergFilter extends MatrixFilter {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 int argb = pixelReader.getArgb(x, y);
-                int newRed = filterPixel(x, y, argb >> 16 & 255, redQuantization, r);
-                int newGreen = filterPixel(x, y, argb >> 8 & 255, greenQuantization, g);
-                int newBlue = filterPixel(x, y, argb & 255, blueQuantization, b);
+                int newRed = filterPixel(x, y, argb >> 16 & 255, colorQuantization[Color.RED.ordinal()], r);
+                int newGreen = filterPixel(x, y, argb >> 8 & 255, colorQuantization[Color.GREEN.ordinal()], g);
+                int newBlue = filterPixel(x, y, argb & 255, colorQuantization[Color.BLUE.ordinal()], b);
                 pixelWriter.setArgb(x, y, 255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
             }
         }
@@ -77,27 +72,9 @@ public class FloydSteinbergFilter extends MatrixFilter {
         return color - lesser > bigger - color ? bigger : lesser;
     }
 
-    public void setRedQuantization(int redQuantization) {
-        this.redQuantization = redQuantization;
-    }
-
-    public void setGreenQuantization(int greenQuantization) {
-        this.greenQuantization = greenQuantization;
-    }
-
-    public void setBlueQuantization(int blueQuantization) {
-        this.blueQuantization = blueQuantization;
-    }
-
-    public int getRedQuantization() {
-        return redQuantization;
-    }
-
-    public int getGreenQuantization() {
-        return greenQuantization;
-    }
-
-    public int getBlueQuantization() {
-        return blueQuantization;
+    @Override
+    public boolean setQuantization(Color color, int quantization) {
+        colorQuantization[color.ordinal()] = quantization;
+        return false;
     }
 }

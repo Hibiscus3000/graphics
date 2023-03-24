@@ -10,7 +10,11 @@
     },
     {
       "name": "floydSteinberg",
-      "dialogClass": "ru.nsu.fit.icg.lab2.filter.dialog.FloydSteinbergDialog"
+      "dialogClass": "ru.nsu.fit.icg.lab2.filter.dialog.dithering.FloydSteinbergDialog"
+    },
+    {
+      "name": "orderedDithering",
+      "dialogClass": "ru.nsu.fit.icg.lab2.filter.dialog.dithering.OrderedDitheringDialog"
     }
   ]
 }

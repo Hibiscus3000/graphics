@@ -25,7 +25,7 @@ public class GammaDialog extends FilterDialog {
     public GammaDialog(Filter filter) {
         super(filter);
         GammaFilter gammaFilter = (GammaFilter) filter;
-        double gamma = gammaFilter.getGamma();
+        prevGamma = gammaFilter.getGamma();
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
@@ -35,10 +35,11 @@ public class GammaDialog extends FilterDialog {
         gammaBox.setSpacing(spacing);
         min = amountToStepBy;
         max = 10;
-        Slider slider = new Slider(min, max, gamma);
+        Slider slider = new Slider(min, max, prevGamma);
         slider.setBlockIncrement(amountToStepBy);
         spinner.setEditable(true);
-        spinner.setValueFactory(new GammaSpinnerValueFactory(min, max, gamma, amountToStepBy));
+        spinner.setValueFactory(new GammaSpinnerValueFactory(min, max, prevGamma, amountToStepBy));
+        spinner.valueProperty().addListener(e -> gammaFilter.setGamma(spinner.getValue()));
         slider.valueProperty().asObject().bindBidirectional(spinner.getValueFactory().valueProperty());
         gammaBox.getChildren().addAll(slider, spinner);
 
@@ -46,9 +47,11 @@ public class GammaDialog extends FilterDialog {
         getDialogPane().setContent(vBox);
     }
 
+    private double prevGamma;
+
     @Override
-    protected void changeValues() {
-        ((GammaFilter) filter).setGamma(spinner.getValue());
+    protected void cancel() {
+        ((GammaFilter) filter).setGamma(prevGamma);
     }
 
     private class GammaSpinnerValueFactory extends SpinnerValueFactory.DoubleSpinnerValueFactory {

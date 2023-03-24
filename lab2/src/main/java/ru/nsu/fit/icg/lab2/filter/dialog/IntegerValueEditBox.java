@@ -1,5 +1,6 @@
 package ru.nsu.fit.icg.lab2.filter.dialog;
 
+import javafx.beans.InvalidationListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -28,6 +29,10 @@ public class IntegerValueEditBox extends VBox {
         sliderSpinnerBox.getChildren().addAll(slider, spinner);
 
         getChildren().addAll(new Label(valueName), sliderSpinnerBox);
+    }
+
+    public void setChangeHandler(InvalidationListener changeHandler) {
+        spinner.valueProperty().addListener(changeHandler);
     }
 
     public int getValue() {

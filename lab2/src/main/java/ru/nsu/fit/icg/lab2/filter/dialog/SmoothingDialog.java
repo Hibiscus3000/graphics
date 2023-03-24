@@ -9,7 +9,8 @@ public class SmoothingDialog extends FilterDialog {
     }
 
     @Override
-    protected void changeValues() {
+    protected void cancel() {
 
     }
+
 }
