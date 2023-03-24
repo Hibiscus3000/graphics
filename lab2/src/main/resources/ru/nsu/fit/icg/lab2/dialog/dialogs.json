@@ -15,6 +15,14 @@
     {
       "name": "orderedDithering",
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.dithering.OrderedDitheringDialog"
+    },
+    {
+      "name": "sobel",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.borders.SobelDialog"
+    },
+    {
+      "name": "roberts",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.borders.RobertsDialog"
     }
   ]
 }

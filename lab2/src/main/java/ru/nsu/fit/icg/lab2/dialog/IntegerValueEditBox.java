@@ -39,6 +39,10 @@ public class IntegerValueEditBox extends VBox {
         return spinner.getValue();
     }
 
+    public void setValue(int value) {
+        spinner.getValueFactory().setValue(value);
+    }
+
     private class IntValueSpinnerValueFactory extends SpinnerValueFactory.IntegerSpinnerValueFactory {
 
         public IntValueSpinnerValueFactory(int min, int max, int initialValue, int amountToStepBy) {

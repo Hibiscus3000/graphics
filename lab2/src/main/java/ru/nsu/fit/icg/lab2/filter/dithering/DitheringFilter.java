@@ -4,10 +4,6 @@ import ru.nsu.fit.icg.lab2.filter.Filter;
 
 public abstract class DitheringFilter implements Filter {
 
-    public enum Color {
-        RED, GREEN, BLUE
-    }
-
     protected int[] colorQuantization = new int[]{8, 8, 8};
 
     protected int getNearestPaletteColor(int color, int quantizationNumber) {

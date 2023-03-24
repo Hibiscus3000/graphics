@@ -23,6 +23,7 @@ public abstract class FilterDialog extends Dialog {
         buttonBox.setSpacing(spacing);
         Button okButton = new Button("Ок");
         okButton.setOnAction(e -> {
+            saveParameters();
             setResult(ButtonType.OK);
             hide();
             e.consume();
@@ -37,6 +38,8 @@ public abstract class FilterDialog extends Dialog {
         buttonBox.getChildren().addAll(okButton, cancelButton);
         return buttonBox;
     }
+
+    protected abstract void saveParameters();
 
     protected abstract void cancel();
 

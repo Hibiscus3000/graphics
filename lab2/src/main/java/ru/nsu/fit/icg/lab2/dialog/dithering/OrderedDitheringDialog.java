@@ -25,10 +25,9 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
                 orderedDitheringFilter.getMatrix(DitheringFilter.Color.GREEN), this);
         changeableMatrixBoxes[DitheringFilter.Color.BLUE.ordinal()] = new ChangeableMatrixBox("Синий",
                 orderedDitheringFilter.getMatrix(DitheringFilter.Color.BLUE), this);
-        DitheringFilter ditheringFilter = (DitheringFilter) filter;
-        redQuantizationEditBox.setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.RED));
-        greenQuantizationEditBox.setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.GREEN));
-        blueQuantizationEditBox.setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.BLUE));
+        quantizationEditBoxes[Filter.Color.RED.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.RED));
+        quantizationEditBoxes[Filter.Color.GREEN.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.GREEN));
+        quantizationEditBoxes[Filter.Color.BLUE.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.BLUE));
         matricesBox.getChildren().addAll(changeableMatrixBoxes[DitheringFilter.Color.RED.ordinal()],
                 changeableMatrixBoxes[DitheringFilter.Color.GREEN.ordinal()],
                 changeableMatrixBoxes[DitheringFilter.Color.BLUE.ordinal()]);

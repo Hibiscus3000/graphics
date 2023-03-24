@@ -4,6 +4,10 @@ import javafx.scene.image.WritableImage;
 
 public interface Filter {
 
+    enum Color {
+        RED, GREEN, BLUE
+    }
+
     String getName();
 
     String getJsonName();

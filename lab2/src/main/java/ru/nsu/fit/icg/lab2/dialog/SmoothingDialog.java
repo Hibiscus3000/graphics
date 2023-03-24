@@ -9,6 +9,11 @@ public class SmoothingDialog extends FilterDialog {
     }
 
     @Override
+    protected void saveParameters() {
+
+    }
+
+    @Override
     protected void cancel() {
 
     }

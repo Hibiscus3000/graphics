@@ -12,8 +12,8 @@ public class FloydSteinbergDialog extends DitheringDialog {
         vBox.getChildren().add(getButtonBox());
         getDialogPane().setContent(vBox);
 
-        redQuantizationEditBox.setChangeHandler(new QuantizationHandler(DitheringFilter.Color.RED));
-        greenQuantizationEditBox.setChangeHandler(new QuantizationHandler(DitheringFilter.Color.GREEN));
-        blueQuantizationEditBox.setChangeHandler(new QuantizationHandler(DitheringFilter.Color.BLUE));
+        quantizationEditBoxes[Filter.Color.RED.ordinal()].setChangeHandler(new QuantizationHandler(DitheringFilter.Color.RED));
+        quantizationEditBoxes[Filter.Color.GREEN.ordinal()].setChangeHandler(new QuantizationHandler(DitheringFilter.Color.GREEN));
+        quantizationEditBoxes[Filter.Color.BLUE.ordinal()].setChangeHandler(new QuantizationHandler(DitheringFilter.Color.BLUE));
     }
 }

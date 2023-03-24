@@ -47,6 +47,11 @@ public class GammaDialog extends FilterDialog {
         getDialogPane().setContent(vBox);
     }
 
+    @Override
+    protected void saveParameters() {
+
+    }
+
     private double prevGamma;
 
     @Override
