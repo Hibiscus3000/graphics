@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.dialog;
+package ru.nsu.fit.icg.lab2.dialog;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

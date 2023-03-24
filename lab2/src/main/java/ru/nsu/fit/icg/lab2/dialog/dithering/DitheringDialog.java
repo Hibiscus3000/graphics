@@ -1,12 +1,12 @@
-package ru.nsu.fit.icg.lab2.filter.dialog.dithering;
+package ru.nsu.fit.icg.lab2.dialog.dithering;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
+import ru.nsu.fit.icg.lab2.dialog.IntegerValueEditBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.dialog.FilterDialog;
-import ru.nsu.fit.icg.lab2.filter.dialog.IntegerValueEditBox;
 import ru.nsu.fit.icg.lab2.filter.dithering.DitheringFilter;
 
 public abstract class DitheringDialog extends FilterDialog {
@@ -17,7 +17,7 @@ public abstract class DitheringDialog extends FilterDialog {
 
     private final static int min = 2;
     private final static int max = 128;
-    private final static int amountToStepBy = 2;
+    private final static int amountToStepBy = 1;
 
     protected DitheringDialog(Filter filter) {
         super(filter);
@@ -56,7 +56,7 @@ public abstract class DitheringDialog extends FilterDialog {
 
     protected final DitheringFilter ditheringFilter;
 
-    protected class QuantizationHandler implements InvalidationListener {
+    protected class QuantizationHandler implements ChangeListener<Integer> {
 
         protected final DitheringFilter.Color color;
 
@@ -65,7 +65,7 @@ public abstract class DitheringDialog extends FilterDialog {
         }
 
         @Override
-        public void invalidated(Observable observable) {
+        public void changed(ObservableValue<? extends Integer> observableValue, Integer oldVal, Integer newVal) {
             ditheringFilter.setQuantization(color, redQuantizationEditBox.getValue());
         }
     }

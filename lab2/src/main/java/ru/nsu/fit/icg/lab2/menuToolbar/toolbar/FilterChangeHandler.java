@@ -1,8 +1,9 @@
-package ru.nsu.fit.icg.lab2.filter;
+package ru.nsu.fit.icg.lab2.menuToolbar.toolbar;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import ru.nsu.fit.icg.lab2.ImageBox;
+import ru.nsu.fit.icg.lab2.filter.Filter;
 
 public class FilterChangeHandler implements EventHandler<ActionEvent> {
 

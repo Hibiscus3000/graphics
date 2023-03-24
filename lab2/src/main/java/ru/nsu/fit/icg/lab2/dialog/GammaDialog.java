@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.dialog;
+package ru.nsu.fit.icg.lab2.dialog;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -78,20 +78,18 @@ public class GammaDialog extends FilterDialog {
 
         @Override
         public void increment(final int steps) {
-            final double min = getMin();
             final double max = getMax();
             final double currentValue = getValue();
             final double newIndex = currentValue + steps * getAmountToStepBy();
-            setValue(newIndex <= max ? newIndex : min + newIndex % getAmountToStepBy());
+            setValue(Math.min(newIndex, max));
         }
 
         @Override
         public void decrement(int steps) {
             final double min = getMin();
-            final double max = getMax();
             final double currentValue = getValue();
             final double newIndex = currentValue - steps * getAmountToStepBy();
-            setValue(newIndex >= min ? newIndex : max - newIndex % getAmountToStepBy());
+            setValue(Math.max(newIndex, min));
         }
     }
 }

@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.dialog.dithering;
+package ru.nsu.fit.icg.lab2.dialog.dithering;
 
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;

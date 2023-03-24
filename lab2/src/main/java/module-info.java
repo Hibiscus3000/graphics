@@ -15,4 +15,8 @@ module ru.nsu.fit.icg.lab2 {
     opens ru.nsu.fit.icg.lab2.filter.matrix to javafx.fxml;
     exports ru.nsu.fit.icg.lab2.filter.dithering;
     opens ru.nsu.fit.icg.lab2.filter.dithering to javafx.fxml;
+    exports ru.nsu.fit.icg.lab2.menuToolbar.toolbar;
+    opens ru.nsu.fit.icg.lab2.menuToolbar.toolbar to javafx.fxml;
+    exports ru.nsu.fit.icg.lab2.menuToolbar;
+    opens ru.nsu.fit.icg.lab2.menuToolbar to javafx.fxml;
 }

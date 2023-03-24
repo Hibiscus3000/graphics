@@ -16,21 +16,21 @@ public class FloydSteinbergFilter extends DitheringFilter {
         return "floydSteinberg";
     }
 
-    private int width;
-    private int height;
+    private int imageWidth;
+    private int imageHeight;
 
     @Override
     public WritableImage filter(WritableImage original) {
-        width = (int) original.getWidth();
-        height = (int) original.getHeight();
-        WritableImage filteredImage = new WritableImage(width, height);
+        imageWidth = (int) original.getWidth();
+        imageHeight = (int) original.getHeight();
+        WritableImage filteredImage = new WritableImage(imageWidth, imageHeight);
         PixelReader pixelReader = original.getPixelReader();
         PixelWriter pixelWriter = filteredImage.getPixelWriter();
-        int[][] r = new int[width][height];
-        int[][] g = new int[width][height];
-        int[][] b = new int[width][height];
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
+        int[][] r = new int[imageWidth][imageHeight];
+        int[][] g = new int[imageWidth][imageHeight];
+        int[][] b = new int[imageWidth][imageHeight];
+        for (int x = 0; x < imageWidth; ++x) {
+            for (int y = 0; y < imageHeight; ++y) {
                 int argb = pixelReader.getArgb(x, y);
                 int newRed = filterPixel(x, y, argb >> 16 & 255, colorQuantization[Color.RED.ordinal()], r);
                 int newGreen = filterPixel(x, y, argb >> 8 & 255, colorQuantization[Color.GREEN.ordinal()], g);
@@ -42,10 +42,10 @@ public class FloydSteinbergFilter extends DitheringFilter {
     }
 
     private int filterPixel(int x, int y, int color, int quantizationNumber, int[][] errors) {
-        int newColor = getNearestPaletteColor(color = (color + errors[x][y]) & 255,
+        int newColor = getNearestPaletteColor(color = color + errors[x][y],
                 quantizationNumber);
         int error = color - newColor;
-        if (x != width - 1 && y != height - 1) {
+        if (x != imageWidth - 1 && y != imageHeight - 1) {
             errors[x + 1][y] += 7 * error / 16;
             if (0 != x) {
                 errors[x - 1][y + 1] += 3 * error / 16;
@@ -53,23 +53,14 @@ public class FloydSteinbergFilter extends DitheringFilter {
             errors[x][y + 1] += 5 * error / 16;
             errors[x + 1][y + 1] += error / 16;
         }
-        if (x == width - 1 && y != height - 1) {
+        if (x == imageWidth - 1 && y != imageHeight - 1) {
             errors[x - 1][y + 1] += 3 * error / 8;
             errors[x][y + 1] += 5 * error / 8;
         }
-        if (x != width - 1 && y == height - 1) {
+        if (x != imageWidth - 1 && y == imageHeight - 1) {
             errors[x + 1][y] += error;
         }
         return newColor;
-    }
-
-    private int getNearestPaletteColor(int color, int quantizationNumber) {
-        final int colorDistance = 255 / (quantizationNumber - 1);
-        int colorQuanta = color / colorDistance;
-        final int lesser = colorDistance * colorQuanta;
-        final int bigger = Math.min(colorDistance * quantizationNumber,
-                colorDistance * (colorQuanta + 1));
-        return color - lesser > bigger - color ? bigger : lesser;
     }
 
     @Override

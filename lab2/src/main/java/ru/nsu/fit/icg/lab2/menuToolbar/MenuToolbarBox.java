@@ -1,18 +1,23 @@
-package ru.nsu.fit.icg.lab2;
+package ru.nsu.fit.icg.lab2.menuToolbar;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import ru.nsu.fit.icg.lab2.ImageBox;
+import ru.nsu.fit.icg.lab2.dialog.FilterDialogFactory;
 import ru.nsu.fit.icg.lab2.file.FileHandler;
-import ru.nsu.fit.icg.lab2.filter.*;
-import ru.nsu.fit.icg.lab2.filter.dialog.FilterDialogFactory;
+import ru.nsu.fit.icg.lab2.filter.BlackWhiteFilter;
+import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.filter.GammaFilter;
+import ru.nsu.fit.icg.lab2.filter.NegativeFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.FloydSteinbergFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.OrderedDitheringFilter;
 import ru.nsu.fit.icg.lab2.filter.matrix.convolution.*;
-import ru.nsu.fit.icg.lab2.menu.FilterParametersMenuItem;
-import ru.nsu.fit.icg.lab2.menu.FilterUseMenuItem;
-import ru.nsu.fit.icg.lab2.toolbar.FilterToggleButton;
+import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterParametersMenuItem;
+import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterUseMenuItem;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterToggleButton;
 
 import java.lang.reflect.Constructor;
 

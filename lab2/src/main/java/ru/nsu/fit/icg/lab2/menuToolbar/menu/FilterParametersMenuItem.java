@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.menu;
+package ru.nsu.fit.icg.lab2.menuToolbar.menu;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;

@@ -1,0 +1,20 @@
+{
+  "filters": [
+    {
+      "name": "smoothing",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.SmoothingDialog"
+    },
+    {
+      "name": "gamma",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.GammaDialog"
+    },
+    {
+      "name": "floydSteinberg",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.dithering.FloydSteinbergDialog"
+    },
+    {
+      "name": "orderedDithering",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.dithering.OrderedDitheringDialog"
+    }
+  ]
+}

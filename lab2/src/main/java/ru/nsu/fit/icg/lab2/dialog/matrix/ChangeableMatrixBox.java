@@ -1,24 +1,24 @@
-package ru.nsu.fit.icg.lab2.filter.dialog;
+package ru.nsu.fit.icg.lab2.dialog.matrix;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.filter.matrix.Matrix;
+import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
+import ru.nsu.fit.icg.lab2.filter.Matrix;
 
-public class MatrixBox extends VBox {
+public class ChangeableMatrixBox extends VBox {
 
-    private final GridPane matrixPane = new GridPane();
+    private final MatrixPane matrixPane = new MatrixPane();
     private final Matrix matrix;
     private final ResizableDialog owner;
 
-    public MatrixBox(String name, Matrix matrix, ResizableDialog owner) {
+    public ChangeableMatrixBox(String name, Matrix matrix, ResizableDialog owner) {
         this.matrix = matrix;
         this.owner = owner;
         HBox buttonBox = new HBox();
-        for (Integer matrixSide : matrix.getSizes()) {
+        for (Integer matrixSide : matrix.getSides()) {
             buttonBox.getChildren().add(new SizeButton(matrixSide));
         }
         drawMatrix();
@@ -26,17 +26,7 @@ public class MatrixBox extends VBox {
     }
 
     public void drawMatrix() {
-        matrixPane.getChildren().clear();
-        int[][] matrix = this.matrix.getMatrix();
-        int matrixHeight = matrix.length, matrixWidth = matrix[0].length;
-        Label[][] labels = new Label[matrixHeight][matrixWidth];
-        for (int i = 0; i < matrixHeight; ++i) {
-            for (int j = 0; j < matrixWidth; ++j) {
-                labels[i][j] = new Label();
-                labels[i][j].setText(String.valueOf(matrix[i][j] + "  "));
-            }
-            matrixPane.addRow(i, labels[i]);
-        }
+        matrixPane.setMatrix(matrix.getMatrix());
         owner.resize();
     }
 
@@ -52,7 +42,7 @@ public class MatrixBox extends VBox {
                 }
             });
             setToggleGroup(buttonGroup);
-            if (matrix.getSize().equals(size)) {
+            if (matrix.getSide().equals(size)) {
                 setSelected(true);
             }
         }

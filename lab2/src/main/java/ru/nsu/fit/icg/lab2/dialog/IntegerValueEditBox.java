@@ -1,6 +1,6 @@
-package ru.nsu.fit.icg.lab2.filter.dialog;
+package ru.nsu.fit.icg.lab2.dialog;
 
-import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -24,14 +24,14 @@ public class IntegerValueEditBox extends VBox {
         slider.setBlockIncrement(amountToStepBy);
         spinner.setEditable(true);
         spinner.setValueFactory(new IntValueSpinnerValueFactory(min, max, initialValue, amountToStepBy));
-        slider.valueProperty().addListener(e -> spinner.getValueFactory().setValue((int) slider.getValue()));
-        spinner.valueProperty().addListener(e -> slider.setValue(spinner.getValue()));
+        slider.valueProperty().addListener((observable, oldVal, newVal) -> spinner.getValueFactory().setValue(newVal.intValue()));
+        spinner.valueProperty().addListener((observable, oldVal, newVal) -> slider.setValue(newVal));
         sliderSpinnerBox.getChildren().addAll(slider, spinner);
 
         getChildren().addAll(new Label(valueName), sliderSpinnerBox);
     }
 
-    public void setChangeHandler(InvalidationListener changeHandler) {
+    public void setChangeHandler(ChangeListener<Integer> changeHandler) {
         spinner.valueProperty().addListener(changeHandler);
     }
 
@@ -47,20 +47,18 @@ public class IntegerValueEditBox extends VBox {
 
         @Override
         public void increment(final int steps) {
-            final int min = getMin();
             final int max = getMax();
             final int currentValue = getValue();
             final int newIndex = currentValue + steps * getAmountToStepBy();
-            setValue(newIndex <= max ? newIndex : min + newIndex % getAmountToStepBy());
+            setValue(Math.min(newIndex, max));
         }
 
         @Override
         public void decrement(int steps) {
             final int min = getMin();
-            final int max = getMax();
             final int currentValue = getValue();
             final int newIndex = currentValue - steps * getAmountToStepBy();
-            setValue(newIndex >= min ? newIndex : max - newIndex % getAmountToStepBy());
+            setValue(Math.max(min, newIndex));
         }
     }
 }

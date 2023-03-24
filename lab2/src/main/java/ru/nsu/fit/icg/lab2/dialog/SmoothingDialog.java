@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.dialog;
+package ru.nsu.fit.icg.lab2.dialog;
 
 import ru.nsu.fit.icg.lab2.filter.Filter;
 

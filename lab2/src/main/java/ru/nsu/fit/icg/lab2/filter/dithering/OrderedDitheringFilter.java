@@ -1,7 +1,9 @@
 package ru.nsu.fit.icg.lab2.filter.dithering;
 
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.matrix.Matrix;
+import ru.nsu.fit.icg.lab2.filter.Matrix;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ public class OrderedDitheringFilter extends DitheringFilter {
 
     private final Map<Integer, int[][]> matrices = new HashMap<>(); //matrixPreferredSide => matrix-0.5
 
-    private OrderedDitheringMatrix[] colorMatrices = new OrderedDitheringMatrix[3];
+    private final OrderedDitheringMatrix[] colorMatrices = new OrderedDitheringMatrix[3];
     private int[][] matrixForMatrixCreation;
 
     public OrderedDitheringFilter() {
@@ -30,7 +32,52 @@ public class OrderedDitheringFilter extends DitheringFilter {
 
     @Override
     public WritableImage filter(WritableImage original) {
-        return null;
+        int width = (int) original.getWidth();
+        int height = (int) original.getHeight();
+        WritableImage filteredImage = new WritableImage(width, height);
+        PixelReader pixelReader = original.getPixelReader();
+        PixelWriter pixelWriter = filteredImage.getPixelWriter();
+        int redOrdinal = Color.RED.ordinal();
+        int greenOrdinal = Color.GREEN.ordinal();
+        int blueOrdinal = Color.BLUE.ordinal();
+        int redQuantization = colorQuantization[redOrdinal];
+        int greenQuantization = colorQuantization[greenOrdinal];
+        int blueQuantization = colorQuantization[blueOrdinal];
+        OrderedDitheringMatrix redMatrix = colorMatrices[redOrdinal];
+        OrderedDitheringMatrix greenMatrix = colorMatrices[greenOrdinal];
+        OrderedDitheringMatrix blueMatrix = colorMatrices[blueOrdinal];
+        int[][] red = redMatrix.getMatrix();
+        int[][] green = greenMatrix.getMatrix();
+        int[][] blue = blueMatrix.getMatrix();
+        int redMatrixSide = redMatrix.getSide();
+        int greenMatrixSide = greenMatrix.getSide();
+        int blueMatrixSide = blueMatrix.getSide();
+        int redDivider = redMatrix.getSide() * redMatrix.getSide();
+        int greenDivider = greenMatrix.getSide() * greenMatrix.getSide();
+        int blueDivider = blueMatrix.getSide() * blueMatrix.getSide();
+        int redMatrixFactor = 255 / (redQuantization - 1);
+        int greenMatrixFactor = 255 / (greenQuantization - 1);
+        int blueMatrixFactor = 255 / (blueQuantization - 1);
+
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                int argb = pixelReader.getArgb(x, y);
+                int newRed = filterPixel(x, y, argb >> 16 & 255, redQuantization,
+                        redMatrixSide, red, redDivider, redMatrixFactor);
+                int newGreen = filterPixel(x, y, argb >> 8 & 255, greenQuantization,
+                        greenMatrixSide, green, greenDivider, greenMatrixFactor);
+                int newBlue = filterPixel(x, y, argb & 255, blueQuantization,
+                        blueMatrixSide, blue, blueDivider, blueMatrixFactor);
+                pixelWriter.setArgb(x, y, 255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
+            }
+        }
+        return filteredImage;
+    }
+
+    private int filterPixel(int x, int y, int oldColor, int quantizationNumber, int matrixSide,
+                            int[][] matrix, int divider, int matrixFactor) {
+        int error = matrixFactor * matrix[y % matrixSide][x % matrixSide] / divider;
+        return getNearestPaletteColor(oldColor + error, quantizationNumber);
     }
 
     private int[][] getMatrix(int matrixSide) {
@@ -96,13 +143,13 @@ public class OrderedDitheringFilter extends DitheringFilter {
         }
 
         @Override
-        public Integer[] getSizes() {
+        public Integer[] getSides() {
             return new Integer[]{2, 4, 8, 16, null};
         }
 
         @Override
-        public Integer getSize() {
-            return matrixPreferredSide;
+        public Integer getSide() {
+            return matrixSide;
         }
 
         private boolean recalculateMatrix() {

@@ -1,10 +1,8 @@
-package ru.nsu.fit.icg.lab2.toolbar;
+package ru.nsu.fit.icg.lab2.menuToolbar.toolbar;
 
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.FilterChangeHandler;
-import ru.nsu.fit.icg.lab2.filter.FilterChanger;
 
 public class FilterToggleButton extends ToggleButton implements FilterChanger {
 

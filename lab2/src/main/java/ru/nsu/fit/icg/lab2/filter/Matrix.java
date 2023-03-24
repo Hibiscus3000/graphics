@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.matrix;
+package ru.nsu.fit.icg.lab2.filter;
 
 public abstract class Matrix {
     protected int[][] matrix;
@@ -7,7 +7,7 @@ public abstract class Matrix {
 
     public abstract boolean setPreferredSide(Integer matrixPreferredSide);
 
-    public abstract Integer[] getSizes();
+    public abstract Integer[] getSides();
 
-    public abstract Integer getSize();
+    public abstract Integer getSide();
 }

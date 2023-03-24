@@ -111,7 +111,7 @@ public class ImageBox extends VBox {
 
     public void openImage(WritableImage image) {
         current = original = image;
-        filtered = null;
+        filterChanged = true;
         imageView.setImage(current);
         bounds.widthProperty().bind(image.widthProperty());
         bounds.heightProperty().bind(image.heightProperty());

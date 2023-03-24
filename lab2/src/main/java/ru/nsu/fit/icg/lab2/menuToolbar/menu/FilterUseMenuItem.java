@@ -1,10 +1,10 @@
-package ru.nsu.fit.icg.lab2.menu;
+package ru.nsu.fit.icg.lab2.menuToolbar.menu;
 
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.FilterChangeHandler;
-import ru.nsu.fit.icg.lab2.filter.FilterChanger;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChanger;
 
 public class FilterUseMenuItem extends RadioMenuItem implements FilterChanger {
 
