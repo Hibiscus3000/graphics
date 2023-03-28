@@ -1,33 +1,42 @@
-package ru.nsu.fit.icg.lab2.filter.dithering;
+package ru.nsu.fit.icg.lab2.filter.dithering.ordered;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.Matrix;
+import ru.nsu.fit.icg.lab2.filter.dithering.DitheringFilter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class OrderedDitheringFilter extends DitheringFilter {
 
-    private final Map<Integer, int[][]> matrices = new HashMap<>(); //matrixPreferredSide => matrix-0.5
+    private static int[][] matrixForMatrixCreation;
+    private static final Map<Integer, int[][]> matrices = new HashMap<>(); //matrixPreferredSide => matrix-0.5
 
-    private final OrderedDitheringMatrix[] colorMatrices = new OrderedDitheringMatrix[3];
-    private int[][] matrixForMatrixCreation;
+    private final OrderedDitheringMatrix[] colorMatrices = new OrderedDitheringMatrix[Color.values().length];
 
     public OrderedDitheringFilter() {
+        final int initialMatrixSide = 4;
+
         matrixForMatrixCreation = new int[2][2];
         matrixForMatrixCreation[0][0] = -2;
         matrixForMatrixCreation[0][1] = 0;
         matrixForMatrixCreation[1][0] = 1;
         matrixForMatrixCreation[1][1] = -1;
         matrices.put(2, matrixForMatrixCreation);
-        colorQuantization[0] = colorQuantization[1] = colorQuantization[2] = 16;
-        final int initialSide = 4;
-        matrixForMatrixCreation = getMatrix(initialSide);
-        colorMatrices[0] = new OrderedDitheringMatrix(Color.RED, initialSide);
-        colorMatrices[1] = new OrderedDitheringMatrix(Color.GREEN, initialSide);
-        colorMatrices[2] = new OrderedDitheringMatrix(Color.BLUE, initialSide);
+        matrixForMatrixCreation = getMatrix(initialMatrixSide);
+
+        final int initialColorQuantization = 16;
+        Color[] colors = Color.values();
+
+        colorProperties = new OrdDitherQuantProperty[colors.length];
+        for (Color color : colors) {
+            int colorOrdinal = color.ordinal();
+            colorMatrices[colorOrdinal] = new OrderedDitheringMatrix(initialMatrixSide,
+                    initialColorQuantization);
+            colorProperties[colorOrdinal] = new OrdDitherQuantProperty(colorMatrices[colorOrdinal]);
+        }
+
     }
 
     @Override
@@ -40,9 +49,9 @@ public class OrderedDitheringFilter extends DitheringFilter {
         int redOrdinal = Color.RED.ordinal();
         int greenOrdinal = Color.GREEN.ordinal();
         int blueOrdinal = Color.BLUE.ordinal();
-        int redQuantization = colorQuantization[redOrdinal];
-        int greenQuantization = colorQuantization[greenOrdinal];
-        int blueQuantization = colorQuantization[blueOrdinal];
+        int redQuantization = colorProperties[redOrdinal].get();
+        int greenQuantization = colorProperties[greenOrdinal].get();
+        int blueQuantization = colorProperties[blueOrdinal].get();
         OrderedDitheringMatrix redMatrix = colorMatrices[redOrdinal];
         OrderedDitheringMatrix greenMatrix = colorMatrices[greenOrdinal];
         OrderedDitheringMatrix blueMatrix = colorMatrices[blueOrdinal];
@@ -80,7 +89,7 @@ public class OrderedDitheringFilter extends DitheringFilter {
         return getNearestPaletteColor(oldColor + error, quantizationNumber);
     }
 
-    private int[][] getMatrix(int matrixSide) {
+    public static int[][] getMatrix(int matrixSide) {
         if (null == matrices.get(matrixSide)) {
             int smallerMatrixSide = matrixSide / 2;
             matrixForMatrixCreation = getMatrix(smallerMatrixSide);
@@ -115,70 +124,7 @@ public class OrderedDitheringFilter extends DitheringFilter {
     }
 
     @Override
-    public boolean setQuantization(Color color, int quantization) {
-        colorQuantization[color.ordinal()] = quantization;
-        return colorMatrices[color.ordinal()].recalculateMatrix();
-    }
-
-    private class OrderedDitheringMatrix extends Matrix {
-        private final Color color;
-        private Integer matrixPreferredSide;
-        private int matrixSide;
-
-        OrderedDitheringMatrix(Color color, Integer matrixPreferredSide) {
-            this.color = color;
-            this.matrixPreferredSide = matrixPreferredSide;
-            recalculateMatrix();
-        }
-
-        @Override
-        public int[][] getMatrix() {
-            return matrix;
-        }
-
-        @Override
-        public boolean setPreferredSide(Integer matrixPreferredSide) {
-            this.matrixPreferredSide = matrixPreferredSide;
-            return recalculateMatrix();
-        }
-
-        @Override
-        public Integer[] getSides() {
-            return new Integer[]{2, 4, 8, 16, null};
-        }
-
-        @Override
-        public Integer getSide() {
-            return matrixSide;
-        }
-
-        private boolean recalculateMatrix() {
-            int matrixSide;
-            if (null == this.matrixPreferredSide) {
-                matrixSide = getMatrixSideAuto();
-            } else {
-                matrixSide = this.matrixPreferredSide;
-            }
-            if (matrixSide != this.matrixSide) {
-                matrix = OrderedDitheringFilter.this.getMatrix(matrixSide);
-                this.matrixSide = matrixSide;
-                return true;
-            }
-            return false;
-        }
-
-        private int getMatrixSideAuto() {
-            int colorQuant = colorQuantization[color.ordinal()];
-            if (colorQuant <= 4) {
-                return 2;
-            }
-            if (colorQuant <= 16) {
-                return 4;
-            }
-            if (colorQuant <= 64) {
-                return 8;
-            }
-            return 16;
-        }
+    public OrdDitherQuantProperty getColorProperty(Color color) {
+        return (OrdDitherQuantProperty) super.getColorProperty(color);
     }
 }

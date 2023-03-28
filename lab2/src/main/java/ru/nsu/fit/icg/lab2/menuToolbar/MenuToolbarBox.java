@@ -14,7 +14,7 @@ import ru.nsu.fit.icg.lab2.filter.NegativeFilter;
 import ru.nsu.fit.icg.lab2.filter.borders.RobertsFilter;
 import ru.nsu.fit.icg.lab2.filter.borders.SobelFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.FloydSteinbergFilter;
-import ru.nsu.fit.icg.lab2.filter.dithering.OrderedDitheringFilter;
+import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringFilter;
 import ru.nsu.fit.icg.lab2.filter.matrix.convolution.EmbossingFilter;
 import ru.nsu.fit.icg.lab2.filter.matrix.convolution.SharpeningFilter;
 import ru.nsu.fit.icg.lab2.filter.matrix.convolution.SmoothingFilter;

@@ -5,7 +5,18 @@ import javafx.scene.image.WritableImage;
 public interface Filter {
 
     enum Color {
-        RED, GREEN, BLUE
+
+        RED("Красный"), GREEN("Зеленый"), BLUE("Синий");
+
+        Color(String name) {
+            this.name = name;
+        }
+
+        private String name;
+
+        public String getName() {
+            return name;
+        }
     }
 
     String getName();

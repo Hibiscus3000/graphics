@@ -1,9 +1,9 @@
 package ru.nsu.fit.icg.lab2.dialog.borders;
 
-import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.filter.borders.SobelFilter;
 
 public class SobelDialog extends BordersDialog {
-    public SobelDialog(Filter filter) {
-        super(filter, 1, 2040, 20);
+    public SobelDialog(SobelFilter sobelFilter) {
+        super(sobelFilter, 1, 2040, 20);
     }
 }

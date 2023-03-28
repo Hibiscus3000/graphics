@@ -1,36 +1,38 @@
 package ru.nsu.fit.icg.lab2.dialog.dithering;
 
-import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
-import ru.nsu.fit.icg.lab2.dialog.matrix.ChangeableMatrixBox;
+import ru.nsu.fit.icg.lab2.dialog.matrix.OrderedDitheringMatrixBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.dithering.DitheringFilter;
-import ru.nsu.fit.icg.lab2.filter.dithering.OrderedDitheringFilter;
+import ru.nsu.fit.icg.lab2.filter.ThreeColorFilter;
+import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringFilter;
+import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringMatrix;
 
 
 public class OrderedDitheringDialog extends DitheringDialog implements ResizableDialog {
 
-    private final ChangeableMatrixBox[] changeableMatrixBoxes = new ChangeableMatrixBox[3];
+    OrderedDitheringMatrixBox[] orderedDitheringMatrixBoxes = new OrderedDitheringMatrixBox[Filter.Color.values().length];
 
-    public OrderedDitheringDialog(Filter filter) {
-        super(filter);
-        OrderedDitheringFilter orderedDitheringFilter = (OrderedDitheringFilter) filter;
-        VBox colorQuantizationBox = getColorQuantizationBox();
+    public OrderedDitheringDialog(ThreeColorFilter threeColorFilter) {
+        super(threeColorFilter);
+        VBox colorQuantizationBox = getColorQuantizationBox(labelText);
         HBox matricesBox = new HBox();
-        changeableMatrixBoxes[DitheringFilter.Color.RED.ordinal()] = new ChangeableMatrixBox("Красный",
-                orderedDitheringFilter.getMatrix(DitheringFilter.Color.RED), this);
-        changeableMatrixBoxes[DitheringFilter.Color.GREEN.ordinal()] = new ChangeableMatrixBox("Зеленый",
-                orderedDitheringFilter.getMatrix(DitheringFilter.Color.GREEN), this);
-        changeableMatrixBoxes[DitheringFilter.Color.BLUE.ordinal()] = new ChangeableMatrixBox("Синий",
-                orderedDitheringFilter.getMatrix(DitheringFilter.Color.BLUE), this);
-        quantizationEditBoxes[Filter.Color.RED.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.RED));
-        quantizationEditBoxes[Filter.Color.GREEN.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.GREEN));
-        quantizationEditBoxes[Filter.Color.BLUE.ordinal()].setChangeHandler(new MatrixQuantizationHandler(DitheringFilter.Color.BLUE));
-        matricesBox.getChildren().addAll(changeableMatrixBoxes[DitheringFilter.Color.RED.ordinal()],
-                changeableMatrixBoxes[DitheringFilter.Color.GREEN.ordinal()],
-                changeableMatrixBoxes[DitheringFilter.Color.BLUE.ordinal()]);
+        OrderedDitheringFilter orderedDitheringFilter = (OrderedDitheringFilter) threeColorFilter;
+        for (Filter.Color color : Filter.Color.values()) {
+            OrderedDitheringMatrix matrix = orderedDitheringFilter.getMatrix(color);
+            OrderedDitheringMatrixBox orderedDitheringMatrixBox
+                    = orderedDitheringMatrixBoxes[color.ordinal()]
+                    = new OrderedDitheringMatrixBox(color.getName(), matrix, this);
+            matricesBox.getChildren().add(orderedDitheringMatrixBox);
+            threeColorFilter.getColorProperty(color).addListener((observable, oldVal, newVal)
+                    -> {
+                if (matrix.сhanged()) {
+                    orderedDitheringMatrixBox.drawMatrix();
+                    matrix.setChanged(false);
+                }
+            });
+        }
         colorQuantizationBox.getChildren().addAll(matricesBox, getButtonBox());
         getDialogPane().setContent(colorQuantizationBox);
     }
@@ -40,17 +42,11 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
         getDialogPane().getScene().getWindow().sizeToScene();
     }
 
-    private class MatrixQuantizationHandler extends QuantizationHandler {
-
-        public MatrixQuantizationHandler(DitheringFilter.Color color) {
-            super(color);
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Integer> observableValue, Integer oldVal, Integer newVal) {
-            if (ditheringFilter.setQuantization(color, newVal)) {
-                changeableMatrixBoxes[color.ordinal()].drawMatrix();
-            }
+    @Override
+    protected void cancel() {
+        super.cancel();
+        for (Filter.Color color : Filter.Color.values()) {
+            orderedDitheringMatrixBoxes[color.ordinal()].drawMatrix();
         }
     }
 }

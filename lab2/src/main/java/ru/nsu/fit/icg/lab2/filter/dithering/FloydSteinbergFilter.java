@@ -1,10 +1,19 @@
 package ru.nsu.fit.icg.lab2.filter.dithering;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 public class FloydSteinbergFilter extends DitheringFilter {
+
+    public FloydSteinbergFilter() {
+        Color[] colors = Color.values();
+        colorProperties = new SimpleIntegerProperty[colors.length];
+        for (Color color : colors) {
+            colorProperties[color.ordinal()] = new SimpleIntegerProperty(8);
+        }
+    }
 
     @Override
     public String getName() {
@@ -32,9 +41,12 @@ public class FloydSteinbergFilter extends DitheringFilter {
         for (int x = 0; x < imageWidth; ++x) {
             for (int y = 0; y < imageHeight; ++y) {
                 int argb = pixelReader.getArgb(x, y);
-                int newRed = filterPixel(x, y, argb >> 16 & 255, colorQuantization[Color.RED.ordinal()], r);
-                int newGreen = filterPixel(x, y, argb >> 8 & 255, colorQuantization[Color.GREEN.ordinal()], g);
-                int newBlue = filterPixel(x, y, argb & 255, colorQuantization[Color.BLUE.ordinal()], b);
+                int newRed = filterPixel(x, y, argb >> 16 & 255,
+                        colorProperties[Color.RED.ordinal()].get(), r);
+                int newGreen = filterPixel(x, y, argb >> 8 & 255,
+                        colorProperties[Color.GREEN.ordinal()].get(), g);
+                int newBlue = filterPixel(x, y, argb & 255,
+                        colorProperties[Color.BLUE.ordinal()].get(), b);
                 pixelWriter.setArgb(x, y, 255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
             }
         }
@@ -63,9 +75,4 @@ public class FloydSteinbergFilter extends DitheringFilter {
         return newColor;
     }
 
-    @Override
-    public boolean setQuantization(Color color, int quantization) {
-        colorQuantization[color.ordinal()] = quantization;
-        return false;
-    }
 }

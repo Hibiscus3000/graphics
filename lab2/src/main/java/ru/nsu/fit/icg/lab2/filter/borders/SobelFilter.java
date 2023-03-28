@@ -5,7 +5,7 @@ public class SobelFilter extends BordersFilter {
     public SobelFilter() {
         super(new int[][]{{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}},
                 new int[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}},
-                8, new int[]{200, 200, 200});
+                8);
     }
 
     @Override

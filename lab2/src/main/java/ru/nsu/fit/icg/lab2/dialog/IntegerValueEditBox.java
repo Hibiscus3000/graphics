@@ -1,6 +1,6 @@
 package ru.nsu.fit.icg.lab2.dialog;
 
-import javafx.beans.value.ChangeListener;
+import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -14,25 +14,22 @@ public class IntegerValueEditBox extends VBox {
     private final static int spacing = 5;
     private final Spinner<Integer> spinner = new Spinner<>();
 
-    public IntegerValueEditBox(String valueName, int min, int max, int initialValue, int amountToStepBy) {
+    public IntegerValueEditBox(String valueName, int min, int max, IntegerProperty integerProperty, int amountToStepBy) {
         setAlignment(Pos.CENTER);
         setSpacing(spacing);
 
         HBox sliderSpinnerBox = new HBox();
         sliderSpinnerBox.setSpacing(spacing);
-        Slider slider = new Slider(min, max, initialValue);
+        Slider slider = new Slider(min, max, integerProperty.get());
         slider.setBlockIncrement(amountToStepBy);
         spinner.setEditable(true);
-        spinner.setValueFactory(new IntValueSpinnerValueFactory(min, max, initialValue, amountToStepBy));
+        spinner.setValueFactory(new IntValueSpinnerValueFactory(min, max, integerProperty.get(), amountToStepBy));
         slider.valueProperty().addListener((observable, oldVal, newVal) -> spinner.getValueFactory().setValue(newVal.intValue()));
         spinner.valueProperty().addListener((observable, oldVal, newVal) -> slider.setValue(newVal));
+        integerProperty.bindBidirectional(slider.valueProperty());
         sliderSpinnerBox.getChildren().addAll(slider, spinner);
 
         getChildren().addAll(new Label(valueName), sliderSpinnerBox);
-    }
-
-    public void setChangeHandler(ChangeListener<Integer> changeHandler) {
-        spinner.valueProperty().addListener(changeHandler);
     }
 
     public int getValue() {

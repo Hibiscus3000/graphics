@@ -1,22 +1,27 @@
 package ru.nsu.fit.icg.lab2.filter.borders;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.filter.ThreeColorFilter;
 
-public abstract class BordersFilter implements Filter {
+public abstract class BordersFilter extends ThreeColorFilter {
 
     private final int[][] first;
     private final int[][] second;
     private final int divider;
-    private int[] binarization;
 
-    protected BordersFilter(int[][] first, int[][] second, int divider, int[] binarization) {
+    protected BordersFilter(int[][] first, int[][] second, int divider) {
         this.first = first;
         this.second = second;
-        this.binarization = binarization;
         this.divider = divider;
+        Color[] colors = Color.values();
+        colorProperties = new SimpleIntegerProperty[colors.length];
+        for (Color color : colors) {
+            colorProperties[color.ordinal()] = new SimpleIntegerProperty(16);
+        }
     }
 
     private int width;
@@ -55,9 +60,9 @@ public abstract class BordersFilter implements Filter {
                 blueSecond += second[matrixX][matrixY] * b;
             }
         }
-        int redBinarization = binarization[Color.RED.ordinal()];
-        int greenBinarization = binarization[Color.GREEN.ordinal()];
-        int blueBinarization = binarization[Color.BLUE.ordinal()];
+        int redBinarization = colorProperties[Color.RED.ordinal()].get();
+        int greenBinarization = colorProperties[Color.GREEN.ordinal()].get();
+        int blueBinarization = colorProperties[Color.BLUE.ordinal()].get();
         int red = Math.abs(redFirst) + Math.abs(redSecond);
         int green = Math.abs(greenFirst) + Math.abs(greenSecond);
         int blue = Math.abs(blueFirst) + Math.abs(blueSecond);
@@ -67,11 +72,7 @@ public abstract class BordersFilter implements Filter {
         return 255 << 24 | red << 16 | green << 8 | blue;
     }
 
-    public int getBinarization(Color color) {
-        return binarization[color.ordinal()];
-    }
-
-    public void setBinarization(Color color, int binarization) {
-        this.binarization[color.ordinal()] = binarization;
+    public IntegerProperty getBinarization(Color color) {
+        return colorProperties[color.ordinal()];
     }
 }

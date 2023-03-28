@@ -6,15 +6,16 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
-import ru.nsu.fit.icg.lab2.filter.Matrix;
+import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringMatrix;
 
-public class ChangeableMatrixBox extends VBox {
+public class OrderedDitheringMatrixBox extends VBox {
 
     private final MatrixPane matrixPane = new MatrixPane();
-    private final Matrix matrix;
+    private final OrderedDitheringMatrix matrix;
     private final ResizableDialog owner;
 
-    public ChangeableMatrixBox(String name, Matrix matrix, ResizableDialog owner) {
+    public OrderedDitheringMatrixBox(String name, OrderedDitheringMatrix matrix,
+                                     ResizableDialog owner) {
         this.matrix = matrix;
         this.owner = owner;
         HBox buttonBox = new HBox();
@@ -37,9 +38,16 @@ public class ChangeableMatrixBox extends VBox {
         public SizeButton(Integer size) {
             setText(null != size ? String.format("%1$dx%1$d", size) : "авто");
             setOnAction(e -> {
-                if (matrix.setPreferredSide(size)) {
-                    drawMatrix();
+                if (isSelected()) {
+                    matrix.setPreferredSide(size);
+                    if (matrix.сhanged()) {
+                        drawMatrix();
+                        matrix.setChanged(false);
+                    }
+                } else {
+                    setSelected(true);
                 }
+                e.consume();
             });
             setToggleGroup(buttonGroup);
             if (matrix.getSide().equals(size)) {
