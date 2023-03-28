@@ -42,7 +42,7 @@ public class ImageBox extends VBox {
 
     public ImageBox() {
         imageChangeHandler = event -> {
-            if (filterChanged) {
+            if (changeToFiltered() && filterChanged) {
                 setCursor(Cursor.WAIT);
             }
             imageChanger.submit(ImageBox.this::changeImage);
@@ -135,7 +135,7 @@ public class ImageBox extends VBox {
     }
 
     private void changeImage() {
-        boolean changeToFiltered = current == original && null != filter && null != original;
+        boolean changeToFiltered = changeToFiltered();
         filterToggleButton.setSelected(changeToFiltered);
         if (changeToFiltered) {
             if (filterChanged) {
@@ -148,5 +148,9 @@ public class ImageBox extends VBox {
         }
         imageView.setImage(current);
         setCursor(Cursor.DEFAULT);
+    }
+
+    private boolean changeToFiltered() {
+        return current == original && null != filter && null != original;
     }
 }
