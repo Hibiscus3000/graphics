@@ -46,6 +46,9 @@ public abstract class ConvolutionFilter implements Filter {
                 blue += matrix[matrixX][matrixY] * b / divider;
             }
         }
-        return 255 << 24 | Math.min(red, 255) << 16 | Math.min(green, 255) << 8 | Math.min(blue, 255);
+        return 255 << 24
+                | Math.min(Math.max(0, red), 255) << 16
+                | Math.min(Math.max(0, green), 255) << 8
+                | Math.min(Math.max(0, blue), 255);
     }
 }
