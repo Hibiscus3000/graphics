@@ -9,6 +9,7 @@ public abstract class ConvolutionFilter implements Filter {
 
     protected Integer[][] matrix;
     protected int divider;
+    protected int addition = 0;
 
     @Override
     public final WritableImage filter(WritableImage original) {
@@ -29,7 +30,7 @@ public abstract class ConvolutionFilter implements Filter {
     private int height;
 
     private int filterPixel(int x0, int y0, PixelReader pixelReader) {
-        int red = 0, green = 0, blue = 0;
+        int red = addition, green = addition, blue = addition;
         int left = matrix.length >> 1, right = (matrix.length >> 1) - (matrix.length & 1 ^ 1);
         for (int x = x0 - left; x <= x0 + right; ++x) {
             for (int y = y0 - left; y <= y0 + right; ++y) {
@@ -45,6 +46,6 @@ public abstract class ConvolutionFilter implements Filter {
                 blue += matrix[matrixX][matrixY] * b / divider;
             }
         }
-        return 255 << 24 | red << 16 | green << 8 | blue;
+        return 255 << 24 | Math.min(red, 255) << 16 | Math.min(green, 255) << 8 | Math.min(blue, 255);
     }
 }

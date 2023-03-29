@@ -8,6 +8,9 @@ import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
 import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringMatrix;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OrderedDitheringMatrixBox extends VBox {
 
     private final MatrixPane matrixPane = new MatrixPane();
@@ -17,6 +20,7 @@ public class OrderedDitheringMatrixBox extends VBox {
     public OrderedDitheringMatrixBox(String name, OrderedDitheringMatrix matrix,
                                      ResizableDialog owner) {
         this.matrix = matrix;
+        prevMatrixSide = matrix.getSide();
         this.owner = owner;
         HBox buttonBox = new HBox();
         for (Integer matrixSide : matrix.getSides()) {
@@ -32,6 +36,7 @@ public class OrderedDitheringMatrixBox extends VBox {
     }
 
     private final ToggleGroup buttonGroup = new ToggleGroup();
+    private final Map<Integer, SizeButton> sizeButtonMap = new HashMap<>(); // matrixSide => sizeButton
 
     private class SizeButton extends ToggleButton {
 
@@ -49,10 +54,22 @@ public class OrderedDitheringMatrixBox extends VBox {
                 }
                 e.consume();
             });
+            sizeButtonMap.put(size, this);
             setToggleGroup(buttonGroup);
             if (matrix.getSide().equals(size)) {
-                setSelected(true);
+                fire();
             }
         }
+    }
+
+    private Integer prevMatrixSide;
+
+    public void saveMatrixSide() {
+        prevMatrixSide = matrix.getSide();
+    }
+
+    public void cancel() {
+        matrix.setPreferredSide(prevMatrixSide);
+        sizeButtonMap.get(matrix.getSide()).fire();
     }
 }
