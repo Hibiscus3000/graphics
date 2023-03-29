@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.convolution;
+package ru.nsu.fit.icg.lab2.filter.neighborhood.convolution;
 
 public class SharpeningFilter extends ConvolutionFilter {
 

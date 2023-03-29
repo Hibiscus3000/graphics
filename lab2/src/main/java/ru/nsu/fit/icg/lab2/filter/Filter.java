@@ -4,9 +4,9 @@ import javafx.scene.image.WritableImage;
 
 public interface Filter {
 
+    WritableImage filter(WritableImage original);
+
     String getName();
 
     String getJsonName();
-
-    WritableImage filter(WritableImage original);
 }

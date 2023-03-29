@@ -1,37 +1,17 @@
-package ru.nsu.fit.icg.lab2.filter.convolution;
+package ru.nsu.fit.icg.lab2.filter.neighborhood.convolution;
 
 import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.NeighborhoodFilter;
 
-public abstract class ConvolutionFilter implements Filter {
+public abstract class ConvolutionFilter extends NeighborhoodFilter {
 
     protected Integer[][] matrix;
     protected int divider;
     protected int addition = 0;
 
     @Override
-    public final WritableImage filter(WritableImage original) {
-        width = (int) original.getWidth();
-        height = (int) original.getHeight();
-        WritableImage filteredImage = new WritableImage(width, height);
-        PixelReader pixelReader = original.getPixelReader();
-        PixelWriter pixelWriter = filteredImage.getPixelWriter();
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                pixelWriter.setArgb(x, y, filterPixel(x, y, pixelReader));
-            }
-        }
-        return filteredImage;
-    }
-
-    private int width;
-    private int height;
-
-    private int filterPixel(int x0, int y0, PixelReader pixelReader) {
+    protected int filterPixel(int x0, int y0, PixelReader pixelReader) {
         int red = addition, green = addition, blue = addition;
-        int left = matrix.length >> 1, right = (matrix.length >> 1) - (matrix.length & 1 ^ 1);
         for (int x = x0 - left; x <= x0 + right; ++x) {
             for (int y = y0 - left; y <= y0 + right; ++y) {
                 int matrixX = x - x0 + left, matrixY = y - y0 + left;
@@ -50,5 +30,15 @@ public abstract class ConvolutionFilter implements Filter {
                 | Math.min(Math.max(0, red), 255) << 16
                 | Math.min(Math.max(0, green), 255) << 8
                 | Math.min(Math.max(0, blue), 255);
+    }
+
+    @Override
+    protected int getLeft() {
+        return matrix.length >> 1;
+    }
+
+    @Override
+    protected int getRight() {
+        return (matrix.length >> 1) - (matrix.length & 1 ^ 1);
     }
 }

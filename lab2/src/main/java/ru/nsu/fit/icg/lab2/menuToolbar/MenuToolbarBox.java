@@ -13,11 +13,12 @@ import ru.nsu.fit.icg.lab2.filter.GammaFilter;
 import ru.nsu.fit.icg.lab2.filter.NegativeFilter;
 import ru.nsu.fit.icg.lab2.filter.borders.RobertsFilter;
 import ru.nsu.fit.icg.lab2.filter.borders.SobelFilter;
-import ru.nsu.fit.icg.lab2.filter.convolution.EmbossingFilter;
-import ru.nsu.fit.icg.lab2.filter.convolution.SharpeningFilter;
-import ru.nsu.fit.icg.lab2.filter.convolution.SmoothingFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.FloydSteinbergFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringFilter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.MedianFilter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.EmbossingFilter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.SharpeningFilter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.SmoothingFilter;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterParametersMenuItem;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterUseMenuItem;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
@@ -64,6 +65,7 @@ public class MenuToolbarBox extends VBox {
     public void addFilters() {
         menuBar.getMenus().add(filterMenu);
         addFilter(new BlackWhiteFilter());
+        addFilter(new MedianFilter());
         addFilter(new GammaFilter());
         addFilter(new NegativeFilter());
         addFilter(new FloydSteinbergFilter());
