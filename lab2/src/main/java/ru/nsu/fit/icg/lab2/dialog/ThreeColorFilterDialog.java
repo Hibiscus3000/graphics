@@ -21,8 +21,7 @@ public abstract class ThreeColorFilterDialog extends FilterDialog {
             IntegerProperty colorProperty = threeColorFilter.getColorProperty(color);
             int colorOrdinal = color.ordinal();
             colorPropertyEditBoxes[colorOrdinal] =
-                    new IntegerValueEditBox(color.getName(), min, max,
-                            colorProperty, amountToStepBy);
+                    new IntegerValueEditBox(color.getName(), colorProperty, min, max, amountToStepBy);
             prevColorValues[colorOrdinal] = colorProperty.get();
         }
     }

@@ -2,7 +2,7 @@
   "filters": [
     {
       "name": "smoothing",
-      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.SmoothingDialog"
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.smoothing.SmoothingDialog"
     },
     {
       "name": "gamma",

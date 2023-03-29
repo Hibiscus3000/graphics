@@ -13,20 +13,29 @@ public class IntegerValueEditBox extends VBox {
 
     private final static int spacing = 5;
     private final Spinner<Integer> spinner = new Spinner<>();
+    protected final Slider slider;
 
-    public IntegerValueEditBox(String valueName, int min, int max, IntegerProperty integerProperty, int amountToStepBy) {
+    public IntegerValueEditBox(String valueName, IntegerProperty integerProperty,
+                               int min, int max, int amountToStepBy) {
         setAlignment(Pos.CENTER);
         setSpacing(spacing);
 
         HBox sliderSpinnerBox = new HBox();
         sliderSpinnerBox.setSpacing(spacing);
-        Slider slider = new Slider(min, max, integerProperty.get());
+        slider = new Slider(min, max, integerProperty.get());
         slider.setBlockIncrement(amountToStepBy);
         spinner.setEditable(true);
-        spinner.setValueFactory(new IntValueSpinnerValueFactory(min, max, integerProperty.get(), amountToStepBy));
-        slider.valueProperty().addListener((observable, oldVal, newVal) -> spinner.getValueFactory().setValue(newVal.intValue()));
-        spinner.valueProperty().addListener((observable, oldVal, newVal) -> slider.setValue(newVal));
-        integerProperty.bindBidirectional(slider.valueProperty());
+        spinner.setValueFactory(new IntSpinnerValueFactory(min, max, integerProperty.get(), amountToStepBy));
+        slider.valueProperty().addListener((observable, oldVal, newVal) ->
+                spinner.getValueFactory().setValue(newVal.intValue()));
+        spinner.valueProperty().addListener((observable, oldVal, newVal) -> {
+            if (!slider.isValueChanging()) {
+                slider.setValue(newVal);
+            }
+            integerProperty.set(newVal);
+        });
+        integerProperty.addListener((observable, oldVal, newVal) ->
+                spinner.getValueFactory().valueProperty().set((Integer) newVal));
         sliderSpinnerBox.getChildren().addAll(slider, spinner);
 
         getChildren().addAll(new Label(valueName), sliderSpinnerBox);
@@ -40,9 +49,21 @@ public class IntegerValueEditBox extends VBox {
         spinner.getValueFactory().setValue(value);
     }
 
-    private class IntValueSpinnerValueFactory extends SpinnerValueFactory.IntegerSpinnerValueFactory {
+    protected Integer previous;
 
-        public IntValueSpinnerValueFactory(int min, int max, int initialValue, int amountToStepBy) {
+    protected boolean setNewPrevious(Integer newVal) {
+        boolean otherThenPrevious = otherThenPrevious(newVal);
+        previous = newVal;
+        return otherThenPrevious;
+    }
+
+    protected boolean otherThenPrevious(Integer newVal) {
+        return !newVal.equals(previous);
+    }
+
+    private class IntSpinnerValueFactory extends SpinnerValueFactory.IntegerSpinnerValueFactory {
+
+        public IntSpinnerValueFactory(int min, int max, int initialValue, int amountToStepBy) {
             super(min, max, initialValue, amountToStepBy);
         }
 
