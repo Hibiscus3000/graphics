@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class MedianFilter extends NeighborhoodFilter {
 
-    private final int neighborhoodSide = 5;
+    private final int neighborhoodSide = 13;
     private final int neighborhoodSize = neighborhoodSide * neighborhoodSide;
 
     @Override
@@ -36,10 +36,11 @@ public class MedianFilter extends NeighborhoodFilter {
         Arrays.sort(red);
         Arrays.sort(green);
         Arrays.sort(blue);
+        int halfNeighborhoodSize = currentNeighborhoodSize / 2;
         return 255 << 24
-                | red[halfNeighborhoodSide] << 16
-                | green[halfNeighborhoodSide] << 8
-                | blue[halfNeighborhoodSide];
+                | red[halfNeighborhoodSize] << 16
+                | green[halfNeighborhoodSize] << 8
+                | blue[halfNeighborhoodSize];
     }
 
     @Override

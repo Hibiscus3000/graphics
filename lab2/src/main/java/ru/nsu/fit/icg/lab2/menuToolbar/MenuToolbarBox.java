@@ -7,10 +7,7 @@ import javafx.stage.Screen;
 import ru.nsu.fit.icg.lab2.ImageBox;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialogFactory;
 import ru.nsu.fit.icg.lab2.file.FileHandler;
-import ru.nsu.fit.icg.lab2.filter.BlackWhiteFilter;
-import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.GammaFilter;
-import ru.nsu.fit.icg.lab2.filter.NegativeFilter;
+import ru.nsu.fit.icg.lab2.filter.*;
 import ru.nsu.fit.icg.lab2.filter.borders.RobertsFilter;
 import ru.nsu.fit.icg.lab2.filter.borders.SobelFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.FloydSteinbergFilter;
@@ -65,6 +62,7 @@ public class MenuToolbarBox extends VBox {
     public void addFilters() {
         menuBar.getMenus().add(filterMenu);
         addFilter(new BlackWhiteFilter());
+        addFilter(new WaterColorizationFilter());
         addFilter(new MedianFilter());
         addFilter(new GammaFilter());
         addFilter(new NegativeFilter());
