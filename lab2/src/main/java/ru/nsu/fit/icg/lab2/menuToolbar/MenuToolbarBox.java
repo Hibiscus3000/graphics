@@ -14,6 +14,7 @@ import ru.nsu.fit.icg.lab2.filter.dithering.FloydSteinbergFilter;
 import ru.nsu.fit.icg.lab2.filter.dithering.ordered.OrderedDitheringFilter;
 import ru.nsu.fit.icg.lab2.filter.neighborhood.MedianFilter;
 import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.EmbossingFilter;
+import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.MotionFilter;
 import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.SharpeningFilter;
 import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.SmoothingFilter;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterParametersMenuItem;
@@ -62,6 +63,7 @@ public class MenuToolbarBox extends VBox {
     public void addFilters() {
         menuBar.getMenus().add(filterMenu);
         addFilter(new BlackWhiteFilter());
+        addFilter(new MotionFilter());
         addFilter(new WaterColorizationFilter());
         addFilter(new MedianFilter());
         addFilter(new GammaFilter());
