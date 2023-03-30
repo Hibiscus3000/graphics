@@ -1,9 +1,9 @@
-package ru.nsu.fit.icg.lab2.filter.neighborhood.convolution;
+package ru.nsu.fit.icg.lab2.filter.window.convolution;
 
 import javafx.scene.image.PixelReader;
-import ru.nsu.fit.icg.lab2.filter.neighborhood.NeighborhoodFilter;
+import ru.nsu.fit.icg.lab2.filter.window.WindowFilter;
 
-public abstract class ConvolutionFilter extends NeighborhoodFilter {
+public abstract class ConvolutionFilter extends WindowFilter {
 
     protected Integer[][] matrix;
     protected int divider;

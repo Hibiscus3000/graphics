@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.filter.neighborhood.convolution;
+package ru.nsu.fit.icg.lab2.filter.window.convolution;
 
 public class MotionFilter extends ConvolutionFilter {
 

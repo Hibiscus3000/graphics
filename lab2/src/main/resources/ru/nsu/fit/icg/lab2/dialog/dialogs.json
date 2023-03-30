@@ -2,7 +2,7 @@
   "filters": [
     {
       "name": "smoothing",
-      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.smoothing.SmoothingDialog"
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.SmoothingDialog"
     },
     {
       "name": "gamma",
@@ -26,7 +26,11 @@
     },
     {
       "name": "embossing",
-      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.EmbossingFilterDialog"
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.EmbossingDialog"
+    },
+    {
+      "name": "median",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.MedianDialog"
     }
   ]
 }

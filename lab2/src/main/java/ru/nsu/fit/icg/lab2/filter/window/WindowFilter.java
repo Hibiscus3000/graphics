@@ -1,11 +1,11 @@
-package ru.nsu.fit.icg.lab2.filter.neighborhood;
+package ru.nsu.fit.icg.lab2.filter.window;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 
-public abstract class NeighborhoodFilter implements Filter {
+public abstract class WindowFilter implements Filter {
 
     protected int width, height;
     protected int left, right;

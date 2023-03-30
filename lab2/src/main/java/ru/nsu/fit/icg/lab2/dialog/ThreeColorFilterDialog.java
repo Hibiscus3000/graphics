@@ -3,6 +3,7 @@ package ru.nsu.fit.icg.lab2.dialog;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import ru.nsu.fit.icg.lab2.dialog.edit_box.IntegerValueEditBox;
 import ru.nsu.fit.icg.lab2.filter.ThreeColorFilter;
 
 public abstract class ThreeColorFilterDialog extends FilterDialog {

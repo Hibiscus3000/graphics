@@ -1,12 +1,12 @@
-package ru.nsu.fit.icg.lab2.dialog.smoothing;
+package ru.nsu.fit.icg.lab2.dialog.edit_box;
 
 import javafx.beans.property.IntegerProperty;
-import ru.nsu.fit.icg.lab2.dialog.IntegerValueEditBox;
 
-public class SmoothingMatrixSideEditBox extends IntegerValueEditBox {
+public class OddIntegerSideEditBox extends IntegerValueEditBox {
 
-    public SmoothingMatrixSideEditBox(IntegerProperty matrixSideProperty) {
-        super("Размер матрицы сглаживания", matrixSideProperty, 3, 11, 2);
+    public OddIntegerSideEditBox(String valueName, IntegerProperty integerProperty,
+                                 int min, int max) {
+        super(valueName, integerProperty, min, max, 2);
         slider.setSnapToTicks(true);
         slider.setMajorTickUnit(2);
         slider.setMinorTickCount(0);

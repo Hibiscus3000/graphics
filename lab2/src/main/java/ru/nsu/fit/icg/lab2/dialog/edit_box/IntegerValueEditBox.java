@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.dialog;
+package ru.nsu.fit.icg.lab2.dialog.edit_box;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Pos;

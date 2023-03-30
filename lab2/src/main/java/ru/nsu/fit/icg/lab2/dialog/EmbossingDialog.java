@@ -5,18 +5,18 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.matrix.MatrixPane;
-import ru.nsu.fit.icg.lab2.filter.neighborhood.convolution.EmbossingFilter;
+import ru.nsu.fit.icg.lab2.filter.window.convolution.EmbossingFilter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmbossingFilterDialog extends FilterDialog {
+public class EmbossingDialog extends FilterDialog {
 
     private final EmbossingFilter embossingFilter;
 
     private final MatrixPane matrixPane;
 
-    public EmbossingFilterDialog(EmbossingFilter embossingFilter) {
+    public EmbossingDialog(EmbossingFilter embossingFilter) {
         super(embossingFilter);
         this.embossingFilter = embossingFilter;
         prevDirection = embossingFilter.getDirection();
