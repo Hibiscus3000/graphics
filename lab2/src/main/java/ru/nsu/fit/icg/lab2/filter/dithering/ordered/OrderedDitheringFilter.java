@@ -10,15 +10,15 @@ import java.util.Map;
 
 public class OrderedDitheringFilter extends DitheringFilter {
 
-    private static Integer[][] matrixForMatrixCreation;
-    private static final Map<Integer, Integer[][]> matrices = new HashMap<>(); //matrixPreferredSide => matrix-0.5
+    private static int[][] matrixForMatrixCreation;
+    private static final Map<Integer, int[][]> matrices = new HashMap<>(); //matrixPreferredSide => matrix-0.5
 
     private final OrderedDitheringMatrix[] colorMatrices = new OrderedDitheringMatrix[Color.values().length];
 
     public OrderedDitheringFilter() {
         final int initialMatrixSide = 4;
 
-        matrixForMatrixCreation = new Integer[2][2];
+        matrixForMatrixCreation = new int[2][2];
         matrixForMatrixCreation[0][0] = -2;
         matrixForMatrixCreation[0][1] = 0;
         matrixForMatrixCreation[1][0] = 1;
@@ -55,9 +55,9 @@ public class OrderedDitheringFilter extends DitheringFilter {
         OrderedDitheringMatrix redMatrix = colorMatrices[redOrdinal];
         OrderedDitheringMatrix greenMatrix = colorMatrices[greenOrdinal];
         OrderedDitheringMatrix blueMatrix = colorMatrices[blueOrdinal];
-        Integer[][] red = redMatrix.getMatrix();
-        Integer[][] green = greenMatrix.getMatrix();
-        Integer[][] blue = blueMatrix.getMatrix();
+        int[][] red = redMatrix.getMatrix();
+        int[][] green = greenMatrix.getMatrix();
+        int[][] blue = blueMatrix.getMatrix();
         int redMatrixSide = redMatrix.getSide();
         int greenMatrixSide = greenMatrix.getSide();
         int blueMatrixSide = blueMatrix.getSide();
@@ -84,17 +84,17 @@ public class OrderedDitheringFilter extends DitheringFilter {
     }
 
     private int filterPixel(int x, int y, int oldColor, int quantizationNumber, int matrixSide,
-                            Integer[][] matrix, int divider, int matrixFactor) {
+                            int[][] matrix, int divider, int matrixFactor) {
         int error = matrixFactor * matrix[y % matrixSide][x % matrixSide] / divider;
         return getNearestPaletteColor(oldColor + error, quantizationNumber);
     }
 
-    public static Integer[][] getMatrix(int matrixSide) {
+    public static int[][] getMatrix(int matrixSide) {
         if (null == matrices.get(matrixSide)) {
             int smallerMatrixSide = matrixSide / 2;
             matrixForMatrixCreation = getMatrix(smallerMatrixSide);
 
-            Integer[][] matrix = new Integer[matrixSide][matrixSide];
+            int[][] matrix = new int[matrixSide][matrixSide];
             matrices.put(matrixSide, matrix);
             for (int i = 0; i < smallerMatrixSide; ++i) {
                 for (int j = 0; j < smallerMatrixSide; ++j) {

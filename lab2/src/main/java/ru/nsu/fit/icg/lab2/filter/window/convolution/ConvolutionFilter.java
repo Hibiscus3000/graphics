@@ -5,8 +5,8 @@ import ru.nsu.fit.icg.lab2.filter.window.WindowFilter;
 
 public abstract class ConvolutionFilter extends WindowFilter {
 
-    protected Integer[][] matrix;
-    protected int divider;
+    protected int[][] matrix;
+    protected int divider = 1;
     protected int addition = 0;
 
     @Override
@@ -15,7 +15,7 @@ public abstract class ConvolutionFilter extends WindowFilter {
         for (int x = x0 - left; x <= x0 + right; ++x) {
             for (int y = y0 - left; y <= y0 + right; ++y) {
                 int matrixX = x - x0 + left, matrixY = y - y0 + left;
-                if (null == matrix[matrixX][matrixY]) {
+                if (0 == matrix[matrixX][matrixY]) {
                     continue;
                 }
                 int color = pixelReader.getArgb(Math.max(0, Math.min(x, width - 1)),

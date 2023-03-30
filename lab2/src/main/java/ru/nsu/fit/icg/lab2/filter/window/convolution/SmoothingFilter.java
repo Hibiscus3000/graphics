@@ -9,7 +9,7 @@ import java.util.Map;
 public class SmoothingFilter extends ConvolutionFilter {
 
     private final IntegerProperty matrixSideProperty;
-    private final Map<Integer, Integer[][]> matricesMap = new HashMap<>(); // matrixSide => matrix
+    private final Map<Integer, int[][]> matricesMap = new HashMap<>(); // matrixSide => matrix
     private final Map<Integer, Integer> dividersMap = new HashMap<>(); // matrixSide => divider
 
     public SmoothingFilter() {
@@ -25,17 +25,17 @@ public class SmoothingFilter extends ConvolutionFilter {
     }
 
     private void recalculateMatrix(Integer matrixSide) {
-        Integer[][] matrix = matricesMap.get(matrixSide);
+        int[][] matrix = matricesMap.get(matrixSide);
         Integer divider = dividersMap.get(matrixSide);
         if (null == matrix) {
             if (3 == matrixSide) {
-                matrix = new Integer[][]{
-                        {null, 1, null},
+                matrix = new int[][]{
+                        {0, 1, 0},
                         {1, 2, 1},
-                        {null, 1, null}};
+                        {0, 1, 0}};
                 divider = 6;
             } else if (5 == matrixSide) {
-                matrix = new Integer[][]{
+                matrix = new int[][]{
                         {1, 2, 3, 2, 1},
                         {2, 4, 5, 4, 2},
                         {3, 5, 6, 5, 3},
@@ -43,7 +43,7 @@ public class SmoothingFilter extends ConvolutionFilter {
                         {1, 2, 3, 2, 1}};
                 divider = 74;
             } else {
-                matrix = new Integer[matrixSide][matrixSide];
+                matrix = new int[matrixSide][matrixSide];
                 for (int i = 0; i < matrixSide; ++i) {
                     for (int j = 0; j < matrixSide; ++j) {
                         matrix[i][j] = 1;

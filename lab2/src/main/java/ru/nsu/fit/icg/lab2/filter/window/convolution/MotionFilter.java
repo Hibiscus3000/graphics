@@ -4,7 +4,7 @@ public class MotionFilter extends ConvolutionFilter {
 
     public MotionFilter() {
         divider = 9;
-        matrix = new Integer[divider][divider];
+        matrix = new int[divider][divider];
         for (int i = 0; i < divider; ++i) {
             for (int j = 0; j < divider; ++j) {
                 matrix[i][j] = i == j ? 1 : 0;

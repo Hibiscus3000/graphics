@@ -1,6 +1,7 @@
-package ru.nsu.fit.icg.lab2.dialog;
+package ru.nsu.fit.icg.lab2.dialog.convolution;
 
 import javafx.scene.layout.VBox;
+import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
 import ru.nsu.fit.icg.lab2.dialog.edit_box.OddIntegerSideEditBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.SmoothingFilter;

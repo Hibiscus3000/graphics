@@ -2,10 +2,10 @@ package ru.nsu.fit.icg.lab2.filter;
 
 public abstract class Matrix {
 
-    protected Integer[][] matrix;
+    protected int[][] matrix;
     protected boolean changed;
 
-    public abstract Integer[][] getMatrix();
+    public abstract int[][] getMatrix();
 
     public abstract void setPreferredSide(Integer matrixPreferredSide);
 

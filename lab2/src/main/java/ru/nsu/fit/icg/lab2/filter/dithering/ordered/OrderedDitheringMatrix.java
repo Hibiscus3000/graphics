@@ -15,7 +15,7 @@ public class OrderedDitheringMatrix extends Matrix {
     }
 
     @Override
-    public Integer[][] getMatrix() {
+    public int[][] getMatrix() {
         return matrix;
     }
 

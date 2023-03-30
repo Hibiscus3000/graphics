@@ -2,7 +2,7 @@ package ru.nsu.fit.icg.lab2.filter;
 
 import javafx.scene.image.WritableImage;
 import ru.nsu.fit.icg.lab2.filter.window.MedianFilter;
-import ru.nsu.fit.icg.lab2.filter.window.convolution.SharpeningFilter;
+import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.SharpeningFilter;
 
 public class WaterColorizationFilter implements Filter {
 
