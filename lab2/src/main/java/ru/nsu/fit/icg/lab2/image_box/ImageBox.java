@@ -122,8 +122,8 @@ public class ImageBox extends VBox {
     }
 
     private void addImage(WritableImage image) {
-        filterChanged = true;
         current = image;
+        filterChanged = true;
         imageView.setImage(image);
         bounds.widthProperty().bind(image.widthProperty());
         bounds.heightProperty().bind(image.heightProperty());
@@ -199,7 +199,11 @@ public class ImageBox extends VBox {
     public void rotate() {
         boolean wasOriginal = current == original;
         if (null != current) {
-            final double rads = Math.toRadians(angdegProperty.get() - prevAngDeg);
+            int degs = angdegProperty.get() - prevAngDeg;
+            if (0 == degs) {
+                return;
+            }
+            final double rads = Math.toRadians(degs);
             prevAngDeg = angdegProperty.get();
 
             final double cos = Math.abs(Math.cos(rads));

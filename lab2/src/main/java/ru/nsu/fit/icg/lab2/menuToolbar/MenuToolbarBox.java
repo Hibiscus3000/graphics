@@ -68,6 +68,7 @@ public class MenuToolbarBox extends VBox {
     }
 
     public void addFilters() {
+        addFilter(new RoundBlurFilter());
         addFilter(new BlackWhiteFilter());
         addFilter(new MotionFilter());
         addFilter(new WaterColorizationFilter());
