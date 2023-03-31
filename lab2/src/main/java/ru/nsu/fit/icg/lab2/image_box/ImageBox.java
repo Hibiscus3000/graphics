@@ -46,11 +46,10 @@ public class ImageBox extends VBox {
     private Double previousDragY;
 
     private final ExecutorService imageChanger = Executors.newSingleThreadExecutor();
-    private final HBox filterBox;
     private final ToggleButton filterToggleButton = new ToggleButton("Фильтр");
 
     public ImageBox() {
-        filterBox = new HBox(filterToggleButton);
+        HBox filterBox = new HBox(filterToggleButton);
         filterBox.setAlignment(Pos.TOP_RIGHT);
         filterToggleButton.setOnAction(e -> filter());
 
@@ -189,7 +188,7 @@ public class ImageBox extends VBox {
         }
     }
 
-    private SimpleIntegerProperty angdegProperty = new SimpleIntegerProperty(0);
+    private final SimpleIntegerProperty angdegProperty = new SimpleIntegerProperty(0);
 
     public IntegerProperty angdegProperty() {
         return angdegProperty;

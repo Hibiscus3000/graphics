@@ -21,15 +21,15 @@ public abstract class ConvolutionFilter extends WindowFilter {
                 int color = pixelReader.getArgb(Math.max(0, Math.min(x, width - 1)),
                         Math.max(0, Math.min(y, height - 1)));
                 int r = color >> 16 & 255, g = color >> 8 & 255, b = color & 255;
-                red += matrix[matrixX][matrixY] * r / divider;
-                green += matrix[matrixX][matrixY] * g / divider;
-                blue += matrix[matrixX][matrixY] * b / divider;
+                red += matrix[matrixX][matrixY] * r;
+                green += matrix[matrixX][matrixY] * g;
+                blue += matrix[matrixX][matrixY] * b;
             }
         }
         return 255 << 24
-                | Math.min(Math.max(0, red), 255) << 16
-                | Math.min(Math.max(0, green), 255) << 8
-                | Math.min(Math.max(0, blue), 255);
+                | Math.min(Math.max(0, red / divider), 255) << 16
+                | Math.min(Math.max(0, green / divider), 255) << 8
+                | Math.min(Math.max(0, blue / divider), 255);
     }
 
     @Override
