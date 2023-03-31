@@ -30,9 +30,12 @@ public class GammaFilter implements Filter {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 int argb = pixelReader.getArgb(x, y);
-                int r = Math.min((int) pow(argb >> 16 & 255, gamma), 255);
-                int g = Math.min((int) pow(argb >> 8 & 255, gamma), 255);
-                int b = Math.min((int) pow(argb & 255, gamma), 255);
+                int r = argb >> 16 & 255;
+                int g = argb >> 8 & 255;
+                int b = argb & 255;
+                r = (int) Math.min(pow((double) r / 255, 1 / gamma) * 255, 255);
+                g = (int) Math.min(pow((double) g / 255, 1 / gamma) * 255, 255);
+                b = (int) Math.min(pow((double) b / 255, 1 / gamma) * 255, 255);
                 pixelWriter.setArgb(x, y, 255 << 24 | r << 16 | g << 8 | b);
             }
         }
