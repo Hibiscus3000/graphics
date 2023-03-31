@@ -69,11 +69,6 @@ public class EmbossingFilter extends MatrixTypedFilter {
     }
 
     @Override
-    public String getMatrixTypeName() {
-        return "направление тиснения";
-    }
-
-    @Override
     public MatrixType[] getMatrixTypes() {
         return Direction.values();
     }
@@ -81,5 +76,10 @@ public class EmbossingFilter extends MatrixTypedFilter {
     @Override
     public String getName() {
         return "Тиснение";
+    }
+
+    @Override
+    public String getJsonName() {
+        return "embossing";
     }
 }

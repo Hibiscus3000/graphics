@@ -25,8 +25,16 @@
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.borders.RobertsDialog"
     },
     {
-      "name": "typed",
-      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.MatrixTypedDialog"
+      "name": "embossing",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.typed.EmbossingDialog"
+    },
+    {
+      "name": "sharpening",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.typed.SharpeningDialog"
+    },
+    {
+      "name": "motion",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.typed.MotionDialog"
     },
     {
       "name": "median",

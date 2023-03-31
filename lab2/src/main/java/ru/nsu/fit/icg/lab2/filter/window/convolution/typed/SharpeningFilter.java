@@ -47,7 +47,7 @@ public class SharpeningFilter extends MatrixTypedFilter {
     }
 
     @Override
-    public String getMatrixTypeName() {
-        return "сила увеличения";
+    public String getJsonName() {
+        return "sharpening";
     }
 }

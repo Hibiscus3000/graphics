@@ -20,11 +20,4 @@ public abstract class MatrixTypedFilter extends ConvolutionFilter {
     }
 
     public abstract MatrixType[] getMatrixTypes();
-
-    @Override
-    public String getJsonName() {
-        return "typed";
-    }
-
-    public abstract String getMatrixTypeName();
 }

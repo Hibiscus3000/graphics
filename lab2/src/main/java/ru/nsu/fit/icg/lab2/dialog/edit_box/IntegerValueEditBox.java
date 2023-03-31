@@ -41,26 +41,6 @@ public class IntegerValueEditBox extends VBox {
         getChildren().addAll(new Label(valueName), sliderSpinnerBox);
     }
 
-    public int getValue() {
-        return spinner.getValue();
-    }
-
-    public void setValue(int value) {
-        spinner.getValueFactory().setValue(value);
-    }
-
-    protected Integer previous;
-
-    protected boolean setNewPrevious(Integer newVal) {
-        boolean otherThenPrevious = otherThenPrevious(newVal);
-        previous = newVal;
-        return otherThenPrevious;
-    }
-
-    protected boolean otherThenPrevious(Integer newVal) {
-        return !newVal.equals(previous);
-    }
-
     private class IntSpinnerValueFactory extends SpinnerValueFactory.IntegerSpinnerValueFactory {
 
         public IntSpinnerValueFactory(int min, int max, int initialValue, int amountToStepBy) {

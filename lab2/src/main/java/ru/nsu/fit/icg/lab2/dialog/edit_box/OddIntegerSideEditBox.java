@@ -13,9 +13,4 @@ public class OddIntegerSideEditBox extends IntegerValueEditBox {
         slider.setShowTickMarks(true);
         slider.setShowTickLabels(true);
     }
-
-    @Override
-    protected boolean otherThenPrevious(Integer newVal) {
-        return super.otherThenPrevious(newVal) && 1 == newVal % 2;
-    }
 }
