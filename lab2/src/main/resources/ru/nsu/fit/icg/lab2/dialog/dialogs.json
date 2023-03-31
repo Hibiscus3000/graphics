@@ -37,6 +37,10 @@
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.typed.MotionDialog"
     },
     {
+      "name": "waterColorization",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.typed.WaterColorizationDialog"
+    },
+    {
       "name": "median",
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.MedianDialog"
     }

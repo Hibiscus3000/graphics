@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 public class MedianFilter extends WindowFilter {
 
+    private final int minWindowSide = 3;
     private final int maxWindowSide = 15;
     private SimpleIntegerProperty windowSideProperty = new SimpleIntegerProperty(5);
     private int windowSize = windowSideProperty.get() * windowSideProperty.get();
@@ -59,6 +60,10 @@ public class MedianFilter extends WindowFilter {
 
     public IntegerProperty windowSideProperty() {
         return windowSideProperty;
+    }
+
+    public int getMinWindowSide() {
+        return minWindowSide;
     }
 
     public int getMaxWindowSide() {

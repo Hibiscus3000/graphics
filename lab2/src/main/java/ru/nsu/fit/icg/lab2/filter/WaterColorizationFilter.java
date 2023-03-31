@@ -14,6 +14,14 @@ public class WaterColorizationFilter implements Filter {
         return sharpeningFilter.filter(medianFilter.filter(original));
     }
 
+    public MedianFilter getMedianFilter() {
+        return medianFilter;
+    }
+
+    public SharpeningFilter getSharpeningFilter() {
+        return sharpeningFilter;
+    }
+
     @Override
     public String getName() {
         return "Акварелизация";

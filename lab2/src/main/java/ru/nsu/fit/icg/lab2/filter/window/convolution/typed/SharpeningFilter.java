@@ -3,11 +3,11 @@ package ru.nsu.fit.icg.lab2.filter.window.convolution.typed;
 public class SharpeningFilter extends MatrixTypedFilter {
 
     public enum SharpeningType implements MatrixType {
-        WEAK("Слабое", new int[][]{
+        WEAK("Слабая", new int[][]{
                 {0, -1, 0},
                 {-1, 5, -1},
                 {0, -1, 0}}),
-        STRONG("Сильное", new int[][]{
+        STRONG("Большая", new int[][]{
                 {-1, -1, -1},
                 {-1, 9, -1},
                 {-1, -1, -1}});

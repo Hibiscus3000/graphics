@@ -13,7 +13,7 @@ public class MedianDialog extends FilterDialog {
         this.medianFilter = medianFilter;
         previousWindowSide = medianFilter.windowSideProperty().get();
         OddIntegerSideEditBox windowSideBox = new OddIntegerSideEditBox("Размер окна",
-                medianFilter.windowSideProperty(), 3, medianFilter.getMaxWindowSide());
+                medianFilter.windowSideProperty(), medianFilter.getMinWindowSide(), medianFilter.getMaxWindowSide());
         VBox medianBox = new VBox(windowSideBox, getButtonBox());
         getDialogPane().setContent(medianBox);
     }
