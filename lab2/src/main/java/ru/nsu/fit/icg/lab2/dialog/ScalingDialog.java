@@ -25,7 +25,7 @@ public class ScalingDialog extends InstrumentDialog {
             scalingBox.getChildren().add(scalingRadioButton);
             radioButtonMap.put(scalingType, scalingRadioButton);
         }
-        radioButtonMap.get(ScalingType.ORIGINAL).setSelected(true);
+        radioButtonMap.get(ScalingType.BILINEAR).setSelected(true);
         scalingBox.getChildren().add(getButtonBox());
         getDialogPane().setContent(scalingBox);
     }

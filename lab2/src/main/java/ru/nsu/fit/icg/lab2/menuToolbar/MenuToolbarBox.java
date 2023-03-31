@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialogFactory;
 import ru.nsu.fit.icg.lab2.dialog.InstrumentDialog;
+import ru.nsu.fit.icg.lab2.dialog.RotationDialog;
 import ru.nsu.fit.icg.lab2.dialog.ScalingDialog;
 import ru.nsu.fit.icg.lab2.file.FileHandler;
 import ru.nsu.fit.icg.lab2.filter.*;
@@ -103,7 +104,7 @@ public class MenuToolbarBox extends VBox {
 
     public void addTransformations() {
         new TransformationDialogShower(ScalingDialog.class, "Подогнать размер изображения");
-        //new TransformationDialogShower(ScalingDialog.class,"Подогнать размер изображения");
+        new TransformationDialogShower(RotationDialog.class, "Повернуть изображение");
     }
 
     private class TransformationDialogShower {

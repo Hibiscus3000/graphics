@@ -1,6 +1,9 @@
 package ru.nsu.fit.icg.lab2.image_box;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
@@ -16,6 +19,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -109,18 +116,25 @@ public class ImageBox extends VBox {
         imageChanger.submit(ImageBox.this::changeImage);
     }
 
-    public void openImage(WritableImage image) {
+    private void openImage(WritableImage image) {
         current = original = image;
+        filterToggleButton.setSelected(false);
+        addImage(image);
+    }
+
+    private void addImage(WritableImage image) {
         filterChanged = true;
-        imageView.setImage(current);
+        current = image;
+        imageView.setImage(image);
         bounds.widthProperty().bind(image.widthProperty());
         bounds.heightProperty().bind(image.heightProperty());
         imagePane.prefWidthProperty().bind(image.widthProperty().add(2 * inset));
         imagePane.prefHeightProperty().bind(image.heightProperty().add(2 * inset));
-        filterToggleButton.setSelected(false);
     }
 
     public void openNewImage(WritableImage image) {
+        angdegProperty.set(0);
+        prevAngDeg = 0;
         openImage(image);
         originalSizeImage = image;
     }
@@ -155,6 +169,7 @@ public class ImageBox extends VBox {
         } else {
             current = original;
         }
+        rotate();
         imageView.setImage(current);
         setCursor(Cursor.DEFAULT);
     }
@@ -170,6 +185,46 @@ public class ImageBox extends VBox {
             } else {
                 openImage(originalSizeImage);
             }
+            rotate();
+        }
+    }
+
+    private SimpleIntegerProperty angdegProperty = new SimpleIntegerProperty(0);
+
+    public IntegerProperty angdegProperty() {
+        return angdegProperty;
+    }
+
+    private int prevAngDeg = 0;
+
+    public void rotate() {
+        boolean wasOriginal = current == original;
+        if (null != current) {
+            final double rads = Math.toRadians(angdegProperty.get() - prevAngDeg);
+            prevAngDeg = angdegProperty.get();
+
+            final double cos = Math.abs(Math.cos(rads));
+            final double sin = Math.abs(Math.sin(rads));
+            final int w = (int) (current.getWidth() * cos + current.getHeight() * sin);
+            final int h = (int) (current.getHeight() * cos + current.getWidth() * sin);
+
+            BufferedImage bufferedCurrent = SwingFXUtils.fromFXImage(current, null);
+            final BufferedImage rotatedImage = new BufferedImage(w, h, bufferedCurrent.getType());
+            Graphics2D g2d = (Graphics2D) rotatedImage.getGraphics();
+            g2d.setColor(java.awt.Color.white);
+            g2d.fillRect(0, 0, w - 1, h - 1);
+            final AffineTransform at = new AffineTransform();
+            at.translate(w / 2, h / 2);
+            at.rotate(rads, 0, 0);
+            at.translate(-current.getWidth() / 2, -current.getHeight() / 2);
+
+            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+            addImage(SwingFXUtils.toFXImage(rotateOp.filter(bufferedCurrent, rotatedImage), null));
+        }
+        if (wasOriginal) {
+            original = current;
+        } else {
+            filtered = current;
         }
     }
 

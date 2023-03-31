@@ -15,10 +15,16 @@ public class IntegerValueEditBox extends VBox {
     private final Spinner<Integer> spinner = new Spinner<>();
     protected final Slider slider;
 
+    private final IntegerProperty integerProperty;
+    private int prevValue;
+
     public IntegerValueEditBox(String valueName, IntegerProperty integerProperty,
                                int min, int max, int amountToStepBy) {
         setAlignment(Pos.CENTER);
         setSpacing(spacing);
+
+        this.integerProperty = integerProperty;
+        prevValue = integerProperty.get();
 
         HBox sliderSpinnerBox = new HBox();
         sliderSpinnerBox.setSpacing(spacing);
@@ -62,5 +68,13 @@ public class IntegerValueEditBox extends VBox {
             final int newIndex = currentValue - steps * getAmountToStepBy();
             setValue(Math.max(min, newIndex));
         }
+    }
+
+    public void ok() {
+        prevValue = integerProperty.get();
+    }
+
+    public void cancel() {
+        integerProperty.set(prevValue);
     }
 }

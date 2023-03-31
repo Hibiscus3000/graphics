@@ -34,7 +34,7 @@ public class WaterColorizationDialog extends FilterDialog {
     @Override
     protected void ok() {
         prevMedianWindowSide = medianFilter.windowSideProperty().get();
-        sharpeningMatrixBox.saveParameters();
+        sharpeningMatrixBox.ok();
     }
 
     @Override

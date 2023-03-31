@@ -50,7 +50,7 @@ public class TypedMatrixBox extends VBox {
 
     private MatrixType prevMatrixType;
 
-    public void saveParameters() {
+    public void ok() {
         prevMatrixType = matrixTypedFilter.getMatrixType();
     }
 

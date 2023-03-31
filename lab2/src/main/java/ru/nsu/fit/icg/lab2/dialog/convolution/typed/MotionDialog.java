@@ -16,7 +16,6 @@ public class MotionDialog extends MatrixTypedDialog {
                 motionFilter, "Выберите направление размытия");
         windowSideBox = (OddIntegerSideEditBox) getUpperNode();
         this.motionFilter = motionFilter;
-        prevWindowSide = motionFilter.windowSideProperty().get();
         motionFilter.windowSideProperty().addListener(((observable, oldVal, newVal) -> {
             if (!oldVal.equals(newVal) && 1 == (int) newVal % 2) {
                 typedMatrixBox.redrawMatrix();
@@ -25,17 +24,15 @@ public class MotionDialog extends MatrixTypedDialog {
         }));
     }
 
-    private int prevWindowSide;
-
     @Override
     protected void ok() {
         super.ok();
-        prevWindowSide = motionFilter.windowSideProperty().get();
+        windowSideBox.ok();
     }
 
     @Override
     protected void cancel() {
         super.cancel();
-        motionFilter.windowSideProperty().set(prevWindowSide);
+        windowSideBox.cancel();
     }
 }
