@@ -37,8 +37,8 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
     }
 
     @Override
-    protected void saveParameters() {
-        super.saveParameters();
+    protected void ok() {
+        super.ok();
         for (ThreeColorFilter.Color color : ThreeColorFilter.Color.values()) {
             orderedDitheringMatrixBoxes[color.ordinal()].saveMatrixSide();
         }

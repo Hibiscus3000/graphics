@@ -11,7 +11,7 @@ public class FloydSteinbergFilter extends DitheringFilter {
         Color[] colors = Color.values();
         colorProperties = new SimpleIntegerProperty[colors.length];
         for (Color color : colors) {
-            colorProperties[color.ordinal()] = new SimpleIntegerProperty(8);
+            colorProperties[color.ordinal()] = new SimpleIntegerProperty(4);
         }
     }
 

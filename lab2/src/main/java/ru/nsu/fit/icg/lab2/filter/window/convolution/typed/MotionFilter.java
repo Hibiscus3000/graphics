@@ -110,7 +110,6 @@ public class MotionFilter extends MatrixTypedFilter {
                 divider = newValInt;
             }
         });
-        matrix = new int[divider][divider];
     }
 
     public IntegerProperty windowSideProperty() {

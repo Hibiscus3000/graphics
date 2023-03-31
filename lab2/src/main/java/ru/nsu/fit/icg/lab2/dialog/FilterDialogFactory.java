@@ -18,7 +18,7 @@ public class FilterDialogFactory {
     private FilterDialogFactory() {
         final JSONParser jsonParser = new JSONParser();
         try {
-            final byte[] jsonBytes = getClass().getResourceAsStream("dialogs.json").readAllBytes();
+            final byte[] jsonBytes = getClass().getResourceAsStream("filterDialogs.json").readAllBytes();
             final JSONObject dialogsJsonObject = (JSONObject)
                     jsonParser.parse(new String(jsonBytes, StandardCharsets.UTF_8));
             final JSONArray dialogJsonArray = (JSONArray) dialogsJsonObject.get("filters");

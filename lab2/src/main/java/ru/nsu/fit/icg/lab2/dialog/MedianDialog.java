@@ -21,7 +21,7 @@ public class MedianDialog extends FilterDialog {
     private int previousWindowSide;
 
     @Override
-    protected void saveParameters() {
+    protected void ok() {
         previousWindowSide = medianFilter.windowSideProperty().get();
     }
 

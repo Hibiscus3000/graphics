@@ -25,4 +25,6 @@ module ru.nsu.fit.icg.lab2 {
     opens ru.nsu.fit.icg.lab2.filter.window to javafx.fxml;
     exports ru.nsu.fit.icg.lab2.filter.window.convolution.typed;
     opens ru.nsu.fit.icg.lab2.filter.window.convolution.typed to javafx.fxml;
+    exports ru.nsu.fit.icg.lab2.image_box;
+    opens ru.nsu.fit.icg.lab2.image_box to javafx.fxml;
 }

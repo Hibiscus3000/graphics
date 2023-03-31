@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.ImageBox;
+import ru.nsu.fit.icg.lab2.image_box.ImageBox;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,7 +44,7 @@ public class OpenFileHandler extends FileHandler {
                 if (null == image) {
                     showOpenErrorAlert(file.getName());
                 } else {
-                    imageBox.openImage(SwingFXUtils.toFXImage(image, null));
+                    imageBox.openNewImage(SwingFXUtils.toFXImage(image, null));
                 }
             }
         } catch (IOException e) {
@@ -55,7 +55,8 @@ public class OpenFileHandler extends FileHandler {
     private void showOpenErrorAlert(String fileName) {
         Alert unableToOpenFileAlert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть файл "
                 + fileName, ButtonType.OK);
-        unableToOpenFileAlert.setHeaderText("Ошибка!");
+        unableToOpenFileAlert.setTitle(errorTitle);
+        unableToOpenFileAlert.setHeaderText(errorTitle);
         unableToOpenFileAlert.showAndWait();
     }
 

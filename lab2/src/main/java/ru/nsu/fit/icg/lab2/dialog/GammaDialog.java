@@ -48,7 +48,7 @@ public class GammaDialog extends FilterDialog {
     }
 
     @Override
-    protected void saveParameters() {
+    protected void ok() {
 
     }
 

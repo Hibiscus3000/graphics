@@ -32,7 +32,7 @@ public abstract class MatrixTypedDialog extends FilterDialog {
     }
 
     @Override
-    protected void saveParameters() {
+    protected void ok() {
         typedMatrixBox.saveParameters();
     }
 

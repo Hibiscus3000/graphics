@@ -13,7 +13,10 @@ public class FilterToggleButton extends ToggleButton implements FilterChanger {
         super(filter.getName());
         this.filter = filter;
         setToggleGroup(toggleGroup);
-        setOnAction(filterChangeHandler);
+        setOnAction(e -> {
+            setSelected(true);
+            filterChangeHandler.handle(e);
+        });
     }
 
     @Override

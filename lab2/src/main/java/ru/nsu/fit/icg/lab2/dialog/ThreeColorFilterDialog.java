@@ -29,7 +29,7 @@ public abstract class ThreeColorFilterDialog extends FilterDialog {
     protected int[] prevColorValues;
 
     @Override
-    protected void saveParameters() {
+    protected void ok() {
         ThreeColorFilter.Color[] colors = ThreeColorFilter.Color.values();
         for (ThreeColorFilter.Color color : colors) {
             prevColorValues[color.ordinal()] = threeColorFilter.getColorProperty(color).get();

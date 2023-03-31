@@ -21,7 +21,7 @@ public class SmoothingDialog extends FilterDialog {
     }
 
     @Override
-    protected void saveParameters() {
+    protected void ok() {
         prevMatrixSide = smoothingFilter.getMatrixSide();
     }
 

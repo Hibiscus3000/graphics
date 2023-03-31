@@ -29,7 +29,7 @@ public class BlackWhiteFilter implements Filter {
                 int r = argb >> 16 & 255;
                 int g = argb >> 8 & 255;
                 int b = argb & 255;
-                int result = (int) (0.299 * r + 0.587 * g + 0.144 * b);
+                int result = Math.min((int) (0.299 * r + 0.587 * g + 0.144 * b), 255);
                 pixelWriter.setArgb(x, y, 255 << 24 | result << 16 | result << 8 | result);
             }
         }

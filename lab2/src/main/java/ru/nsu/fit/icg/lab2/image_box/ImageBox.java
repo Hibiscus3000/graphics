@@ -1,7 +1,6 @@
-package ru.nsu.fit.icg.lab2;
+package ru.nsu.fit.icg.lab2.image_box;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
@@ -10,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 public class ImageBox extends VBox {
 
+
     private static final int inset = 5;
 
     private final ScrollPane scrollPane;
@@ -29,6 +30,7 @@ public class ImageBox extends VBox {
     private final Pane imagePane = new Pane();
 
     private final ImageView imageView = new ImageView();
+    private WritableImage originalSizeImage;
     private WritableImage original;
     private WritableImage filtered;
     private WritableImage current;
@@ -37,22 +39,13 @@ public class ImageBox extends VBox {
     private Double previousDragY;
 
     private final ExecutorService imageChanger = Executors.newSingleThreadExecutor();
+    private final HBox filterBox;
     private final ToggleButton filterToggleButton = new ToggleButton("Фильтр");
-    private final EventHandler<ActionEvent> imageChangeHandler;
 
     public ImageBox() {
-        imageChangeHandler = event -> {
-            if (changeToFiltered() && filterChanged) {
-                setCursor(Cursor.WAIT);
-            }
-            imageChanger.submit(ImageBox.this::changeImage);
-            if (null != event) {
-                event.consume();
-            }
-        };
-        VBox filterBox = new VBox(filterToggleButton);
+        filterBox = new HBox(filterToggleButton);
         filterBox.setAlignment(Pos.TOP_RIGHT);
-        filterToggleButton.setOnAction(imageChangeHandler);
+        filterToggleButton.setOnAction(e -> filter());
 
         bounds.setFill(Color.TRANSPARENT);
         bounds.getStrokeDashArray().addAll(10.0, 5.0);
@@ -62,7 +55,7 @@ public class ImageBox extends VBox {
         imageView.layoutYProperty().set(inset);
 
         bounds.widthProperty().bind(widthProperty().subtract(2 * inset));
-        bounds.heightProperty().bind(heightProperty().subtract(2 * inset));
+        bounds.heightProperty().bind(heightProperty().subtract(2 * inset).subtract(filterBox.heightProperty()));
         bounds.layoutXProperty().set(inset);
         bounds.layoutYProperty().set(inset);
         imagePane.getChildren().addAll(imageView, bounds);
@@ -86,7 +79,7 @@ public class ImageBox extends VBox {
             previousDragX = null;
             previousDragY = null;
             if (MouseButton.PRIMARY == e.getButton()) {
-                imageChangeHandler.handle(null);
+                filter();
             }
             e.consume();
         });
@@ -109,6 +102,13 @@ public class ImageBox extends VBox {
         return current;
     }
 
+    public void filter() {
+        if (changeToFiltered() && filterChanged) {
+            setCursor(Cursor.WAIT);
+        }
+        imageChanger.submit(ImageBox.this::changeImage);
+    }
+
     public void openImage(WritableImage image) {
         current = original = image;
         filterChanged = true;
@@ -120,6 +120,11 @@ public class ImageBox extends VBox {
         filterToggleButton.setSelected(false);
     }
 
+    public void openNewImage(WritableImage image) {
+        openImage(image);
+        originalSizeImage = image;
+    }
+
     private Filter filter;
     private boolean filterChanged = true;
 
@@ -128,6 +133,10 @@ public class ImageBox extends VBox {
             this.filter = filter;
             setFilterChanged(true);
         }
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     public void setFilterChanged(boolean b) {
@@ -150,7 +159,25 @@ public class ImageBox extends VBox {
         setCursor(Cursor.DEFAULT);
     }
 
+    public void scale(ScalingType scalingType) {
+        if (null != original) {
+            double xScale = (scrollPane.getWidth() - 3 * inset) / original.getWidth();
+            double yScale = (scrollPane.getHeight() - 3 * inset) / original.getHeight();
+            double scale = Math.min(xScale, yScale);
+            WritableImage scaledImage = scalingType.scaleImage(original, scale);
+            if (null != scaledImage) {
+                openImage(scaledImage);
+            } else {
+                openImage(originalSizeImage);
+            }
+        }
+    }
+
     private boolean changeToFiltered() {
         return current == original && null != filter && null != original;
+    }
+
+    private void bindFilterToggleButton(BooleanProperty booleanProperty) {
+        booleanProperty.bindBidirectional(filterToggleButton.selectedProperty());
     }
 }

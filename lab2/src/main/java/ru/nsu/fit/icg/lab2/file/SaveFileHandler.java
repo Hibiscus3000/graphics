@@ -7,7 +7,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.ImageBox;
+import ru.nsu.fit.icg.lab2.image_box.ImageBox;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -56,7 +56,8 @@ public class SaveFileHandler extends FileHandler {
                     Alert noImageToSaveAlert = new Alert(Alert.AlertType.WARNING,
                             "Нет изображения. Сохранение отменено",
                             ButtonType.OK);
-                    noImageToSaveAlert.setHeaderText("Предупреждение!");
+                    noImageToSaveAlert.setTitle(warningTitle);
+                    noImageToSaveAlert.setHeaderText(warningTitle);
                     noImageToSaveAlert.showAndWait();
                 } else {
                     ImageIO.write(SwingFXUtils.fromFXImage(image, null),
@@ -65,7 +66,8 @@ public class SaveFileHandler extends FileHandler {
             } catch (IOException e) {
                 Alert savingFileErrorAlert = new Alert(Alert.AlertType.ERROR, "Не удалось сохранить файл "
                         + name + "\n" + e.getMessage(), ButtonType.OK);
-                savingFileErrorAlert.setHeaderText("Ошибка!");
+                savingFileErrorAlert.setTitle(errorTitle);
+                savingFileErrorAlert.setHeaderText(errorTitle);
                 savingFileErrorAlert.showAndWait();
             }
         }

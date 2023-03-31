@@ -3,8 +3,8 @@ package ru.nsu.fit.icg.lab2.menuToolbar.menu;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
-import ru.nsu.fit.icg.lab2.ImageBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.image_box.ImageBox;
 
 import java.lang.reflect.Constructor;
 
@@ -24,7 +24,7 @@ public class FilterParametersMenuItem extends MenuItem {
                 }
             }
             filterDialog.showAndWait();
-            if (ButtonType.OK == filterDialog.getResult()) {
+            if (ButtonType.OK == filterDialog.getResult() && filter == imageBox.getFilter()) {
                 imageBox.setFilterChanged(true);
             }
         });

@@ -8,6 +8,7 @@ public class OrdDitherQuantProperty extends SimpleIntegerProperty {
 
     public OrdDitherQuantProperty(OrderedDitheringMatrix orderedDitheringMatrix) {
         this.orderedDitheringMatrix = orderedDitheringMatrix;
+        set(4);
         addListener(((observableValue, oldVal, newVal) ->
                 orderedDitheringMatrix.setBoundColorQuantization((Integer) newVal)));
     }

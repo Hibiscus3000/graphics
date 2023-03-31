@@ -28,8 +28,8 @@ public class MotionDialog extends MatrixTypedDialog {
     private int prevWindowSide;
 
     @Override
-    protected void saveParameters() {
-        super.saveParameters();
+    protected void ok() {
+        super.ok();
         prevWindowSide = motionFilter.windowSideProperty().get();
     }
 
