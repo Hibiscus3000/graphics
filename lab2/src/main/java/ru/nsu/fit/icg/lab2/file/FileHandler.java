@@ -3,7 +3,7 @@ package ru.nsu.fit.icg.lab2.file;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 
 public abstract class FileHandler implements EventHandler<ActionEvent> {
 

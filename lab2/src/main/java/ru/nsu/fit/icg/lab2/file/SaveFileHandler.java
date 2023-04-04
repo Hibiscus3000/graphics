@@ -7,7 +7,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 
 import javax.imageio.ImageIO;
 import java.io.File;

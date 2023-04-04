@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.lab2.image_box;
+package ru.nsu.fit.icg.lab2.imageBox;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;

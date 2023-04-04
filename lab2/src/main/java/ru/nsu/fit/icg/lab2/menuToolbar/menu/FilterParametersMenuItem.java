@@ -4,7 +4,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 
 import java.lang.reflect.Constructor;
 

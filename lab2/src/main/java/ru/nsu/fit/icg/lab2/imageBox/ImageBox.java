@@ -1,18 +1,14 @@
-package ru.nsu.fit.icg.lab2.image_box;
+package ru.nsu.fit.icg.lab2.imageBox;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -38,6 +34,7 @@ public class ImageBox extends VBox {
 
     private final ImageView imageView = new ImageView();
     private WritableImage originalSizeImage;
+    private WritableImage notRotatedImage;
     private WritableImage original;
     private WritableImage filtered;
     private WritableImage current;
@@ -46,13 +43,8 @@ public class ImageBox extends VBox {
     private Double previousDragY;
 
     private final ExecutorService imageChanger = Executors.newSingleThreadExecutor();
-    private final ToggleButton filterToggleButton = new ToggleButton("Фильтр");
 
     public ImageBox() {
-        HBox filterBox = new HBox(filterToggleButton);
-        filterBox.setAlignment(Pos.TOP_RIGHT);
-        filterToggleButton.setOnAction(e -> filter());
-
         bounds.setFill(Color.TRANSPARENT);
         bounds.getStrokeDashArray().addAll(10.0, 5.0);
         bounds.setStroke(Color.BLUE);
@@ -61,7 +53,7 @@ public class ImageBox extends VBox {
         imageView.layoutYProperty().set(inset);
 
         bounds.widthProperty().bind(widthProperty().subtract(2 * inset));
-        bounds.heightProperty().bind(heightProperty().subtract(2 * inset).subtract(filterBox.heightProperty()));
+        bounds.heightProperty().bind(heightProperty().subtract(2 * inset));
         bounds.layoutXProperty().set(inset);
         bounds.layoutYProperty().set(inset);
         imagePane.getChildren().addAll(imageView, bounds);
@@ -70,7 +62,7 @@ public class ImageBox extends VBox {
         scrollPane.layoutYProperty().set(inset);
         scrollPane.prefHeightProperty().bind(heightProperty());
         scrollPane.prefWidthProperty().bind(widthProperty());
-        getChildren().addAll(filterBox, scrollPane);
+        getChildren().add(scrollPane);
 
         imagePane.setOnDragDetected(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
@@ -115,12 +107,6 @@ public class ImageBox extends VBox {
         imageChanger.submit(ImageBox.this::changeImage);
     }
 
-    private void openImage(WritableImage image) {
-        current = original = image;
-        filterToggleButton.setSelected(false);
-        addImage(image);
-    }
-
     private void addImage(WritableImage image) {
         current = image;
         filterChanged = true;
@@ -133,9 +119,8 @@ public class ImageBox extends VBox {
 
     public void openNewImage(WritableImage image) {
         angdegProperty.set(0);
-        prevAngDeg = 0;
-        openImage(image);
-        originalSizeImage = image;
+        addImage(image);
+        originalSizeImage = notRotatedImage = original = image;
     }
 
     private Filter filter;
@@ -158,7 +143,6 @@ public class ImageBox extends VBox {
 
     private void changeImage() {
         boolean changeToFiltered = changeToFiltered();
-        filterToggleButton.setSelected(changeToFiltered);
         if (changeToFiltered) {
             if (filterChanged) {
                 filtered = filter.filter(original);
@@ -168,21 +152,18 @@ public class ImageBox extends VBox {
         } else {
             current = original;
         }
-        rotate();
         imageView.setImage(current);
         setCursor(Cursor.DEFAULT);
     }
 
     public void scale(ScalingType scalingType) {
-        if (null != original) {
-            double xScale = (scrollPane.getWidth() - 3 * inset) / original.getWidth();
-            double yScale = (scrollPane.getHeight() - 3 * inset) / original.getHeight();
+        if (null != originalSizeImage) {
+            double xScale = (scrollPane.getWidth() - 3 * inset) / originalSizeImage.getWidth();
+            double yScale = (scrollPane.getHeight() - 3 * inset) / originalSizeImage.getHeight();
             double scale = Math.min(xScale, yScale);
-            WritableImage scaledImage = scalingType.scaleImage(original, scale);
-            if (null != scaledImage) {
-                openImage(scaledImage);
-            } else {
-                openImage(originalSizeImage);
+            notRotatedImage = scalingType.scaleImage(originalSizeImage, scale);
+            if (null == notRotatedImage) {
+                notRotatedImage = originalSizeImage;
             }
             rotate();
         }
@@ -194,48 +175,39 @@ public class ImageBox extends VBox {
         return angdegProperty;
     }
 
-    private int prevAngDeg = 0;
-
     public void rotate() {
-        boolean wasOriginal = current == original;
         if (null != current) {
-            int degs = angdegProperty.get() - prevAngDeg;
-            if (0 == degs) {
-                return;
-            }
-            final double rads = Math.toRadians(degs);
-            prevAngDeg = angdegProperty.get();
+            boolean wasOriginal = current == original;
+
+            final double rads = Math.toRadians(angdegProperty.get());
 
             final double cos = Math.abs(Math.cos(rads));
             final double sin = Math.abs(Math.sin(rads));
-            final int w = (int) (current.getWidth() * cos + current.getHeight() * sin);
-            final int h = (int) (current.getHeight() * cos + current.getWidth() * sin);
+            final int w = (int) (notRotatedImage.getWidth() * cos + notRotatedImage.getHeight() * sin);
+            final int h = (int) (notRotatedImage.getHeight() * cos + notRotatedImage.getWidth() * sin);
 
-            BufferedImage bufferedCurrent = SwingFXUtils.fromFXImage(current, null);
-            final BufferedImage rotatedImage = new BufferedImage(w, h, bufferedCurrent.getType());
-            Graphics2D g2d = (Graphics2D) rotatedImage.getGraphics();
+            BufferedImage bufferedCurrent = SwingFXUtils.fromFXImage(notRotatedImage, null);
+            final BufferedImage rotatedBufferedImage = new BufferedImage(w, h, bufferedCurrent.getType());
+            Graphics2D g2d = (Graphics2D) rotatedBufferedImage.getGraphics();
             g2d.setColor(java.awt.Color.white);
             g2d.fillRect(0, 0, w - 1, h - 1);
             final AffineTransform at = new AffineTransform();
             at.translate(w / 2, h / 2);
             at.rotate(rads, 0, 0);
-            at.translate(-current.getWidth() / 2, -current.getHeight() / 2);
+            at.translate(-notRotatedImage.getWidth() / 2, -notRotatedImage.getHeight() / 2);
 
             final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-            addImage(SwingFXUtils.toFXImage(rotateOp.filter(bufferedCurrent, rotatedImage), null));
-        }
-        if (wasOriginal) {
-            original = current;
-        } else {
-            filtered = current;
+            WritableImage rotatedImage = SwingFXUtils.toFXImage(rotateOp.filter(bufferedCurrent, rotatedBufferedImage), null);
+            if (!wasOriginal && null != filter) {
+                rotatedImage = filtered = filter.filter(rotatedImage);
+            } else {
+                original = rotatedImage;
+            }
+            addImage(rotatedImage);
         }
     }
 
     private boolean changeToFiltered() {
         return current == original && null != filter && null != original;
-    }
-
-    private void bindFilterToggleButton(BooleanProperty booleanProperty) {
-        booleanProperty.bindBidirectional(filterToggleButton.selectedProperty());
     }
 }

@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import ru.nsu.fit.icg.lab2.file.OpenFileHandler;
 import ru.nsu.fit.icg.lab2.file.SaveFileHandler;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.MenuToolbarBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
 

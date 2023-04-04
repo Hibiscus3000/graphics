@@ -21,7 +21,7 @@ import ru.nsu.fit.icg.lab2.filter.window.convolution.SmoothingFilter;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.EmbossingFilter;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.MotionFilter;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.SharpeningFilter;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterParametersMenuItem;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterUseMenuItem;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;

@@ -2,7 +2,7 @@ package ru.nsu.fit.icg.lab2.dialog;
 
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.edit_box.IntegerValueEditBox;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 
 public class RotationDialog extends InstrumentDialog {
 

@@ -3,8 +3,8 @@ package ru.nsu.fit.icg.lab2.dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.image_box.ImageBox;
-import ru.nsu.fit.icg.lab2.image_box.ScalingType;
+import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
+import ru.nsu.fit.icg.lab2.imageBox.ScalingType;
 
 import java.util.HashMap;
 import java.util.Map;
