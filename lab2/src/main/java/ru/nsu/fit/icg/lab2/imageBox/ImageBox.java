@@ -3,6 +3,7 @@ package ru.nsu.fit.icg.lab2.imageBox;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -24,7 +25,6 @@ import java.util.concurrent.Executors;
 
 public class ImageBox extends VBox {
 
-
     private static final int inset = 5;
 
     private final ScrollPane scrollPane;
@@ -44,7 +44,7 @@ public class ImageBox extends VBox {
 
     private final ExecutorService imageChanger = Executors.newSingleThreadExecutor();
 
-    public ImageBox() {
+    public ImageBox() throws AWTException {
         bounds.setFill(Color.TRANSPARENT);
         bounds.getStrokeDashArray().addAll(10.0, 5.0);
         bounds.setStroke(Color.BLUE);
@@ -67,8 +67,8 @@ public class ImageBox extends VBox {
         imagePane.setOnDragDetected(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
                 setCursor(Cursor.CLOSED_HAND);
-                previousDragX = e.getSceneX();
-                previousDragY = e.getSceneY();
+                previousDragX = e.getScreenX();
+                previousDragY = e.getScreenY();
             }
             e.consume();
         });
@@ -83,11 +83,17 @@ public class ImageBox extends VBox {
         });
         imagePane.setOnMouseDragged(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
-                double x = e.getSceneX();
-                double y = e.getSceneY();
+                if (null == current) {
+                    return;
+                }
+                double x = e.getScreenX();
+                double y = e.getScreenY();
                 if (null != previousDragX && null != previousDragY) {
-                    scrollPane.setHvalue(scrollPane.getHvalue() + (previousDragX - x) / scrollPane.getWidth());
-                    scrollPane.setVvalue(scrollPane.getVvalue() + (previousDragY - y) / scrollPane.getHeight());
+                    Bounds viewportBounds = scrollPane.getViewportBounds();
+                    scrollPane.setHvalue(scrollPane.getHvalue() + (previousDragX - x)
+                            / (current.getWidth() - viewportBounds.getWidth()));
+                    scrollPane.setVvalue(scrollPane.getVvalue() + (previousDragY - y)
+                            / (current.getHeight() - viewportBounds.getHeight()));
                 }
                 previousDragX = x;
                 previousDragY = y;

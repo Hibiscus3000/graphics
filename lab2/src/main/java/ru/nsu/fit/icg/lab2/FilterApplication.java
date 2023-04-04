@@ -13,6 +13,8 @@ import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.MenuToolbarBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
 
+import java.awt.*;
+
 public class FilterApplication extends Application {
 
     private static final double initialSizeScale = 0.5;
@@ -23,22 +25,26 @@ public class FilterApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        ImageBox imageBox = new ImageBox();
-        FilterChangeHandler filterChangeHandler = new FilterChangeHandler(imageBox);
-        MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, imageBox);
-        Window owner = stage.getOwner();
-        menuToolbarBox.addFileHandler(new OpenFileHandler(owner, imageBox));
-        menuToolbarBox.addFileHandler(new SaveFileHandler(owner, imageBox));
-        menuToolbarBox.addFilters();
-        menuToolbarBox.addTransformations();
-        VBox appBox = new VBox(menuToolbarBox, imageBox);
-        Rectangle2D screenSize = Screen.getPrimary().getBounds();
-        Scene scene = new Scene(appBox,
-                initialSizeScale * screenSize.getWidth(), initialSizeScale * screenSize.getHeight());
-        scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());
-        imageBox.prefWidthProperty().bind(scene.widthProperty());
-        imageBox.prefHeightProperty().bind(scene.heightProperty().subtract(menuToolbarBox.heightProperty()));
-        stage.setScene(scene);
-        stage.show();
+        try {
+            ImageBox imageBox = new ImageBox();
+            FilterChangeHandler filterChangeHandler = new FilterChangeHandler(imageBox);
+            MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, imageBox);
+            Window owner = stage.getOwner();
+            menuToolbarBox.addFileHandler(new OpenFileHandler(owner, imageBox));
+            menuToolbarBox.addFileHandler(new SaveFileHandler(owner, imageBox));
+            menuToolbarBox.addFilters();
+            menuToolbarBox.addTransformations();
+            VBox appBox = new VBox(menuToolbarBox, imageBox);
+            Rectangle2D screenSize = Screen.getPrimary().getBounds();
+            Scene scene = new Scene(appBox,
+                    initialSizeScale * screenSize.getWidth(), initialSizeScale * screenSize.getHeight());
+            scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());
+            imageBox.prefWidthProperty().bind(scene.widthProperty());
+            imageBox.prefHeightProperty().bind(scene.heightProperty().subtract(menuToolbarBox.heightProperty()));
+            stage.setScene(scene);
+            stage.show();
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
