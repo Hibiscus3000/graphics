@@ -1,5 +1,6 @@
 package ru.nsu.fit.icg.lab2.filter;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -8,7 +9,7 @@ import static java.lang.Math.pow;
 
 public class GammaFilter implements Filter {
 
-    private double gamma = 1;
+    private final SimpleDoubleProperty gamma = new SimpleDoubleProperty(1);
 
     @Override
     public String getName() {
@@ -24,6 +25,7 @@ public class GammaFilter implements Filter {
     public WritableImage filter(WritableImage original) {
         int width = (int) original.getWidth();
         int height = (int) original.getHeight();
+        double gamma = this.gamma.get();
         WritableImage filteredImage = new WritableImage(width, height);
         PixelReader pixelReader = original.getPixelReader();
         PixelWriter pixelWriter = filteredImage.getPixelWriter();
@@ -42,11 +44,7 @@ public class GammaFilter implements Filter {
         return filteredImage;
     }
 
-    public double getGamma() {
+    public SimpleDoubleProperty gammaProperty() {
         return gamma;
-    }
-
-    public void setGamma(double gamma) {
-        this.gamma = gamma;
     }
 }

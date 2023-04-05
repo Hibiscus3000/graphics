@@ -1,12 +1,13 @@
 package ru.nsu.fit.icg.lab2.dialog;
 
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.dialog.edit_box.IntegerValueEditBox;
+import ru.nsu.fit.icg.lab2.dialog.editBox.IntegerValueEditBox;
+import ru.nsu.fit.icg.lab2.dialog.editBox.ValueEditBox;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 
 public class RotationDialog extends InstrumentDialog {
 
-    private final IntegerValueEditBox angdegBox;
+    private final ValueEditBox angdegBox;
     private final ImageBox imageBox;
 
     public RotationDialog(ImageBox imageBox) {

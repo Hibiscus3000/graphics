@@ -1,7 +1,7 @@
 package ru.nsu.fit.icg.lab2.dialog;
 
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.dialog.edit_box.OddIntegerSideEditBox;
+import ru.nsu.fit.icg.lab2.dialog.editBox.OddSideEditBox;
 import ru.nsu.fit.icg.lab2.filter.window.MedianFilter;
 
 public class MedianDialog extends FilterDialog {
@@ -12,7 +12,7 @@ public class MedianDialog extends FilterDialog {
         super(medianFilter);
         this.medianFilter = medianFilter;
         previousWindowSide = medianFilter.windowSideProperty().get();
-        OddIntegerSideEditBox windowSideBox = new OddIntegerSideEditBox("Размер окна",
+        OddSideEditBox windowSideBox = new OddSideEditBox("Размер окна",
                 medianFilter.windowSideProperty(), medianFilter.getMinWindowSide(), medianFilter.getMaxWindowSide());
         VBox medianBox = new VBox(windowSideBox, getButtonBox());
         getDialogPane().setContent(medianBox);

@@ -106,6 +106,9 @@ public class ImageBox extends VBox {
         final double scaleMin = 0.1;
         final double scaleMax = 5;
         imagePane.setOnScroll(e -> {
+            if (current == filtered) {
+                return;
+            }
             e.consume();
             if (null != originalSizeImage) {
                 double scaleAddition = scrollStep * e.getDeltaY();
