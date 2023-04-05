@@ -36,7 +36,7 @@ public class ScalingDialog extends InstrumentDialog {
     @Override
     protected void ok() {
         selectedScalingType = ((ScalingRadioButton) scalingTypeGroup.getSelectedToggle()).getScalingType();
-        imageBox.scale(selectedScalingType);
+        imageBox.interpolate(selectedScalingType);
     }
 
     @Override

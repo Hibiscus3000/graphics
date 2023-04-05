@@ -22,6 +22,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ImageBox extends VBox {
 
@@ -100,6 +101,32 @@ public class ImageBox extends VBox {
             }
             e.consume();
         });
+
+        final double scrollStep = 0.0005;
+        final double scaleMin = 0.1;
+        final double scaleMax = 5;
+        imagePane.setOnScroll(e -> {
+            e.consume();
+            if (null != originalSizeImage) {
+                double scaleAddition = scrollStep * e.getDeltaY();
+                double prevScale = scale;
+                scale = scale + scaleAddition;
+                if (scale < scaleMin || scale > scaleMax) {
+                    scale = Math.max(scaleMin, Math.min(scale, scaleMax));
+                    return;
+                }
+                if (resize(ScalingType.BILINEAR, scale)) {
+                    Bounds viewportBounds = scrollPane.getViewportBounds();
+                    double delta = 1 - prevScale / scale;
+                    scrollPane.setHvalue(scrollPane.getHvalue() +
+                            delta * e.getSceneX() * current.getWidth() /
+                                    (viewportBounds.getWidth() * (current.getWidth() - viewportBounds.getWidth())));
+                    scrollPane.setVvalue(scrollPane.getVvalue() +
+                            delta * e.getSceneY() * current.getHeight() /
+                                    (viewportBounds.getHeight() * (current.getHeight() - viewportBounds.getHeight())));
+                }
+            }
+        });
     }
 
     public Image getImage() {
@@ -118,6 +145,7 @@ public class ImageBox extends VBox {
 
     public void openNewImage(WritableImage image) {
         angdegProperty.set(0);
+        scale = 1;
         addImage(image);
         originalSizeImage = notRotatedImage = original = image;
     }
@@ -156,11 +184,26 @@ public class ImageBox extends VBox {
         setCursor(Cursor.DEFAULT);
     }
 
+    private double scale = 1;
+    private final ReentrantLock resizeLock = new ReentrantLock();
+
+    private boolean resize(ScalingType scalingType, double scale) {
+        if (!resizeLock.tryLock()) {
+            return false;
+        }
+        notRotatedImage = scalingType.scaleImage(originalSizeImage, scale);
+        if (null == notRotatedImage) {
+            notRotatedImage = originalSizeImage;
+        }
+        rotate();
+        resizeLock.unlock();
+        return true;
+    }
+
     private static final int barWidth = 5;
 
-    public void scale(ScalingType scalingType) {
+    public void interpolate(ScalingType scalingType) {
         if (null != originalSizeImage) {
-            notRotatedImage = originalSizeImage;
             final double rads = Math.toRadians(angdegProperty.get());
             final double cos = Math.abs(Math.cos(rads));
             final double sin = Math.abs(Math.sin(rads));
@@ -169,11 +212,12 @@ public class ImageBox extends VBox {
             final double xScale = (scrollPane.getWidth() - 2 * inset - barWidth) / w;
             final double yScale = (scrollPane.getHeight() - 2 * inset - barWidth) / h;
             final double scale = Math.min(xScale, yScale);
-            notRotatedImage = scalingType.scaleImage(originalSizeImage, scale);
-            if (null == notRotatedImage) {
-                notRotatedImage = originalSizeImage;
+            if (ScalingType.ORIGINAL == scalingType) {
+                this.scale = 1;
+            } else {
+                this.scale = scale;
             }
-            rotate();
+            resize(scalingType, scale);
         }
     }
 
@@ -210,7 +254,6 @@ public class ImageBox extends VBox {
         original = rotatedImage;
         addImage(rotatedImage);
         if (wasFiltered && null != filter) {
-            filterChanged = true;
             imageChanger.submit(this::changeImage);
         }
     }
