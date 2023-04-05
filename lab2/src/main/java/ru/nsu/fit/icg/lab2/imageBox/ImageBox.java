@@ -77,7 +77,7 @@ public class ImageBox extends VBox {
             previousDragX = null;
             previousDragY = null;
             if (MouseButton.PRIMARY == e.getButton()) {
-                filter();
+                imageChanger.submit(this::changeImage);
             }
             e.consume();
         });
@@ -104,13 +104,6 @@ public class ImageBox extends VBox {
 
     public Image getImage() {
         return current;
-    }
-
-    public void filter() {
-        if (changeToFiltered() && filterChanged) {
-            setCursor(Cursor.WAIT);
-        }
-        imageChanger.submit(ImageBox.this::changeImage);
     }
 
     private void addImage(WritableImage image) {
@@ -151,6 +144,7 @@ public class ImageBox extends VBox {
         boolean changeToFiltered = changeToFiltered();
         if (changeToFiltered) {
             if (filterChanged) {
+                setCursor(Cursor.WAIT);
                 filtered = filter.filter(original);
                 filterChanged = false;
             }
@@ -162,11 +156,19 @@ public class ImageBox extends VBox {
         setCursor(Cursor.DEFAULT);
     }
 
+    private static final int barWidth = 5;
+
     public void scale(ScalingType scalingType) {
         if (null != originalSizeImage) {
-            double xScale = (scrollPane.getWidth() - 3 * inset) / originalSizeImage.getWidth();
-            double yScale = (scrollPane.getHeight() - 3 * inset) / originalSizeImage.getHeight();
-            double scale = Math.min(xScale, yScale);
+            notRotatedImage = originalSizeImage;
+            final double rads = Math.toRadians(angdegProperty.get());
+            final double cos = Math.abs(Math.cos(rads));
+            final double sin = Math.abs(Math.sin(rads));
+            final double w = originalSizeImage.getWidth() * cos + originalSizeImage.getHeight() * sin;
+            final double h = originalSizeImage.getHeight() * cos + originalSizeImage.getWidth() * sin;
+            final double xScale = (scrollPane.getWidth() - 2 * inset - barWidth) / w;
+            final double yScale = (scrollPane.getHeight() - 2 * inset - barWidth) / h;
+            final double scale = Math.min(xScale, yScale);
             notRotatedImage = scalingType.scaleImage(originalSizeImage, scale);
             if (null == notRotatedImage) {
                 notRotatedImage = originalSizeImage;
@@ -182,34 +184,34 @@ public class ImageBox extends VBox {
     }
 
     public void rotate() {
-        if (null != current) {
-            boolean wasOriginal = current == original;
+        if (null == notRotatedImage) {
+            return;
+        }
+        final double rads = Math.toRadians(angdegProperty.get());
 
-            final double rads = Math.toRadians(angdegProperty.get());
+        final double cos = Math.abs(Math.cos(rads));
+        final double sin = Math.abs(Math.sin(rads));
+        final int w = (int) (notRotatedImage.getWidth() * cos + notRotatedImage.getHeight() * sin);
+        final int h = (int) (notRotatedImage.getHeight() * cos + notRotatedImage.getWidth() * sin);
 
-            final double cos = Math.abs(Math.cos(rads));
-            final double sin = Math.abs(Math.sin(rads));
-            final int w = (int) (notRotatedImage.getWidth() * cos + notRotatedImage.getHeight() * sin);
-            final int h = (int) (notRotatedImage.getHeight() * cos + notRotatedImage.getWidth() * sin);
+        BufferedImage bufferedCurrent = SwingFXUtils.fromFXImage(notRotatedImage, null);
+        final BufferedImage rotatedBufferedImage = new BufferedImage(w, h, bufferedCurrent.getType());
+        Graphics2D g2d = (Graphics2D) rotatedBufferedImage.getGraphics();
+        g2d.setColor(java.awt.Color.white);
+        g2d.fillRect(0, 0, w - 1, h - 1);
+        final AffineTransform at = new AffineTransform();
+        at.translate(w / 2, h / 2);
+        at.rotate(rads, 0, 0);
+        at.translate(-notRotatedImage.getWidth() / 2, -notRotatedImage.getHeight() / 2);
 
-            BufferedImage bufferedCurrent = SwingFXUtils.fromFXImage(notRotatedImage, null);
-            final BufferedImage rotatedBufferedImage = new BufferedImage(w, h, bufferedCurrent.getType());
-            Graphics2D g2d = (Graphics2D) rotatedBufferedImage.getGraphics();
-            g2d.setColor(java.awt.Color.white);
-            g2d.fillRect(0, 0, w - 1, h - 1);
-            final AffineTransform at = new AffineTransform();
-            at.translate(w / 2, h / 2);
-            at.rotate(rads, 0, 0);
-            at.translate(-notRotatedImage.getWidth() / 2, -notRotatedImage.getHeight() / 2);
-
-            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-            WritableImage rotatedImage = SwingFXUtils.toFXImage(rotateOp.filter(bufferedCurrent, rotatedBufferedImage), null);
-            if (!wasOriginal && null != filter) {
-                rotatedImage = filtered = filter.filter(rotatedImage);
-            } else {
-                original = rotatedImage;
-            }
-            addImage(rotatedImage);
+        final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+        WritableImage rotatedImage = SwingFXUtils.toFXImage(rotateOp.filter(bufferedCurrent, rotatedBufferedImage), null);
+        boolean wasFiltered = current == filtered;
+        original = rotatedImage;
+        addImage(rotatedImage);
+        if (wasFiltered && null != filter) {
+            filterChanged = true;
+            imageChanger.submit(this::changeImage);
         }
     }
 

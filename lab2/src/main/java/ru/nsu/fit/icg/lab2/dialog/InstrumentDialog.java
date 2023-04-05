@@ -16,16 +16,16 @@ public abstract class InstrumentDialog extends Dialog {
         buttonBox.setSpacing(spacing);
         Button okButton = new Button("Ок");
         okButton.setOnAction(e -> {
-            ok();
             setResult(ButtonType.OK);
             hide();
+            ok();
             e.consume();
         });
         Button cancelButton = new Button("Отмена");
         cancelButton.setOnAction(e -> {
-            cancel();
-            hide();
             setResult(ButtonType.CANCEL);
+            hide();
+            cancel();
             e.consume();
         });
         buttonBox.getChildren().addAll(okButton, cancelButton);
