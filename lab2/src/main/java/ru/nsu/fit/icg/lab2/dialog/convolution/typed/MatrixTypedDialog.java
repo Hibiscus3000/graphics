@@ -3,9 +3,10 @@ package ru.nsu.fit.icg.lab2.dialog.convolution.typed;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
+import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.MatrixTypedFilter;
 
-public abstract class MatrixTypedDialog extends FilterDialog {
+public abstract class MatrixTypedDialog extends FilterDialog implements ResizableDialog {
 
     protected final TypedMatrixBox typedMatrixBox;
 
@@ -13,7 +14,7 @@ public abstract class MatrixTypedDialog extends FilterDialog {
 
     public MatrixTypedDialog(Node upperNode, MatrixTypedFilter matrixTypedFilter, String labelText) {
         super(matrixTypedFilter);
-        typedMatrixBox = new TypedMatrixBox(matrixTypedFilter, labelText);
+        typedMatrixBox = new TypedMatrixBox(this, matrixTypedFilter, labelText);
         VBox matrixTypedBox = new VBox();
         this.upperNode = upperNode;
         if (null != upperNode) {

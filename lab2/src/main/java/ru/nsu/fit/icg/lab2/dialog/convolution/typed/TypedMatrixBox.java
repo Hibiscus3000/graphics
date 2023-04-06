@@ -5,7 +5,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.lab2.dialog.matrix.MatrixPane;
+import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
+import ru.nsu.fit.icg.lab2.dialog.matrix.MatrixBox;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.MatrixType;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.MatrixTypedFilter;
 
@@ -16,13 +17,13 @@ public class TypedMatrixBox extends VBox {
 
     private final MatrixTypedFilter matrixTypedFilter;
 
-    private final MatrixPane matrixPane;
+    private final MatrixBox matrixBox;
 
-    public TypedMatrixBox(MatrixTypedFilter matrixTypedFilter, String labelText) {
+    public TypedMatrixBox(ResizableDialog owner, MatrixTypedFilter matrixTypedFilter, String labelText) {
         this.matrixTypedFilter = matrixTypedFilter;
         prevMatrixType = matrixTypedFilter.getMatrixType();
-        matrixPane = new MatrixPane();
-        getChildren().addAll(new Label(labelText), getMatrixButtonBox(), matrixPane);
+        matrixBox = new MatrixBox(owner);
+        getChildren().addAll(new Label(labelText), getMatrixButtonBox(), matrixBox);
     }
 
     private final Map<MatrixType, ToggleButton> toggleButtonMap = new HashMap<>();
@@ -35,7 +36,7 @@ public class TypedMatrixBox extends VBox {
             matrixTypeButton.setToggleGroup(toggleGroup);
             matrixTypeButton.setOnAction(e -> {
                 matrixTypedFilter.setMatrixType(matrixType);
-                matrixPane.setMatrix(matrixTypedFilter.getMatrixType().getMatrix());
+                matrixBox.setMatrix(matrixTypedFilter.getMatrixType().getMatrix());
                 matrixTypeButton.setSelected(true);
                 e.consume();
             });

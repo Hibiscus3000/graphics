@@ -3,12 +3,13 @@ package ru.nsu.fit.icg.lab2.dialog.convolution.typed;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
+import ru.nsu.fit.icg.lab2.dialog.ResizableDialog;
 import ru.nsu.fit.icg.lab2.dialog.editBox.OddSideEditBox;
 import ru.nsu.fit.icg.lab2.filter.WaterColorizationFilter;
 import ru.nsu.fit.icg.lab2.filter.window.MedianFilter;
 import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.SharpeningFilter;
 
-public class WaterColorizationDialog extends FilterDialog {
+public class WaterColorizationDialog extends FilterDialog implements ResizableDialog {
 
     private final MedianFilter medianFilter;
     private final SharpeningFilter sharpeningFilter;
@@ -23,7 +24,7 @@ public class WaterColorizationDialog extends FilterDialog {
         OddSideEditBox medianWindowSideBox = new OddSideEditBox("Размер окна медианного фильтра",
                 medianWindowSideProperty, medianFilter.getMinWindowSide(), medianFilter.getMaxWindowSide());
         prevMedianWindowSide = medianWindowSideProperty.get();
-        sharpeningMatrixBox = new TypedMatrixBox(sharpeningFilter, "Степень увеличения резкости");
+        sharpeningMatrixBox = new TypedMatrixBox(this, sharpeningFilter, "Степень увеличения резкости");
 
         VBox waterColorizationBox = new VBox(medianWindowSideBox, sharpeningMatrixBox, getButtonBox());
         getDialogPane().setContent(waterColorizationBox);

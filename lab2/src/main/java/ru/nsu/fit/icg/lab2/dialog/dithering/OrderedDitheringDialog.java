@@ -15,6 +15,7 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
 
     public OrderedDitheringDialog(ThreeColorFilter threeColorFilter) {
         super(threeColorFilter);
+
         VBox colorQuantizationBox = getColorQuantizationBox(labelText);
         HBox matricesBox = new HBox();
         OrderedDitheringFilter orderedDitheringFilter = (OrderedDitheringFilter) threeColorFilter;
@@ -52,8 +53,4 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
         }
     }
 
-    @Override
-    public void resize() {
-        getDialogPane().getScene().getWindow().sizeToScene();
-    }
 }

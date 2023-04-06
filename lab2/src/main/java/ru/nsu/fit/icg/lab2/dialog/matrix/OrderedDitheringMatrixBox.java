@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class OrderedDitheringMatrixBox extends VBox {
 
-    private final MatrixPane matrixPane = new MatrixPane();
+    private final MatrixBox matrixBox;
     private final OrderedDitheringMatrix matrix;
     private final ResizableDialog owner;
 
@@ -22,17 +22,17 @@ public class OrderedDitheringMatrixBox extends VBox {
         this.matrix = matrix;
         prevMatrixSide = matrix.getSide();
         this.owner = owner;
+        matrixBox = new MatrixBox(owner);
         HBox buttonBox = new HBox();
         for (Integer matrixSide : matrix.getSides()) {
             buttonBox.getChildren().add(new SizeButton(matrixSide));
         }
         drawMatrix();
-        getChildren().addAll(new Label(name), buttonBox, matrixPane);
+        getChildren().addAll(new Label(name), buttonBox, matrixBox);
     }
 
     public void drawMatrix() {
-        matrixPane.setMatrix(matrix.getMatrix());
-        owner.resize();
+        matrixBox.setMatrix(matrix.getMatrix());
     }
 
     private final ToggleGroup buttonGroup = new ToggleGroup();
