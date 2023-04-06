@@ -1,5 +1,6 @@
 package ru.nsu.fit.icg.lab2.filter.dithering.ordered;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -26,17 +27,14 @@ public class OrderedDitheringFilter extends DitheringFilter {
         matrices.put(2, matrixForMatrixCreation);
         matrixForMatrixCreation = getMatrix(initialMatrixSide);
 
-        final int initialColorQuantization = 16;
         Color[] colors = Color.values();
-
-        colorProperties = new OrdDitherQuantProperty[colors.length];
+        colorProperties = new SimpleIntegerProperty[colors.length];
         for (Color color : colors) {
             int colorOrdinal = color.ordinal();
+            colorProperties[colorOrdinal] = new SimpleIntegerProperty(4);
             colorMatrices[colorOrdinal] = new OrderedDitheringMatrix(initialMatrixSide,
-                    initialColorQuantization);
-            colorProperties[colorOrdinal] = new OrdDitherQuantProperty(colorMatrices[colorOrdinal]);
+                    colorProperties[colorOrdinal]);
         }
-
     }
 
     @Override
@@ -123,8 +121,4 @@ public class OrderedDitheringFilter extends DitheringFilter {
         return "orderedDithering";
     }
 
-    @Override
-    public OrdDitherQuantProperty getColorProperty(Color color) {
-        return (OrdDitherQuantProperty) super.getColorProperty(color);
-    }
 }

@@ -1,17 +1,20 @@
 package ru.nsu.fit.icg.lab2.filter.dithering.ordered;
 
+import javafx.beans.property.IntegerProperty;
 import ru.nsu.fit.icg.lab2.filter.Matrix;
 
 public class OrderedDitheringMatrix extends Matrix {
 
-    private int boundColorQuantization;
+    private final IntegerProperty boundColorQuantization;
     private Integer matrixPreferredSide;
     private int matrixSide;
 
-    OrderedDitheringMatrix(Integer matrixPreferredSide, int boundColorQuantization) {
+    OrderedDitheringMatrix(Integer matrixPreferredSide, IntegerProperty boundColorQuantization) {
         this.matrixPreferredSide = matrixPreferredSide;
         this.boundColorQuantization = boundColorQuantization;
-        recalculateMatrix();
+        recalculateMatrix(boundColorQuantization.get());
+        boundColorQuantization.addListener(((observableValue, oldValue, newValue) -> recalculateMatrix(newValue.intValue())));
+        ;
     }
 
     @Override
@@ -22,12 +25,7 @@ public class OrderedDitheringMatrix extends Matrix {
     @Override
     public void setPreferredSide(Integer matrixPreferredSide) {
         this.matrixPreferredSide = matrixPreferredSide;
-        recalculateMatrix();
-    }
-
-    public void setBoundColorQuantization(int boundColorQuantization) {
-        this.boundColorQuantization = boundColorQuantization;
-        recalculateMatrix();
+        recalculateMatrix(boundColorQuantization.get());
     }
 
     @Override
@@ -40,10 +38,10 @@ public class OrderedDitheringMatrix extends Matrix {
         return matrixSide;
     }
 
-    public void recalculateMatrix() {
+    public void recalculateMatrix(int boundColorQuantization) {
         int matrixSide;
         if (null == this.matrixPreferredSide) {
-            matrixSide = getMatrixSideAuto();
+            matrixSide = getMatrixSideAuto(boundColorQuantization);
         } else {
             matrixSide = this.matrixPreferredSide;
         }
@@ -54,16 +52,16 @@ public class OrderedDitheringMatrix extends Matrix {
         }
     }
 
-    private int getMatrixSideAuto() {
+    private int getMatrixSideAuto(int boundColorQuantization) {
         if (boundColorQuantization <= 4) {
-            return 2;
+            return 16;
         }
         if (boundColorQuantization <= 16) {
-            return 4;
-        }
-        if (boundColorQuantization <= 64) {
             return 8;
         }
-        return 16;
+        if (boundColorQuantization <= 64) {
+            return 4;
+        }
+        return 2;
     }
 }
