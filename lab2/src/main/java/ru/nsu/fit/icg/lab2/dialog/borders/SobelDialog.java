@@ -4,6 +4,6 @@ import ru.nsu.fit.icg.lab2.filter.borders.SobelFilter;
 
 public class SobelDialog extends BordersDialog {
     public SobelDialog(SobelFilter sobelFilter) {
-        super(sobelFilter, 1, 2040, 20);
+        super(sobelFilter, 1, 1020, 20);
     }
 }

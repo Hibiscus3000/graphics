@@ -3,7 +3,7 @@ package ru.nsu.fit.icg.lab2.filter.borders;
 public class RobertsFilter extends BordersFilter {
 
     public RobertsFilter() {
-        super(new int[][]{{1, 0}, {0, -1}}, new int[][]{{0, 1}, {-1, 0}}, 2);
+        super(new int[][]{{1, 0}, {0, -1}}, new int[][]{{0, 1}, {-1, 0}}, 1, 80);
     }
 
     @Override

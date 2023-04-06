@@ -1,27 +1,30 @@
 package ru.nsu.fit.icg.lab2.filter.borders;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import ru.nsu.fit.icg.lab2.filter.ThreeColorFilter;
+import ru.nsu.fit.icg.lab2.filter.BlackWhiteFilter;
+import ru.nsu.fit.icg.lab2.filter.Filter;
 
-public abstract class BordersFilter extends ThreeColorFilter {
+public abstract class BordersFilter implements Filter {
+
+    private final SimpleIntegerProperty colorBinarization;
+    private final SimpleBooleanProperty blackWhiteBorders = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty sharpBorders = new SimpleBooleanProperty(false);
 
     private final int[][] first;
     private final int[][] second;
     private final int divider;
 
-    protected BordersFilter(int[][] first, int[][] second, int divider) {
+    protected BordersFilter(int[][] first, int[][] second, int divider, int defaultBinarization) {
         this.first = first;
         this.second = second;
         this.divider = divider;
-        Color[] colors = Color.values();
-        colorProperties = new SimpleIntegerProperty[colors.length];
-        for (Color color : colors) {
-            colorProperties[color.ordinal()] = new SimpleIntegerProperty(16);
-        }
+        colorBinarization = new SimpleIntegerProperty(defaultBinarization);
     }
 
     private int width;
@@ -60,19 +63,48 @@ public abstract class BordersFilter extends ThreeColorFilter {
                 blueSecond += second[matrixX][matrixY] * b;
             }
         }
-        int redBinarization = colorProperties[Color.RED.ordinal()].get();
-        int greenBinarization = colorProperties[Color.GREEN.ordinal()].get();
-        int blueBinarization = colorProperties[Color.BLUE.ordinal()].get();
         int red = Math.abs(redFirst) + Math.abs(redSecond);
         int green = Math.abs(greenFirst) + Math.abs(greenSecond);
         int blue = Math.abs(blueFirst) + Math.abs(blueSecond);
-        red = red > redBinarization ? red / divider : 0;
-        green = green > greenBinarization ? green / divider : 0;
-        blue = blue > blueBinarization ? blue / divider : 0;
-        return 255 << 24 | red << 16 | green << 8 | blue;
+        if (blackWhiteBorders.get()) {
+            int blackWhite = BlackWhiteFilter.getBlackWhite(red / divider,
+                    green / divider,
+                    blue / divider);
+            int result = getColorValue(divider * blackWhite);
+            return 255 << 24 | result << 16 | result << 8 | result;
+        } else {
+            red = getColorValue(red);
+            green = getColorValue(green);
+            blue = getColorValue(blue);
+            return 255 << 24 | red << 16 | green << 8 | blue;
+        }
     }
 
-    public IntegerProperty getBinarization(Color color) {
-        return colorProperties[color.ordinal()];
+    public int getColorValue(int colorValue) {
+        boolean border = colorValue > colorBinarization.get();
+        int newColorValue;
+        if (border) {
+            if (sharpBorders.get()) {
+                newColorValue = 255;
+            } else {
+                newColorValue = colorValue / divider;
+            }
+        } else {
+            newColorValue = 0;
+        }
+        return newColorValue;
     }
+
+    public IntegerProperty binarizationProperty() {
+        return colorBinarization;
+    }
+
+    public BooleanProperty blackWhiteBordersProperty() {
+        return blackWhiteBorders;
+    }
+
+    public BooleanProperty sharpBordersProperty() {
+        return sharpBorders;
+    }
+
 }

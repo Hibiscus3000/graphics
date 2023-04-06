@@ -15,7 +15,7 @@ public abstract class ValueEditBox<T extends Number> extends VBox {
     private final Property<T> property;
     protected T prevValue;
 
-    public ValueEditBox(String valueName, Property<T> property,
+    public ValueEditBox(String labelText, Property<T> property,
                         T min, T max, T amountToStepBy) {
         setAlignment(Pos.CENTER);
         setSpacing(spacing);
@@ -38,7 +38,7 @@ public abstract class ValueEditBox<T extends Number> extends VBox {
                 spinner.getValueFactory().valueProperty().set((T) newVal));
         sliderSpinnerBox.getChildren().addAll(slider, spinner);
 
-        getChildren().addAll(new Label(valueName), sliderSpinnerBox);
+        getChildren().addAll(new Label(labelText), sliderSpinnerBox);
     }
 
     public void ok() {

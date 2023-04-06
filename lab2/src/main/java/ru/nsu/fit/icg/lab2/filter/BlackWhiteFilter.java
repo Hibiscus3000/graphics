@@ -26,13 +26,21 @@ public class BlackWhiteFilter implements Filter {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 int argb = pixelReader.getArgb(x, y);
-                int r = argb >> 16 & 255;
-                int g = argb >> 8 & 255;
-                int b = argb & 255;
-                int result = Math.min((int) (0.299 * r + 0.587 * g + 0.144 * b), 255);
-                pixelWriter.setArgb(x, y, 255 << 24 | result << 16 | result << 8 | result);
+                pixelWriter.setArgb(x, y, getBlackWhiteArgb(argb));
             }
         }
         return filteredImage;
+    }
+
+    private int getBlackWhiteArgb(int argb) {
+        int r = argb >> 16 & 255;
+        int g = argb >> 8 & 255;
+        int b = argb & 255;
+        int result = getBlackWhite(r, g, b);
+        return 255 << 24 | result << 16 | result << 8 | result;
+    }
+
+    public static int getBlackWhite(int red, int green, int blue) {
+        return Math.min((int) (0.299 * red + 0.587 * green + 0.144 * blue), 255);
     }
 }
