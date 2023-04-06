@@ -43,6 +43,10 @@
     {
       "name": "median",
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.MedianDialog"
+    },
+    {
+      "name": "roundBlur",
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.RoundBlurDialog"
     }
   ]
 }

@@ -6,7 +6,7 @@ public abstract class FilterDialog extends InstrumentDialog {
 
     protected final Filter filter;
 
-    protected FilterDialog(Filter filter) {
+    public FilterDialog(Filter filter) {
         this.filter = filter;
         setTitle(filter.getName());
     }

@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-public class DoubleEditBox extends ValueEditBox<Double> {
+public class DoubleValueEditBox extends ValueEditBox<Double> {
 
-    public DoubleEditBox(String valueName, DoubleProperty doubleProperty,
-                         Double min, Double max, Double amountToStepBy) {
+    public DoubleValueEditBox(String valueName, DoubleProperty doubleProperty,
+                              Double min, Double max, Double amountToStepBy) {
         super(valueName, doubleProperty.asObject(), min, max, amountToStepBy);
         slider.valueProperty().addListener((observable, oldVal, newVal) ->
                 spinner.getValueFactory().setValue((Double) newVal));

@@ -11,8 +11,8 @@ public abstract class ThreeColorFilterDialog extends FilterDialog {
 
     private final ValueEditBox colorPropertyEditBoxes[] = new ValueEditBox[ThreeColorFilter.Color.values().length];
 
-    protected ThreeColorFilterDialog(ThreeColorFilter threeColorFilter,
-                                     int min, int max, int amountToStepBy) {
+    public ThreeColorFilterDialog(ThreeColorFilter threeColorFilter,
+                                  int min, int max, int amountToStepBy) {
         super(threeColorFilter);
         for (ThreeColorFilter.Color color : ThreeColorFilter.Color.values()) {
             IntegerProperty colorProperty = threeColorFilter.getColorProperty(color);

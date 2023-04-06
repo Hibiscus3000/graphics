@@ -1,20 +1,25 @@
 package ru.nsu.fit.icg.lab2.filter;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 public class RoundBlurFilter implements Filter {
 
+    private final SimpleIntegerProperty windowSize = new SimpleIntegerProperty(18);
+    private final SimpleDoubleProperty startRelativeRadius = new SimpleDoubleProperty(0.2);
+    private final SimpleDoubleProperty endRelativeRadius = new SimpleDoubleProperty(0.8);
+
     @Override
     public WritableImage filter(WritableImage original) {
-        final int width = (int) original.getWidth();
-        final int height = (int) original.getHeight();
-        final int windowSize = 21;
+        final int width = (int) original.getWidth(), height = (int) original.getHeight();
+        final int halfWidth = width / 2, halfHeight = height / 2;
+        final double maxRadius = Math.sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
         WritableImage filteredImage = new WritableImage(width, height);
         PixelReader pixelReader = original.getPixelReader();
         PixelWriter pixelWriter = filteredImage.getPixelWriter();
-        int halfWidth = width / 2, halfHeight = height / 2;
         final int stepToMakeDegree = 2;
         double step = Math.PI / (180 * stepToMakeDegree);
         for (int x0 = 0; x0 < width; ++x0) {
@@ -22,6 +27,11 @@ public class RoundBlurFilter implements Filter {
                 int xShift = (x0 - halfWidth);
                 int yShift = (y0 - halfHeight);
                 double r = Math.sqrt(xShift * xShift + yShift * yShift);
+                if (r < startRelativeRadius.get() * maxRadius
+                        || r > endRelativeRadius.get() * maxRadius) {
+                    pixelWriter.setArgb(x0, y0, pixelReader.getArgb(x0, y0));
+                    continue;
+                }
                 int red = 0, green = 0, blue = 0;
                 int x = x0, y = y0;
                 int numberOfPixelsIncluded = 0;
@@ -43,6 +53,7 @@ public class RoundBlurFilter implements Filter {
                     }
                 }
                 angle = initialAngle;
+                int windowSize = this.windowSize.get();
                 for (int i = 0; i < windowSize; ++i) {
                     xShift = (int) (r * Math.cos(angle));
                     yShift = (int) (r * Math.sin(angle));
@@ -70,6 +81,18 @@ public class RoundBlurFilter implements Filter {
             }
         }
         return filteredImage;
+    }
+
+    public SimpleIntegerProperty windowSizeProperty() {
+        return windowSize;
+    }
+
+    public SimpleDoubleProperty startRelativeRadiusProperty() {
+        return startRelativeRadius;
+    }
+
+    public SimpleDoubleProperty endRelativeRadiusProperty() {
+        return endRelativeRadius;
     }
 
     @Override
