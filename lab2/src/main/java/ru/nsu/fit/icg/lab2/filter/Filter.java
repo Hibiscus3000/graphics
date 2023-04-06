@@ -1,12 +1,19 @@
 package ru.nsu.fit.icg.lab2.filter;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.WritableImage;
 
-public interface Filter {
+public abstract class Filter {
 
-    WritableImage filter(WritableImage original);
+    private final SimpleBooleanProperty isSelected = new SimpleBooleanProperty(false);
 
-    String getName();
+    public SimpleBooleanProperty isSelectedProperty() {
+        return isSelected;
+    }
 
-    String getJsonName();
+    public abstract WritableImage filter(WritableImage original);
+
+    public abstract String getName();
+
+    public abstract String getJsonName();
 }

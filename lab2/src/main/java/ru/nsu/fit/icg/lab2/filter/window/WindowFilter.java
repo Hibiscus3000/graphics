@@ -5,7 +5,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 
-public abstract class WindowFilter implements Filter {
+public abstract class WindowFilter extends Filter {
 
     protected int width, height;
     protected int left, right;

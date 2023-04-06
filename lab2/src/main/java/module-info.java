@@ -27,4 +27,6 @@ module ru.nsu.fit.icg.lab2 {
     opens ru.nsu.fit.icg.lab2.filter.window.convolution.typed to javafx.fxml;
     exports ru.nsu.fit.icg.lab2.imageBox;
     opens ru.nsu.fit.icg.lab2.imageBox to javafx.fxml;
+    exports ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler;
+    opens ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler to javafx.fxml;
 }

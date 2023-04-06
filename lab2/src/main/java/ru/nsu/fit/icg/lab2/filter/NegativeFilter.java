@@ -4,7 +4,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
-public class NegativeFilter implements Filter {
+public class NegativeFilter extends Filter {
 
     @Override
     public String getName() {

@@ -7,7 +7,7 @@ import javafx.scene.image.WritableImage;
 
 import static java.lang.Math.pow;
 
-public class GammaFilter implements Filter {
+public class GammaFilter extends Filter {
 
     private final SimpleDoubleProperty gamma = new SimpleDoubleProperty(1);
 

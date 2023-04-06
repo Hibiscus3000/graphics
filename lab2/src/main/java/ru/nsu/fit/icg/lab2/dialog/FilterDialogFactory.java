@@ -3,6 +3,7 @@ package ru.nsu.fit.icg.lab2.dialog;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ru.nsu.fit.icg.lab2.filter.Filter;
 
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class FilterDialogFactory {
 
-    private final Map<String, Constructor> dialogConstructorsMap = new HashMap<>();
+    private final Map<String, Constructor<FilterDialog>> dialogConstructorsMap = new HashMap<>();
 
     private static volatile FilterDialogFactory instance;
 
@@ -44,7 +45,27 @@ public class FilterDialogFactory {
         return instance;
     }
 
-    public Constructor getConstructor(String filterName) {
-        return dialogConstructorsMap.get(filterName);
+    private final Map<String, FilterDialog> filterDialogs = new HashMap<>();
+
+    public FilterDialog getFilterDialog(Filter filter) {
+        String filterJsonName = filter.getJsonName();
+        FilterDialog filterDialog = filterDialogs.get(filterJsonName);
+        if (null == filterDialog) {
+            try {
+                Constructor<FilterDialog> filterDialogConstructor = dialogConstructorsMap.get(filterJsonName);
+                if (null == filterDialogConstructor) {
+                    return null;
+                }
+                filterDialog = filterDialogConstructor.newInstance(filter);
+                filterDialogs.put(filterJsonName, filterDialog);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return filterDialog;
+    }
+
+    public boolean hasParameters(String filterName) {
+        return null != dialogConstructorsMap.get(filterName);
     }
 }

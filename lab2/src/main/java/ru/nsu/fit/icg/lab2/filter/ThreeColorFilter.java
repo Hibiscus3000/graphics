@@ -2,7 +2,7 @@ package ru.nsu.fit.icg.lab2.filter;
 
 import javafx.beans.property.IntegerProperty;
 
-public abstract class ThreeColorFilter implements Filter {
+public abstract class ThreeColorFilter extends Filter {
 
     public enum Color {
 

@@ -3,8 +3,8 @@ package ru.nsu.fit.icg.lab2.menuToolbar.menu;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChanger;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
 
 public class FilterUseMenuItem extends RadioMenuItem implements FilterChanger {
 
@@ -15,7 +15,8 @@ public class FilterUseMenuItem extends RadioMenuItem implements FilterChanger {
         super("Использовать");
         this.filter = filter;
         setToggleGroup(toggleGroup);
-        setOnAction(filterChangeHandler);
+        filter.isSelectedProperty().bindBidirectional(selectedProperty());
+        setOnAction(filterChangeHandler::handle);
     }
 
     @Override

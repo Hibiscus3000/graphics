@@ -24,10 +24,9 @@ import ru.nsu.fit.icg.lab2.filter.window.convolution.typed.SharpeningFilter;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterParametersMenuItem;
 import ru.nsu.fit.icg.lab2.menuToolbar.menu.FilterUseMenuItem;
-import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterToggleButton;
-
-import java.lang.reflect.Constructor;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterDialogShower;
 
 public class MenuToolbarBox extends VBox {
 
@@ -40,18 +39,22 @@ public class MenuToolbarBox extends VBox {
 
     private final Menu filterMenu = new Menu("Фильтр");
     private final FilterChangeHandler filterChangeHandler;
+    private final FilterDialogShower filterDialogShower;
     private final ImageBox imageBox;
     private final ToggleGroup filterMenuGroup = new ToggleGroup();
     private final ToggleGroup filterToolBarGroup = new ToggleGroup();
 
     private final Menu transformationMenu = new Menu("Преобразования");
 
-    public MenuToolbarBox(FilterChangeHandler filterChangeHandler, ImageBox imageBox) {
+    public MenuToolbarBox(FilterChangeHandler filterChangeHandler,
+                          FilterDialogShower filterDialogShower,
+                          ImageBox imageBox) {
         Rectangle2D screenSize = Screen.getPrimary().getBounds();
         toolBar.setPrefWidth(sizeScale * screenSize.getWidth());
 
         getChildren().addAll(menuBar, toolBar);
         this.filterChangeHandler = filterChangeHandler;
+        this.filterDialogShower = filterDialogShower;
         this.imageBox = imageBox;
         menuBar.getMenus().addAll(fileMenu, filterMenu, transformationMenu);
     }
@@ -86,21 +89,18 @@ public class MenuToolbarBox extends VBox {
 
     private void addFilter(Filter filter) {
         Menu thisFilterMenu = new Menu(filter.getName());
-        Constructor dialogConstructor = FilterDialogFactory.getInstance().getConstructor(filter.getJsonName());
-        if (null != dialogConstructor) {
-            thisFilterMenu.getItems().add(new FilterParametersMenuItem(dialogConstructor, filter,
-                    imageBox));
+        FilterToggleButton filterToggleButton;
+        if (FilterDialogFactory.getInstance().hasParameters(filter.getJsonName())) {
+            thisFilterMenu.getItems().add(new FilterParametersMenuItem(filter, filterDialogShower));
         }
         FilterUseMenuItem filterUseMenuItem = new FilterUseMenuItem(filter,
                 filterChangeHandler, filterMenuGroup);
         thisFilterMenu.getItems().add(filterUseMenuItem);
         filterMenu.getItems().add(thisFilterMenu);
 
-        FilterToggleButton filterToggleButton = new FilterToggleButton(filter,
-                filterChangeHandler, filterToolBarGroup);
+        filterToggleButton = new FilterToggleButton(filter, filterChangeHandler,
+                filterDialogShower, filterToolBarGroup);
         toolBar.getItems().add(filterToggleButton);
-
-        filterUseMenuItem.selectedProperty().bindBidirectional(filterToggleButton.selectedProperty());
     }
 
     public void addTransformations() {

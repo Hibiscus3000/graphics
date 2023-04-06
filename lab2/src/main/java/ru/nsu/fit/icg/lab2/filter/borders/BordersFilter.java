@@ -10,7 +10,7 @@ import javafx.scene.image.WritableImage;
 import ru.nsu.fit.icg.lab2.filter.BlackWhiteFilter;
 import ru.nsu.fit.icg.lab2.filter.Filter;
 
-public abstract class BordersFilter implements Filter {
+public abstract class BordersFilter extends Filter {
 
     private final SimpleIntegerProperty colorBinarization;
     private final SimpleBooleanProperty blackWhiteBorders = new SimpleBooleanProperty(false);

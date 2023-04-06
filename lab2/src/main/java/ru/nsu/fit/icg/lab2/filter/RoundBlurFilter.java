@@ -6,7 +6,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
-public class RoundBlurFilter implements Filter {
+public class RoundBlurFilter extends Filter {
 
     private final SimpleIntegerProperty windowSize = new SimpleIntegerProperty(18);
     private final SimpleDoubleProperty startRelativeRadius = new SimpleDoubleProperty(0.2);

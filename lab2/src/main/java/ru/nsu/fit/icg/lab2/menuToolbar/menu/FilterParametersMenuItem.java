@@ -1,32 +1,29 @@
 package ru.nsu.fit.icg.lab2.menuToolbar.menu;
 
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
+import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
+import ru.nsu.fit.icg.lab2.dialog.FilterDialogFactory;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterParametersChanger;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
 
-import java.lang.reflect.Constructor;
+public class FilterParametersMenuItem extends MenuItem implements FilterParametersChanger {
 
-public class FilterParametersMenuItem extends MenuItem {
+    private final Filter filter;
 
-    private Dialog filterDialog;
-
-    public FilterParametersMenuItem(Constructor<Dialog> dialogConstructor, Filter filter,
-                                    ImageBox imageBox) {
+    public FilterParametersMenuItem(Filter filter, FilterChangeHandler filterChangeHandler) {
         super("Параметры");
-        setOnAction(e -> {
-            if (null == filterDialog) {
-                try {
-                    filterDialog = dialogConstructor.newInstance(filter);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            filterDialog.showAndWait();
-            if (ButtonType.OK == filterDialog.getResult() && filter == imageBox.getFilter()) {
-                imageBox.setFilterChanged(true);
-            }
-        });
+        this.filter = filter;
+        setOnAction(filterChangeHandler::handle);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public FilterDialog getDialog() {
+        return FilterDialogFactory.getInstance().getFilterDialog(filter);
     }
 }

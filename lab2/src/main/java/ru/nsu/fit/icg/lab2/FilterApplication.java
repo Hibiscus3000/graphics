@@ -11,7 +11,8 @@ import ru.nsu.fit.icg.lab2.file.OpenFileHandler;
 import ru.nsu.fit.icg.lab2.file.SaveFileHandler;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.MenuToolbarBox;
-import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
+import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterDialogShower;
 
 import java.awt.*;
 
@@ -28,7 +29,8 @@ public class FilterApplication extends Application {
         try {
             ImageBox imageBox = new ImageBox();
             FilterChangeHandler filterChangeHandler = new FilterChangeHandler(imageBox);
-            MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, imageBox);
+            FilterDialogShower filterDialogShower = new FilterDialogShower(imageBox);
+            MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, filterDialogShower, imageBox);
             Window owner = stage.getOwner();
             menuToolbarBox.addFileHandler(new OpenFileHandler(owner, imageBox));
             menuToolbarBox.addFileHandler(new SaveFileHandler(owner, imageBox));
