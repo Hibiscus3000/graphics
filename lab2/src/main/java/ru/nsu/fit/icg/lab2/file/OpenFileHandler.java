@@ -26,7 +26,7 @@ public class OpenFileHandler extends FileHandler {
         if (null == openFileChooser) {
             openFileChooser = new FileChooser();
             openFileChooser.setTitle("Открыть изображение");
-            openFileChooser.setInitialDirectory(new File(initialDirectoryName));
+            openFileChooser.setInitialDirectory(new File("."));
             openFileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image file", "*.png", "*.jpeg", "*.jpg",
                             "*.bmp", "*.gif"),
@@ -63,5 +63,10 @@ public class OpenFileHandler extends FileHandler {
     @Override
     public String getName() {
         return "Открыть файл";
+    }
+
+    @Override
+    public String getImageName() {
+        return "open";
     }
 }

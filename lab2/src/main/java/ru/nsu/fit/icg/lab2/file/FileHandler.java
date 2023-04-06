@@ -9,7 +9,6 @@ public abstract class FileHandler implements EventHandler<ActionEvent> {
 
     protected final Window owner;
     protected final ImageBox imageBox;
-    protected final String initialDirectoryName = "C:/Users/TS/Desktop/для графики";
 
     protected final String errorTitle = "Ошибка!";
     protected final String warningTitle = "Предупреждение!";
@@ -20,5 +19,7 @@ public abstract class FileHandler implements EventHandler<ActionEvent> {
     }
 
     public abstract String getName();
+
+    public abstract String getImageName();
 
 }

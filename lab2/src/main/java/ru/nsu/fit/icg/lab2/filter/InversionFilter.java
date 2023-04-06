@@ -4,17 +4,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
-public class NegativeFilter extends Filter {
-
-    @Override
-    public String getName() {
-        return "Негатив";
-    }
-
-    @Override
-    public String getJsonName() {
-        return "negative";
-    }
+public class InversionFilter extends Filter {
 
     @Override
     public WritableImage filter(WritableImage original) {
@@ -34,4 +24,15 @@ public class NegativeFilter extends Filter {
         }
         return filteredImage;
     }
+
+    @Override
+    public String getName() {
+        return "Инверсия";
+    }
+
+    @Override
+    public String getJsonName() {
+        return "inversion";
+    }
+    //<a target="_blank" href="https://icons8.com/icon/95855/negative">Negative</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

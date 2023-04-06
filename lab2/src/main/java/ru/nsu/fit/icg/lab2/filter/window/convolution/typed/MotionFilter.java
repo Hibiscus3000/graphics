@@ -134,4 +134,5 @@ public class MotionFilter extends MatrixTypedFilter {
     public String getJsonName() {
         return "motion";
     }
+    //<a target="_blank" href="https://icons8.com/icon/uvfFzgUxTCc0/right-arrow">Right Arrow</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

@@ -15,16 +15,6 @@ public class FloydSteinbergFilter extends DitheringFilter {
         }
     }
 
-    @Override
-    public String getName() {
-        return "Дизеринг Флойда-Стейнберга";
-    }
-
-    @Override
-    public String getJsonName() {
-        return "floydSteinberg";
-    }
-
     private int imageWidth;
     private int imageHeight;
 
@@ -74,5 +64,16 @@ public class FloydSteinbergFilter extends DitheringFilter {
         }
         return newColor;
     }
+
+    @Override
+    public String getName() {
+        return "Дизеринг Флойда-Стейнберга";
+    }
+
+    @Override
+    public String getJsonName() {
+        return "floydSteinberg";
+    }
+    //<a target="_blank" href="https://icons8.com/icon/PCDsaryVs7oD/circled-f">Circled F</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
 }

@@ -50,4 +50,5 @@ public class SharpeningFilter extends MatrixTypedFilter {
     public String getJsonName() {
         return "sharpening";
     }
+    //<a target="_blank" href="https://icons8.com/icon/LhKlu22ZRZQw/army-knife">Army Knife</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

@@ -17,4 +17,5 @@ public class SobelFilter extends BordersFilter {
     public String getJsonName() {
         return "sobel";
     }
+    //<a target="_blank" href="https://icons8.com/icon/OJMsgQOCrlH7/circled-s">Circled S</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

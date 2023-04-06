@@ -1,7 +1,7 @@
 {
   "filters": [
     {
-      "name": "smoothing",
+      "name": "gauss",
       "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.SmoothingDialog"
     },
     {

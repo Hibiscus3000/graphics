@@ -120,5 +120,5 @@ public class OrderedDitheringFilter extends DitheringFilter {
     public String getJsonName() {
         return "orderedDithering";
     }
-
+    //<a target="_blank" href="https://icons8.com/icon/A4nUegMM8qcd/circled-d">Circled D</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

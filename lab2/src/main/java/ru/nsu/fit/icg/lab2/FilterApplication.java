@@ -6,9 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import ru.nsu.fit.icg.lab2.file.OpenFileHandler;
-import ru.nsu.fit.icg.lab2.file.SaveFileHandler;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.MenuToolbarBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
@@ -30,10 +27,8 @@ public class FilterApplication extends Application {
             ImageBox imageBox = new ImageBox();
             FilterChangeHandler filterChangeHandler = new FilterChangeHandler(imageBox);
             FilterDialogShower filterDialogShower = new FilterDialogShower(imageBox);
-            MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, filterDialogShower, imageBox);
-            Window owner = stage.getOwner();
-            menuToolbarBox.addFileHandler(new OpenFileHandler(owner, imageBox));
-            menuToolbarBox.addFileHandler(new SaveFileHandler(owner, imageBox));
+            MenuToolbarBox menuToolbarBox = new MenuToolbarBox(filterChangeHandler, filterDialogShower,
+                    stage.getOwner(), imageBox);
             menuToolbarBox.addFilters();
             menuToolbarBox.addTransformations();
             VBox appBox = new VBox(menuToolbarBox, imageBox);

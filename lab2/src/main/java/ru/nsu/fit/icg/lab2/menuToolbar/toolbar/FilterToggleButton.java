@@ -2,10 +2,13 @@ package ru.nsu.fit.icg.lab2.menuToolbar.toolbar;
 
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialogFactory;
 import ru.nsu.fit.icg.lab2.filter.Filter;
+import ru.nsu.fit.icg.lab2.menuToolbar.MenuToolbarBox;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterChangeHandler;
 import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterDialogShower;
 
@@ -16,7 +19,8 @@ public class FilterToggleButton extends ToggleButton implements FilterParameters
     public FilterToggleButton(Filter filter, FilterChangeHandler filterChangeHandler,
                               FilterDialogShower filterDialogShower,
                               ToggleGroup toggleGroup) {
-        super(filter.getName());
+        setGraphic(new ImageView(MenuToolbarBox.getButtonImage(filter.getJsonName())));
+        setTooltip(new Tooltip(filter.getName()));
         this.filter = filter;
         setToggleGroup(toggleGroup);
         filter.isSelectedProperty().bindBidirectional(selectedProperty());

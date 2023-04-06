@@ -89,4 +89,5 @@ public class MedianFilter extends WindowFilter {
     public String getJsonName() {
         return "median";
     }
+    //<a target="_blank" href="https://icons8.com/icon/87474/smooth-background-color">Smooth Background Color</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

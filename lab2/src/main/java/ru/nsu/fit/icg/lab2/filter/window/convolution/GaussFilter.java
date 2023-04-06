@@ -6,13 +6,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SmoothingFilter extends ConvolutionFilter {
+public class GaussFilter extends ConvolutionFilter {
 
     private final IntegerProperty matrixSideProperty;
     private final Map<Integer, int[][]> matricesMap = new HashMap<>(); // matrixSide => matrix
     private final Map<Integer, Integer> dividersMap = new HashMap<>(); // matrixSide => divider
 
-    public SmoothingFilter() {
+    public GaussFilter() {
         matrixSideProperty = new SimpleIntegerProperty(3);
         matrixSideProperty.addListener((observable, oldVal, newVal) -> {
             Integer newValue = (Integer) newVal;
@@ -68,11 +68,12 @@ public class SmoothingFilter extends ConvolutionFilter {
 
     @Override
     public String getName() {
-        return "Сглаживание";
+        return "Размытие по Гауссу";
     }
 
     @Override
     public String getJsonName() {
-        return "smoothing";
+        return "gauss";
     }
+    //<a target="_blank" href="https://icons8.com/icon/8189/blur">Blur</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

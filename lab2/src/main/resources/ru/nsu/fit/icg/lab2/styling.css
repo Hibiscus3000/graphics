@@ -1,3 +1,7 @@
+.root {
+    -bg-color-tool-bar: rgb(235,235,235);
+}
+
 .scroll-pane {
     -fx-background-color: transparent;
 }
@@ -11,7 +15,6 @@
     -fx-border-color: transparent;
 }
 
-.scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -26,4 +29,38 @@
 
 .scroll-pane > .corner {
     -fx-background-color: white;
+}
+
+.buttonBox {
+    -fx-padding: 2;
+    -fx-spacing: 2;
+    -fx-alignment: center;
+}
+
+.bordered-titled-title {
+  -fx-background-color: -bg-color-tool-bar;
+  -fx-text-fill: black;
+  -fx-font-size: 11;
+  -fx-font-weight: bold;
+  -fx-font-style: italic;
+  -fx-translate-y: -10;
+  -fx-translate-x: 5;
+}
+
+.bordered-titled-border {
+  -fx-content-display: top;
+  -fx-border-insets: 3;
+  -fx-background-color: -bg-color-tool-bar;
+  -fx-border-radius: 5;
+  -fx-border-color: rgb(110,110,110);
+  -fx-border-width: 2.6;
+}
+
+.tool-bar {
+    -fx-background-color: -bg-color-tool-bar;
+    -fx-padding: 5 0 0 0;
+}
+
+.bordered-titled-content {
+  -fx-padding: 10 4 5 4;
 }

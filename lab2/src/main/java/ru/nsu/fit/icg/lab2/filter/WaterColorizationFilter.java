@@ -31,4 +31,5 @@ public class WaterColorizationFilter extends Filter {
     public String getJsonName() {
         return "waterColorization";
     }
+    //<a target="_blank" href="https://icons8.com/icon/P4attsDslSsf/palette">Palette</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

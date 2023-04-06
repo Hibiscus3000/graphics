@@ -7,16 +7,6 @@ import javafx.scene.image.WritableImage;
 public class BlackWhiteFilter extends Filter {
 
     @Override
-    public String getName() {
-        return "Черно-белый фильтр";
-    }
-
-    @Override
-    public String getJsonName() {
-        return "blackWhite";
-    }
-
-    @Override
     public WritableImage filter(WritableImage original) {
         int width = (int) original.getWidth();
         int height = (int) original.getHeight();
@@ -43,4 +33,15 @@ public class BlackWhiteFilter extends Filter {
     public static int getBlackWhite(int red, int green, int blue) {
         return Math.min((int) (0.299 * red + 0.587 * green + 0.144 * blue), 255);
     }
+
+    @Override
+    public String getName() {
+        return "Черно-белый фильтр";
+    }
+
+    @Override
+    public String getJsonName() {
+        return "blackWhite";
+    }
+    // <a target="_blank" href="https://icons8.com/icon/70942/черно-белое">Черно-белое</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

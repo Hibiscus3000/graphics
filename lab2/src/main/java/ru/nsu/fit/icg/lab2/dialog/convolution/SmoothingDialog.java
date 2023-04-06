@@ -4,16 +4,16 @@ import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.lab2.dialog.FilterDialog;
 import ru.nsu.fit.icg.lab2.dialog.editBox.OddSideEditBox;
 import ru.nsu.fit.icg.lab2.filter.Filter;
-import ru.nsu.fit.icg.lab2.filter.window.convolution.SmoothingFilter;
+import ru.nsu.fit.icg.lab2.filter.window.convolution.GaussFilter;
 
 public class SmoothingDialog extends FilterDialog {
 
-    private final SmoothingFilter smoothingFilter;
+    private final GaussFilter smoothingFilter;
     private int prevMatrixSide;
 
     public SmoothingDialog(Filter filter) {
         super(filter);
-        smoothingFilter = (SmoothingFilter) filter;
+        smoothingFilter = (GaussFilter) filter;
         prevMatrixSide = smoothingFilter.getMatrixSide();
         VBox smoothingBox = new VBox(new OddSideEditBox("Размер матрицы сглаживания",
                 smoothingFilter.matrixSideProperty(), 3, 11), getButtonBox());

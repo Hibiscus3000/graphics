@@ -82,4 +82,5 @@ public class EmbossingFilter extends MatrixTypedFilter {
     public String getJsonName() {
         return "embossing";
     }
+    //<a target="_blank" href="https://icons8.com/icon/114884/stone-inscription">Stone Inscription</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }

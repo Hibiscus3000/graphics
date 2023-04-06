@@ -31,7 +31,7 @@ public class SaveFileHandler extends FileHandler {
         if (null == saveFileChooser) {
             saveFileChooser = new FileChooser();
             saveFileChooser.setTitle("Сохранить изображение");
-            saveFileChooser.setInitialDirectory(new File(initialDirectoryName));
+            saveFileChooser.setInitialDirectory(new File("."));
             saveFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
         }
         File file = saveFileChooser.showSaveDialog(owner);
@@ -71,5 +71,10 @@ public class SaveFileHandler extends FileHandler {
                 savingFileErrorAlert.showAndWait();
             }
         }
+    }
+
+    @Override
+    public String getImageName() {
+        return "save";
     }
 }

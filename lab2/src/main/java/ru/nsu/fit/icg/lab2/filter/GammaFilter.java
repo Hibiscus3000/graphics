@@ -12,16 +12,6 @@ public class GammaFilter extends Filter {
     private final SimpleDoubleProperty gamma = new SimpleDoubleProperty(1);
 
     @Override
-    public String getName() {
-        return "Гамма-коррекция";
-    }
-
-    @Override
-    public String getJsonName() {
-        return "gamma";
-    }
-
-    @Override
     public WritableImage filter(WritableImage original) {
         int width = (int) original.getWidth();
         int height = (int) original.getHeight();
@@ -47,4 +37,15 @@ public class GammaFilter extends Filter {
     public SimpleDoubleProperty gammaProperty() {
         return gamma;
     }
+
+    @Override
+    public String getName() {
+        return "Гамма-коррекция";
+    }
+
+    @Override
+    public String getJsonName() {
+        return "gamma";
+    }
+    //<a target="_blank" href="https://icons8.com/icon/82718/sun">Sun</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 }
