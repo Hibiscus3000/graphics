@@ -1,11 +1,11 @@
-package ru.nsu.fit.icg.lab2.dialog.edit_box;
+package ru.nsu.fit.icg.lab2.dialog.editBox;
 
 import javafx.beans.property.IntegerProperty;
 
-public class OddIntegerSideEditBox extends IntegerValueEditBox {
+public class OddSideEditBox extends IntegerValueEditBox {
 
-    public OddIntegerSideEditBox(String valueName, IntegerProperty integerProperty,
-                                 int min, int max) {
+    public OddSideEditBox(String valueName, IntegerProperty integerProperty,
+                          int min, int max) {
         super(valueName, integerProperty, min, max, 2);
         slider.setSnapToTicks(true);
         slider.setMajorTickUnit(2);

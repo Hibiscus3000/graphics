@@ -19,6 +19,10 @@ public class DoubleEditBox extends ValueEditBox<Double> {
                 doubleProperty.getValue(), amountToStepBy));
     }
 
+    @Override
+    protected String getNumberName() {
+        return "вещественным числом";
+    }
 
     private class DoubleSpinnerValueFactory extends SpinnerValueFactory.DoubleSpinnerValueFactory {
 
@@ -57,8 +61,14 @@ public class DoubleEditBox extends ValueEditBox<Double> {
 
         @Override
         public Double fromString(String s) {
-            return new BigDecimal(s, mathContext).setScale(scale, RoundingMode.HALF_EVEN)
-                    .doubleValue();
+            try {
+                return new BigDecimal(s, mathContext).setScale(scale, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+            } catch (NumberFormatException ex) {
+                formattingError();
+                spinner.getValueFactory().setValue(-1.0);
+                return prevValue;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package ru.nsu.fit.icg.lab2.dialog.editBox;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.util.StringConverter;
 
 public class IntegerValueEditBox extends ValueEditBox<Integer> {
 
@@ -14,10 +15,16 @@ public class IntegerValueEditBox extends ValueEditBox<Integer> {
                 integerProperty.getValue(), amountToStepBy));
     }
 
+    @Override
+    protected String getNumberName() {
+        return "целым числом";
+    }
+
     private class IntSpinnerValueFactory extends SpinnerValueFactory.IntegerSpinnerValueFactory {
 
         public IntSpinnerValueFactory(int min, int max, int initialValue, int amountToStepBy) {
             super(min, max, initialValue, amountToStepBy);
+            setConverter(new IntegerConverter());
         }
 
         @Override
@@ -34,6 +41,25 @@ public class IntegerValueEditBox extends ValueEditBox<Integer> {
             final int currentValue = getValue();
             final int newIndex = currentValue - steps * getAmountToStepBy();
             setValue(Math.max(min, newIndex));
+        }
+    }
+
+    private class IntegerConverter extends StringConverter<Integer> {
+
+        @Override
+        public String toString(Integer integer) {
+            return integer.toString();
+        }
+
+        @Override
+        public Integer fromString(String s) {
+            try {
+                return Integer.parseInt(s);
+            } catch (NumberFormatException ex) {
+                formattingError();
+                spinner.getValueFactory().setValue(-1);
+                return prevValue;
+            }
         }
     }
 }
