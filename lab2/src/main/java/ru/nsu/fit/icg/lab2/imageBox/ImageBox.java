@@ -264,4 +264,8 @@ public class ImageBox extends VBox {
     private boolean changeToFiltered() {
         return current == original && null != filter && null != original;
     }
+
+    public void stop() {
+        imageChanger.shutdownNow();
+    }
 }
