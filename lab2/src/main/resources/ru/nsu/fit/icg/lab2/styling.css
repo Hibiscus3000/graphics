@@ -1,5 +1,6 @@
 .root {
     -bg-color-tool-bar: rgb(235,235,235);
+    -fx-font-size: 13;
 }
 
 .scroll-pane {
@@ -7,7 +8,7 @@
 }
 
 .scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color:white;
+    -fx-background-color: white;
 }
 
 .increment-button, .decrement-button {
@@ -62,5 +63,10 @@
 }
 
 .bordered-titled-content {
-  -fx-padding: 10 4 5 4;
+    -fx-padding: 10 4 5 4;
+}
+
+.button, .toggle-button {
+    -fx-border-color: rgb(50,50,50);
+    -fx-border-radius: 3;
 }
