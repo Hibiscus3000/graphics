@@ -30,6 +30,7 @@ public abstract class BordersDialog extends FilterDialog {
         sharpBordersCheckBox.selectedProperty().bindBidirectional(sharpBorders);
         prevSharpBorders = blackWhiteBorders.get();
         VBox colorBinarizationEditBox = new VBox(binarizationEditBox, blackWhiteCheckBox, sharpBordersCheckBox);
+        colorBinarizationEditBox.getStyleClass().add("color-binarization-edit-box");
         colorBinarizationEditBox.getChildren().add(getButtonBox());
         getDialogPane().setContent(colorBinarizationEditBox);
     }

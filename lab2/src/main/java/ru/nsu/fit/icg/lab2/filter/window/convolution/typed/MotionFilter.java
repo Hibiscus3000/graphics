@@ -9,16 +9,18 @@ import java.util.Map;
 public class MotionFilter extends MatrixTypedFilter {
 
     public enum Direction implements MatrixType {
-        HORIZONTAL("Горизонтальное направление"),
-        VERTICAL("Вертикальное направление"),
-        MAIN_DIAGONAL("По главной диагонали"),
-        SECONDARY_DIAGONAL("По побочной диагонали");
+        MAIN_DIAGONAL("По главной диагонали", "north-west"),
+        VERTICAL("Вертикальное направление", "north"),
+        SECONDARY_DIAGONAL("По побочной диагонали", "north-east"),
+        HORIZONTAL("Горизонтальное направление", "east");
 
         private final String name;
+        private final String imageName;
         protected int[][] matrix;
 
-        Direction(String name) {
+        Direction(String name, String imageName) {
             this.name = name;
+            this.imageName = imageName;
         }
 
         @Override
@@ -26,9 +28,15 @@ public class MotionFilter extends MatrixTypedFilter {
             return name;
         }
 
+
         @Override
         public int[][] getMatrix() {
             return MotionFilter.getMatrix(this);
+        }
+
+        @Override
+        public String getImageName() {
+            return imageName;
         }
     }
 
@@ -47,7 +55,7 @@ public class MotionFilter extends MatrixTypedFilter {
         int[][] matrix = new int[windowSide][windowSide];
         switch (direction) {
             case HORIZONTAL -> {
-                int middleLine = windowSide / 2 + 1;
+                int middleLine = windowSide / 2;
                 for (int i = 0; i < windowSide; ++i) {
                     for (int j = 0; j < windowSide; ++j) {
                         if (j == middleLine) {
@@ -59,7 +67,7 @@ public class MotionFilter extends MatrixTypedFilter {
                 }
             }
             case VERTICAL -> {
-                int middleLine = windowSide / 2 + 1;
+                int middleLine = windowSide / 2;
                 for (int i = 0; i < windowSide; ++i) {
                     for (int j = 0; j < windowSide; ++j) {
                         if (i == middleLine) {

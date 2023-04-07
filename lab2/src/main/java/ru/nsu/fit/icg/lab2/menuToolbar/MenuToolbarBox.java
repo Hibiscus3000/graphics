@@ -70,8 +70,8 @@ public class MenuToolbarBox extends VBox {
 
         this.imageBox = imageBox;
         addFileHandlers(owner);
-        transformationBox.getStyleClass().add("buttonBox");
-        fileBox.getStyleClass().add("buttonBox");
+        transformationBox.getStyleClass().add("button-box");
+        fileBox.getStyleClass().add("button-box");
 
         getChildren().addAll(menuBar, toolBar);
         this.filterChangeHandler = filterChangeHandler;
@@ -113,7 +113,7 @@ public class MenuToolbarBox extends VBox {
 
     private void addFilterGroup(String filterGroupName, Filter... filters) {
         HBox filtersBox = new HBox();
-        filtersBox.getStyleClass().add("buttonBox");
+        filtersBox.getStyleClass().add("button-box");
         Menu filterGroupMenu = new Menu(filterGroupName);
         for (int i = 0; i < filters.length; ++i) {
             addFilter(filters[i], filterGroupMenu, filtersBox.getChildren());

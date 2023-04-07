@@ -3,58 +3,65 @@ package ru.nsu.fit.icg.lab2.filter.window.convolution.typed;
 public class EmbossingFilter extends MatrixTypedFilter {
 
     public enum Direction implements MatrixType {
-        NORTH("Север", new int[][]{
+        NORTH("Север", "north", new int[][]{
                 {0, -1, 0},
                 {0, 0, 0},
                 {0, 1, 0}
         }),
-        EAST("Восток", new int[][]{
-                {0, 0, 0},
-                {1, 0, -1},
-                {0, 0, 0}
-        }),
-        SOUTH("Юг", new int[][]{
-                {0, 1, 0},
-                {0, 0, 0},
-                {0, -1, 0}
-        }),
-        WEST("Запад", new int[][]{
-                {0, 0, 0},
-                {-1, 0, 1},
-                {0, 0, 0}
-        }),
-        NORTH_EAST("Северо-восток", new int[][]{
+        NORTH_EAST("Северо-восток", "north-east", new int[][]{
                 {0, 1, 0},
                 {-1, 0, 1},
                 {0, -1, 0}
         }),
-        SOUTH_EAST("Юго-восток", new int[][]{
+        EAST("Восток", "east", new int[][]{
+                {0, 0, 0},
+                {1, 0, -1},
+                {0, 0, 0}
+        }),
+        SOUTH_EAST("Юго-восток", "south-east", new int[][]{
                 {0, 1, 0},
                 {1, 0, -1},
                 {0, -1, 0}
         }),
-        SOUTH_WEST("Юго-запад", new int[][]{
+        SOUTH("Юг", "south", new int[][]{
+                {0, 1, 0},
+                {0, 0, 0},
+                {0, -1, 0}
+        }),
+        SOUTH_WEST("Юго-запад", "south-west", new int[][]{
                 {0, -1, 0},
                 {1, 0, -1},
                 {0, 1, 0}
         }),
-        NORTH_WEST("Северо-запад", new int[][]{
+        WEST("Запад", "west", new int[][]{
+                {0, 0, 0},
+                {-1, 0, 1},
+                {0, 0, 0}
+        }),
+        NORTH_WEST("Северо-запад", "north-west", new int[][]{
                 {0, -1, 0},
                 {-1, 0, 1},
                 {0, 1, 0}
         });
 
         private final String name;
+        private final String imageName;
         private final int[][] matrix;
 
-        Direction(String name, int[][] matrix) {
+        Direction(String name, String imageName, int[][] matrix) {
             this.name = name;
+            this.imageName = imageName;
             this.matrix = matrix;
         }
 
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getImageName() {
+            return imageName;
         }
 
         @Override

@@ -23,6 +23,7 @@ public class OrderedDitheringMatrixBox extends VBox {
         prevMatrixSide = matrix.getSide();
         this.owner = owner;
         matrixBox = new MatrixBox(owner);
+        matrixBox.getStyleClass().add("ordered-matrix-button-box");
         HBox buttonBox = new HBox();
         for (Integer matrixSide : matrix.getSides()) {
             buttonBox.getChildren().add(new SizeButton(matrixSide));

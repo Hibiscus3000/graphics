@@ -16,7 +16,7 @@ public class OrderedDitheringDialog extends DitheringDialog implements Resizable
     public OrderedDitheringDialog(ThreeColorFilter threeColorFilter) {
         super(threeColorFilter);
 
-        VBox colorQuantizationBox = getColorQuantizationBox(labelText);
+        VBox colorQuantizationBox = getColorPropertiesBox(labelText);
         HBox matricesBox = new HBox();
         OrderedDitheringFilter orderedDitheringFilter = (OrderedDitheringFilter) threeColorFilter;
         for (ThreeColorFilter.Color color : ThreeColorFilter.Color.values()) {

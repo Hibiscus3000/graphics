@@ -1,19 +1,21 @@
 package ru.nsu.fit.icg.lab2.dialog;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.HBox;
 
-public abstract class InstrumentDialog extends Dialog {
+public abstract class InstrumentDialog extends Dialog implements ResizableDialog {
 
-    protected final static int spacing = 5;
+    InstrumentDialog() {
+        setOnShown(e -> resize());
+    }
 
     protected HBox getButtonBox() {
+        String css = FilterDialog.class.getResource("dialogStyling.css").toExternalForm();
+        getDialogPane().getScene().getStylesheets().add(css);
         HBox buttonBox = new HBox();
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.setSpacing(spacing);
+        buttonBox.getStyleClass().add("button-box");
         Button okButton = new Button("Ок");
         okButton.setOnAction(e -> {
             setResult(ButtonType.OK);

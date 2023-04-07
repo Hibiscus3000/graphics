@@ -5,4 +5,8 @@ public interface MatrixType {
     String getName();
 
     int[][] getMatrix();
+
+    default String getImageName() {
+        return null;
+    }
 }

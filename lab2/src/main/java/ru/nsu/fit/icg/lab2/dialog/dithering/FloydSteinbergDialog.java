@@ -7,7 +7,7 @@ public class FloydSteinbergDialog extends DitheringDialog {
 
     public FloydSteinbergDialog(ThreeColorFilter threeColorFilter) {
         super(threeColorFilter);
-        VBox colorQuantizationBox = getColorQuantizationBox(labelText);
+        VBox colorQuantizationBox = getColorPropertiesBox(labelText);
         colorQuantizationBox.getChildren().add(getButtonBox());
         getDialogPane().setContent(colorQuantizationBox);
     }

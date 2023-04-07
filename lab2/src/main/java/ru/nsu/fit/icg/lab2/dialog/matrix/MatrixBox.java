@@ -15,6 +15,7 @@ public class MatrixBox extends VBox {
     private final ResizableDialog owner;
 
     public MatrixBox(ResizableDialog owner) {
+        matrixPane.getStyleClass().add("matrix-pane");
         this.owner = owner;
         showMatrixCheckBox.selectedProperty().addListener(((observable, oldVal, newVal) -> {
             if (!newVal) {
@@ -25,13 +26,14 @@ public class MatrixBox extends VBox {
             }
         }));
         showMatrixCheckBox.setSelected(true);
+        getStyleClass().add("matrix-box");
         getChildren().addAll(showMatrixCheckBox, matrixSizeLabel, matrixPane);
     }
 
     private int[][] matrix;
 
     public void setMatrix(int[][] matrix) {
-        matrixSizeLabel.setText(matrix.length + "x" + matrix.length);
+        matrixSizeLabel.setText("Размер матрицы: " + matrix.length + "x" + matrix.length);
         this.matrix = matrix;
         if (!showMatrixCheckBox.isSelected()) {
             drawMatrix();
@@ -48,8 +50,8 @@ public class MatrixBox extends VBox {
         for (int i = 0; i < matrixHeight; ++i) {
             for (int j = 0; j < matrixWidth; ++j) {
                 labels[i][j] = new Label();
-                labels[i][j].setText(0 == matrix[i][j] ? "" :
-                        String.valueOf(matrix[i][j] + "  "));
+                labels[i][j].getStyleClass().add("matrix-label");
+                labels[i][j].setText(String.format("%5d", matrix[i][j]));
             }
             matrixPane.addRow(i, labels[i]);
         }

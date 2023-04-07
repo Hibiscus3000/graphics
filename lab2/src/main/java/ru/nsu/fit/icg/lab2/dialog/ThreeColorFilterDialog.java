@@ -37,10 +37,12 @@ public abstract class ThreeColorFilterDialog extends FilterDialog {
         }
     }
 
-    protected VBox getColorQuantizationBox(String labelText) {
-        return new VBox(new Label(labelText),
+    protected VBox getColorPropertiesBox(String labelText) {
+        VBox colorPropertiesBox = new VBox(new Label(labelText),
                 colorPropertyEditBoxes[ThreeColorFilter.Color.RED.ordinal()],
                 colorPropertyEditBoxes[ThreeColorFilter.Color.GREEN.ordinal()],
                 colorPropertyEditBoxes[ThreeColorFilter.Color.BLUE.ordinal()]);
+        colorPropertiesBox.getStyleClass().add("color-quantization-box");
+        return colorPropertiesBox;
     }
 }

@@ -102,7 +102,7 @@ public class ImageBox extends VBox {
             e.consume();
         });
 
-        final double scrollStep = 0.0005;
+        final double scrollStep = 0.0015;
         final double scaleMin = 0.1;
         final double scaleMax = 5;
         imagePane.setOnScroll(e -> {

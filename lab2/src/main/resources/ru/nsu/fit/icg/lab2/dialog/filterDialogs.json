@@ -2,7 +2,7 @@
   "filters": [
     {
       "name": "gauss",
-      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.SmoothingDialog"
+      "dialogClass": "ru.nsu.fit.icg.lab2.dialog.convolution.GaussDialog"
     },
     {
       "name": "gamma",

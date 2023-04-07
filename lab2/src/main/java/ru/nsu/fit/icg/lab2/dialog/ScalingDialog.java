@@ -17,8 +17,9 @@ public class ScalingDialog extends InstrumentDialog {
 
     public ScalingDialog(ImageBox imageBox) {
         this.imageBox = imageBox;
+        setTitle("Интерполяция");
         VBox scalingBox = new VBox();
-        scalingBox.setSpacing(spacing);
+        scalingBox.setSpacing(4);
         for (ScalingType scalingType : ScalingType.values()) {
             ScalingRadioButton scalingRadioButton = new ScalingRadioButton(scalingType);
             scalingRadioButton.setToggleGroup(scalingTypeGroup);

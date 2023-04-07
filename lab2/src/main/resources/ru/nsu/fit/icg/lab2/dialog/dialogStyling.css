@@ -1,0 +1,85 @@
+.root {
+    -fx-font-size: 14;
+    -fx-padding: 0;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-padding: 0;
+}
+
+.edit-box {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 2 0 2 0;
+}
+
+.slider-spinner-box {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.button-box {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 10 0 10 0;
+}
+
+.button, .toggle-button {
+    -fx-border-color: linear-gradient(to bottom right, grey, black);
+    -fx-border-radius: 3;
+}
+
+.label {
+    -fx-font-weight: bold;
+}
+
+.slider .track {
+    -fx-border-color: linear-gradient(to right, royalblue, cyan);
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+}
+
+.slider .thumb {
+    -fx-border-color: linear-gradient(to bottom right, royalblue, cyan);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.matrix-button-box {
+    -fx-alignment: center;
+    -fx-spacing: 6;
+    -fx-padding: 5 0 5 0;
+}
+
+.matrix-box {
+    -fx-alignment: center;
+    -fx-spacing: 6;
+    -fx-padding: 5 0 5 0;
+}
+
+.matrix-pane {
+    -fx-alignment: center;
+    -fx-vgap: -3;
+    -fx-padding: 0;
+}
+
+.matrix-label {
+    -fx-text-alignment: center;
+    -fx-font-size: 12;
+}
+
+.color-quantization-box {
+    -fx-alignment: center;
+}
+
+.ordered-matrix-button-box {
+    -fx-alignment: center;
+}
+
+.typed-matrix-box {
+    -fx-alignment: center;
+}
+
+.color-binarization-edit-box {
+    -fx-spacing: 5;
+}

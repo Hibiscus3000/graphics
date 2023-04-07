@@ -11,6 +11,7 @@ public class RotationDialog extends InstrumentDialog {
     private final ImageBox imageBox;
 
     public RotationDialog(ImageBox imageBox) {
+        setTitle("Поворот");
         angdegBox = new IntegerValueEditBox("Угол", imageBox.angdegProperty(),
                 -180, 180, 5);
         this.imageBox = imageBox;

@@ -1,13 +1,18 @@
 package ru.nsu.fit.icg.lab2.dialog;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 
 public interface ResizableDialog {
     default void resize() {
-        Window window = getDialogPane().getScene().getWindow();
+        Scene scene = getDialogPane().getScene();
+        if (null == scene) {
+            return;
+        }
+        Window window = scene.getWindow();
         window.sizeToScene();
         Double width = window.getWidth();
         Double height = window.getHeight();

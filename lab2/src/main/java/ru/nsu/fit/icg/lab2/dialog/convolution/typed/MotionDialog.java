@@ -19,7 +19,7 @@ public class MotionDialog extends MatrixTypedDialog {
         motionFilter.windowSideProperty().addListener(((observable, oldVal, newVal) -> {
             if (!oldVal.equals(newVal) && 1 == (int) newVal % 2) {
                 typedMatrixBox.redrawMatrix();
-                getDialogPane().getScene().getWindow().sizeToScene();
+                resize();
             }
         }));
     }
