@@ -9,7 +9,9 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Window;
@@ -41,7 +43,9 @@ import ru.nsu.fit.icg.lab2.menuToolbar.toolbar.handler.FilterDialogShower;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class MenuToolbarBox extends VBox {
 
@@ -69,6 +73,7 @@ public class MenuToolbarBox extends VBox {
         toolBar.setPrefWidth(sizeScale * screenSize.getWidth());
 
         this.imageBox = imageBox;
+        addAbout();
         addFileHandlers(owner);
         transformationBox.getStyleClass().add("button-box");
         fileBox.getStyleClass().add("button-box");
@@ -77,6 +82,51 @@ public class MenuToolbarBox extends VBox {
         this.filterChangeHandler = filterChangeHandler;
         this.filterDialogShower = filterDialogShower;
         menuBar.getMenus().addAll(fileMenu, filterMenu, transformationMenu);
+    }
+
+    private void addAbout() {
+        final String about = "О программе";
+        Button aboutButton = new Button();
+        aboutButton.setTooltip(new Tooltip(about));
+        aboutButton.setGraphic(new ImageView(getButtonImage("about")));
+        toolBar.getItems().add(aboutButton);
+        aboutButton.setOnAction(e -> {
+            e.consume();
+            showAboutDialog();
+        });
+
+        MenuItem aboutMenuItem = new MenuItem(about);
+        fileMenu.getItems().add(aboutMenuItem);
+        aboutMenuItem.setOnAction(e -> {
+            e.consume();
+            showAboutDialog();
+        });
+    }
+
+    private void showAboutDialog() {
+        try {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("О программе");
+            alert.setHeaderText("О программе");
+            byte[] aboutBytes = getClass().getResourceAsStream("about.txt").readAllBytes();
+            TextArea textArea = new TextArea(new String(aboutBytes, StandardCharsets.UTF_8));
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+
+            textArea.setMaxWidth(Double.MAX_VALUE);
+            textArea.setMaxHeight(Double.MAX_VALUE);
+            GridPane.setVgrow(textArea, Priority.ALWAYS);
+            GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+            GridPane expContent = new GridPane();
+            expContent.setMaxWidth(Double.MAX_VALUE);
+            expContent.add(textArea, 0, 1);
+
+            alert.getDialogPane().setContent(expContent);
+            alert.showAndWait();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final HBox fileBox = new HBox();

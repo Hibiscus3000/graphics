@@ -7,7 +7,7 @@ public class SharpeningFilter extends MatrixTypedFilter {
                 {0, -1, 0},
                 {-1, 5, -1},
                 {0, -1, 0}}),
-        STRONG("Большая", new int[][]{
+        STRONG("Сильная", new int[][]{
                 {-1, -1, -1},
                 {-1, 9, -1},
                 {-1, -1, -1}});

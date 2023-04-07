@@ -58,8 +58,9 @@
 }
 
 .tool-bar {
+    -fx-alignment: center-left;
     -fx-background-color: -bg-color-tool-bar;
-    -fx-padding: 5 0 0 0;
+    -fx-padding: 5 0 0 5;
 }
 
 .bordered-titled-content {
