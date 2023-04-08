@@ -1,6 +1,7 @@
-package ru.nsu.fit.icg.lab2.dialog;
+package ru.nsu.fit.icg.lab2.dialog.transformation;
 
 import javafx.scene.layout.VBox;
+import ru.nsu.fit.icg.lab2.dialog.InstrumentDialog;
 import ru.nsu.fit.icg.lab2.dialog.editBox.IntegerValueEditBox;
 import ru.nsu.fit.icg.lab2.dialog.editBox.ValueEditBox;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;

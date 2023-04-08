@@ -7,13 +7,13 @@ import javafx.scene.layout.HBox;
 
 public abstract class InstrumentDialog extends Dialog implements ResizableDialog {
 
-    InstrumentDialog() {
+    public InstrumentDialog() {
+        String css = InstrumentDialog.class.getResource("dialogStyling.css").toExternalForm();
+        getDialogPane().getScene().getStylesheets().add(css);
         setOnShown(e -> resize());
     }
 
     protected HBox getButtonBox() {
-        String css = FilterDialog.class.getResource("dialogStyling.css").toExternalForm();
-        getDialogPane().getScene().getStylesheets().add(css);
         HBox buttonBox = new HBox();
         buttonBox.getStyleClass().add("button-box");
         Button okButton = new Button("Ок");

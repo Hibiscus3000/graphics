@@ -1,8 +1,9 @@
-package ru.nsu.fit.icg.lab2.dialog;
+package ru.nsu.fit.icg.lab2.dialog.transformation;
 
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import ru.nsu.fit.icg.lab2.dialog.InstrumentDialog;
 import ru.nsu.fit.icg.lab2.imageBox.ImageBox;
 import ru.nsu.fit.icg.lab2.imageBox.ScalingType;
 
@@ -19,7 +20,7 @@ public class ScalingDialog extends InstrumentDialog {
         this.imageBox = imageBox;
         setTitle("Интерполяция");
         VBox scalingBox = new VBox();
-        scalingBox.setSpacing(4);
+        scalingBox.getStyleClass().add("scaling-box");
         for (ScalingType scalingType : ScalingType.values()) {
             ScalingRadioButton scalingRadioButton = new ScalingRadioButton(scalingType);
             scalingRadioButton.setToggleGroup(scalingTypeGroup);

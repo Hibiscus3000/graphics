@@ -8,9 +8,8 @@ public class GammaDialog extends FilterDialog {
 
     private final DoubleValueEditBox gammaEditBox;
 
-    public GammaDialog(GammaFilter filter) {
-        super(filter);
-        GammaFilter gammaFilter = (GammaFilter) filter;
+    public GammaDialog(GammaFilter gammaFilter) {
+        super(gammaFilter);
 
         VBox vBox = new VBox();
 

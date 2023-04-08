@@ -83,3 +83,8 @@
 .color-binarization-edit-box {
     -fx-spacing: 5;
 }
+
+.scaling-box {
+    -fx-spacing: 4;
+    -fx-font-weight: bold;
+}

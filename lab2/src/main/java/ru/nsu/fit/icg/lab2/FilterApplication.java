@@ -3,6 +3,7 @@ package ru.nsu.fit.icg.lab2;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -51,11 +52,13 @@ public class FilterApplication extends Application {
     private ImageBox imageBox;
 
     private void exit(Stage stage) {
+        ButtonType okButtonType = new ButtonType("Да", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Нет", ButtonBar.ButtonData.CANCEL_CLOSE);
         Alert logoutAlert = new Alert(Alert.AlertType.CONFIRMATION, "Вы уверены, что хотите выйти?",
-                ButtonType.OK, ButtonType.CANCEL);
+                okButtonType, cancelButtonType);
         logoutAlert.setTitle("Выход");
         logoutAlert.setHeaderText("Выход");
-        if (ButtonType.OK == logoutAlert.showAndWait().get()) {
+        if (okButtonType == logoutAlert.showAndWait().get()) {
             if (null != imageBox) {
                 imageBox.stop();
             }
