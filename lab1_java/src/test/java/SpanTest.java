@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 import ru.nsu.fit.icg.lab1.instrument.FillInstrument;
-import ru.nsu.fit.icg.lab1.instrument.parameter.ParametersParser;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,7 +24,7 @@ public class SpanTest {
         g2d.fillRect(squareStart, squareStart, squareSide, squareSide);
 
         assertDoesNotThrow(() -> {
-            FillInstrument fillInstrument = new FillInstrument(new ParametersParser(), null);
+            FillInstrument fillInstrument = new FillInstrument(null);
             fillInstrument.draw(bufferedImage, imageSide / 2, imageSide / 2);
             fillInstrument.setColor(black);
         });
