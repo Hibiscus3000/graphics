@@ -1,8 +1,8 @@
-package ru.nsu.fit.icg.g20203.sinyukov.wireframe.generatrix;
+package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.util.Pair;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,14 +10,14 @@ import java.util.List;
 
 import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 
-public class Generatrix implements Serializable {
+public class Spline implements Serializable {
 
     // number of lines that form one B-spline segment
     private final IntegerProperty numberOfSplineLines;
     private final transient List<List<Point>> splineLines = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
 
-    public Generatrix(int numberOfAnchorPoints, int numberOfLines) {
+    public Spline(int numberOfAnchorPoints, int numberOfLines) {
         this.numberOfSplineLines = new SimpleIntegerProperty(numberOfLines);
         addAnchorPoints(numberOfAnchorPoints, -1);
     }

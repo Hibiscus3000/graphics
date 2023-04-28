@@ -1,7 +1,6 @@
-package ru.nsu.fit.icg.g20203.sinyukov.wireframe.generatrix;
+package ru.nsu.fit.icg.g20203.sinyukov.wireframe;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public class Point {
