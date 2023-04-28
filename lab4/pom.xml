@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.nsu.fit.icg.lab4.g20203.sinyukov</groupId>
+    <groupId>ru.nsu.fit.icg.g20203.sinyukov</groupId>
     <artifactId>wifeframe</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>lab4</name>
