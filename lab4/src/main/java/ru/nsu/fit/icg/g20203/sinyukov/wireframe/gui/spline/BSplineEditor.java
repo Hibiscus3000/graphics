@@ -35,8 +35,11 @@ public class BSplineEditor extends StackPane {
     private final Map<String, ColorHandler> colorHandlers = new HashMap<>();
 
     public BSplineEditor() {
-        addColorChangers();
+        addColorHandlers();
+        createCoordinatePlane();
         colorHandlers.get("backgroundColor").setDefault();
+        minHeightProperty().bind(minWidthProperty());
+        new Background(new BackgroundFill(Color.BLACK, null, null));
     }
 
     private void createCoordinatePlane() {
@@ -55,9 +58,10 @@ public class BSplineEditor extends StackPane {
         mainAxes.add(yAxis);
 
         colorHandlers.get("mainAxesColor").setDefault();
+        getChildren().addAll(xAxis, yAxis);
     }
 
-    private void addColorChangers() {
+    private void addColorHandlers() {
         colorHandlers.put("backgroundColor", new ColorHandler("backgroundColor", Color.BLACK, colorContainer,
                 color -> setBackground(new Background(new BackgroundFill(color, null, null)))));
         colorHandlers.put("mainAxesColor", new ShapeColorHandler<>("mainAxesColor",

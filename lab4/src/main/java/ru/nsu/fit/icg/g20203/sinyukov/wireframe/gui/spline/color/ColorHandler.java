@@ -16,6 +16,8 @@ public class ColorHandler {
         this.name = name;
         this.defaultColor = defaultColor;
         this.colorChangeConsumer = colorChangeConsumer;
+        colorContainer.putColor(name, defaultColor);
+        setColorContainer(colorContainer);
     }
 
     public void setColorContainer(ColorContainer colorContainer) {

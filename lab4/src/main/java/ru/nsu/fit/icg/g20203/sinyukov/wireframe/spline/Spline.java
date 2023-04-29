@@ -1,7 +1,7 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 
 import java.io.Serializable;
@@ -13,12 +13,13 @@ import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 public class Spline implements Serializable {
 
     // number of lines that form one B-spline segment
-    private final IntegerProperty numberOfSplineLines;
+    private final IntegerProperty splineSectorPartition;
     private final transient List<List<Point>> splineLines = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
 
     public Spline(int numberOfAnchorPoints, int numberOfLines) {
-        this.numberOfSplineLines = new SimpleIntegerProperty(numberOfLines);
+        this.splineSectorPartition = new ReadOnlyIntegerWrapper(numberOfLines);
+        splineSectorPartition.addListener((observable, oldValue, newValue) -> calculateAllLines());
         addAnchorPoints(numberOfAnchorPoints, -1);
     }
 
@@ -29,6 +30,13 @@ public class Spline implements Serializable {
         }
         return newAnchorPoints;
     }
+
+//    public void deleteAnchorPoints(int numberOfAnchorPoints) {
+//        for (int i = 0; i < numberOfAnchorPoints; ++i) {
+//            anchorPoints.remove(anchorPoints.size() - i - 1);
+//            cal
+//        }
+//    }
 
     private final static double distFromPreviousAP = 20.0;
 
@@ -57,6 +65,12 @@ public class Spline implements Serializable {
         return newAP;
     }
 
+    public void deleteAnchorPoint(int APIndex) {
+        anchorPoints.remove(APIndex);
+        splineLines.remove(APIndex - 1);
+        calculateLine(APIndex + 1);
+    }
+
     private void calculateAP(int APIndex) {
         for (int j = APIndex - 1; j < APIndex + 3; ++j) {
             calculateLine(j);
@@ -74,7 +88,7 @@ public class Spline implements Serializable {
         }
         List<Point> calculatedSplineLine = splineLines.get(APIndex - 1);
         int numberOfPoints = calculatedSplineLine.size();
-        for (int i = 0; i <= numberOfSplineLines.get(); ++i) {
+        for (int i = 0; i <= splineSectorPartition.get(); ++i) {
             double[] uv = calculateSLPoint(i, APIndex);
             if (i < numberOfPoints) {
                 Point calculatedPoint = calculatedSplineLine.get(i);
@@ -108,9 +122,13 @@ public class Spline implements Serializable {
         }
         double[] T = new double[4];
         for (int j = 3; j >= 0; --j) {
-            T[j] = Math.pow((double) pointInd / numberOfSplineLines.get(), j);
+            T[j] = Math.pow((double) pointInd / splineSectorPartition.get(), j);
         }
         return lineMatrixProduct(T, scalarMatrixProduct(1.0 / 6,
                 matrixProduct(Ms, P, 4, 4, 2), 4, 2), 4, 2);
+    }
+
+    public IntegerProperty splineSectorPartitionProperty() {
+        return splineSectorPartition;
     }
 }
