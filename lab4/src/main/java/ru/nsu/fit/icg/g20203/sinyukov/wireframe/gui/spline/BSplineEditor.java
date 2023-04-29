@@ -10,6 +10,7 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorContainer;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ShapeColorHandler;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +36,25 @@ public class BSplineEditor extends StackPane {
 
     public BSplineEditor() {
         addColorChangers();
+        colorHandlers.get("backgroundColor").setDefault();
     }
 
     private void createCoordinatePlane() {
+        Line xAxis = new Line();
+        xAxis.setStartX(0);
+        xAxis.startYProperty().bind(heightProperty().divide(2));
+        xAxis.endXProperty().bind(widthProperty());
+        xAxis.endYProperty().bind(heightProperty().divide(2));
+
+        Line yAxis = new Line();
+        yAxis.startXProperty().bind(widthProperty().divide(2));
+        yAxis.setStartY(0);
+        yAxis.endXProperty().bind(widthProperty().divide(2));
+        yAxis.endYProperty().bind(heightProperty());
+        mainAxes.add(xAxis);
+        mainAxes.add(yAxis);
+
+        colorHandlers.get("mainAxesColor").setDefault();
     }
 
     private void addColorChangers() {
@@ -65,7 +82,23 @@ public class BSplineEditor extends StackPane {
         //TODO
     }
 
-    private void move() {
+    private void moveVision() {
+        //TODO
+    }
+
+    private void selectAnchorPoint() {
+        //TODO
+    }
+
+    private void deleteAnchorPoint() {
+        //TODO
+    }
+
+    public void setSpline(Spline spline) {
+        //TODO
+    }
+
+    public void moveSelected(double x, double y) {
         //TODO
     }
 }
