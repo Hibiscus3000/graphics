@@ -1,6 +1,8 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -128,7 +130,6 @@ public class BSplineEditor extends Pane {
                     anchorPoints.get(i), colorContainer.getColor("generatrixColor"),
                     generatrixStrokeWidth);
             generatrixLines.add(generatrixLine);
-            getChildren().add(generatrixLine);
             addAnchorPointCircle(anchorPoints.get(i));
         }
 
@@ -137,10 +138,10 @@ public class BSplineEditor extends Pane {
                 Line splineLine = createLine(line.get(i - 1), line.get(i),
                         colorContainer.getColor("splineLineColor"),
                         splineStrokeWidth);
-                getChildren().add(splineLine);
                 splineLines.add(splineLine);
             }
         }
+        repaint();
     }
 
     private void addAnchorPointCircle(Point point) {
@@ -148,12 +149,39 @@ public class BSplineEditor extends Pane {
                 colorContainer.getColor("anchorPointColor"));
         anchorPointsCircle.setOnMousePressed(e -> {
             selectAnchorPoint(anchorPointsCircle);
+            anchorPointsCircle.radiusProperty().bind(anchorPointR);
             e.consume();
         });
-        anchorPointsCircle.setOnMouseEntered(e -> anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover));
+        anchorPointsCircle.setOnMouseReleased(e -> {
+            if (Math.pow(e.getX() - anchorPointsCircle.getCenterX(),2) +
+                    Math.pow(e.getY() - anchorPointsCircle.getCenterY(),2) > Math.pow(anchorPointROnRollover.get(),2)) {
+                anchorPointsCircle.radiusProperty().bind(anchorPointR);
+            } else {
+                anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
+            }
+        });
+        anchorPointsCircle.setOnMouseDragged(e -> {
+            point.uProperty().set((e.getX() - widthProperty().get() / 2) / scale.get());
+            point.vProperty().set((e.getY() - heightProperty().get() / 2) / scale.get());
+        });
+        anchorPointsCircle.setOnMouseEntered(e -> {
+            if (!e.isPrimaryButtonDown()) {
+                anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
+            } else {
+                anchorPointsCircle.radiusProperty().bind(anchorPointR);
+            }
+        });
         anchorPointsCircle.setOnMouseExited(e -> anchorPointsCircle.radiusProperty().bind(anchorPointR));
-        getChildren().add(anchorPointsCircle);
         anchorPointsCircles.add(anchorPointsCircle);
+    }
+
+    private void repaint() {
+        getChildren().removeAll(anchorPointsCircles);
+        getChildren().removeAll(generatrixLines);
+        getChildren().removeAll(splineLines);
+        getChildren().addAll(generatrixLines);
+        getChildren().addAll(splineLines);
+        getChildren().addAll(anchorPointsCircles);
     }
 
     private Line createLine(Point p1, Point p2, Color color, DoubleProperty strokeWidth) {

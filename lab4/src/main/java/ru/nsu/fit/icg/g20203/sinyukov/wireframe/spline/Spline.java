@@ -2,6 +2,7 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.value.ChangeListener;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 
 import java.io.Serializable;
@@ -62,6 +63,10 @@ public class Spline implements Serializable {
         }
         anchorPoints.add(newAP);
         calculateAP(lastAPIndex + 1);
+        ChangeListener<Number> apChangeListener =
+                (observableValue, oldValue, newValue) -> calculateAP(lastAPIndex + 1);
+        newAP.uProperty().addListener(apChangeListener);
+        newAP.vProperty().addListener(apChangeListener);
         return newAP;
     }
 
@@ -121,8 +126,8 @@ public class Spline implements Serializable {
             P[j][1] = anchorPoint.vProperty().get();
         }
         double[] T = new double[4];
-        for (int j = 3; j >= 0; --j) {
-            T[j] = Math.pow((double) pointInd / splineSectorPartition.get(), j);
+        for (int j = 0; j < 4; ++j) {
+            T[3 - j] = Math.pow((double) pointInd / splineSectorPartition.get(), j);
         }
         return lineMatrixProduct(T, scalarMatrixProduct(1.0 / 6,
                 matrixProduct(Ms, P, 4, 4, 2), 4, 2), 4, 2);
