@@ -1,9 +1,8 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -23,7 +22,10 @@ import java.util.Map;
 
 public class BSplineEditor extends Pane {
 
-    private final DoubleProperty scale = new SimpleDoubleProperty(3);
+    private final static double scaleStep = 0.01;
+    public final static double scaleMin = 0.01;
+    public final static double scaleMax = 10;
+    private final DoubleProperty scale = new SimpleDoubleProperty(0.5);
     private Point center = new Point(0, 0);
 
     private Spline spline;
@@ -50,33 +52,61 @@ public class BSplineEditor extends Pane {
     private final DoubleProperty anchorPointR = new SimpleDoubleProperty(6.0);
     private final DoubleProperty splitPointR = new SimpleDoubleProperty(4.0);
 
+    private Double prevU = null;
+    private Double prevV = null;
+
     public BSplineEditor() {
         addColorHandlers();
-        createCoordinatePlane();
+        createMainAxes();
         colorHandlers.get("backgroundColor").setDefault();
         setOnMousePressed(e -> deselectAnchorPoint());
+        widthProperty().addListener((observable, oldVal, newVal) -> {
+            double mult = newVal.doubleValue() / oldVal.doubleValue();
+            if (Double.isFinite(mult)) {
+                scale.set(scale.get() * mult);
+            }
+        });
+
+        setOnMouseDragged(e -> {
+            if (MouseButton.SECONDARY == e.getButton()) {
+                if (null != prevU && null != prevV)
+                    moveVision(prevU - e.getX(), prevV - e.getY());
+                prevU = e.getX();
+                prevV = e.getY();
+            }
+        });
+        setOnMouseReleased(e -> {
+            prevU = null;
+            prevV = null;
+        });
+
+        setOnScroll(e -> changeScale(scaleStep * e.getDeltaY()));
     }
 
-    private void createCoordinatePlane() {
-        Line xAxis = new Line();
-        xAxis.setStartX(0);
-        xAxis.startYProperty().bind(heightProperty().divide(2));
-        xAxis.endXProperty().bind(widthProperty());
-        xAxis.endYProperty().bind(heightProperty().divide(2));
-        xAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
+    private void createMainAxes() {
+        Line uAxis = new Line();
+        uAxis.setStartX(0);
+        uAxis.startYProperty().bind(heightProperty().divide(2)
+                .subtract(center.vProperty().multiply(scale)));
+        uAxis.endXProperty().bind(widthProperty());
+        uAxis.endYProperty().bind(heightProperty().divide(2)
+                .subtract(center.vProperty().multiply(scale)));
+        uAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
 
-        Line yAxis = new Line();
-        yAxis.startXProperty().bind(widthProperty().divide(2));
-        yAxis.setStartY(0);
-        yAxis.endXProperty().bind(widthProperty().divide(2));
-        yAxis.endYProperty().bind(heightProperty());
-        yAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
+        Line vAxis = new Line();
+        vAxis.startXProperty().bind(widthProperty().divide(2)
+                .subtract(center.uProperty().multiply(scale)));
+        vAxis.setStartY(0);
+        vAxis.endXProperty().bind(widthProperty().divide(2)
+                .subtract(center.uProperty().multiply(scale)));
+        vAxis.endYProperty().bind(heightProperty());
+        vAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
 
-        mainAxes.add(xAxis);
-        mainAxes.add(yAxis);
+        mainAxes.add(uAxis);
+        mainAxes.add(vAxis);
 
         colorHandlers.get("mainAxisColor").setDefault();
-        getChildren().addAll(xAxis, yAxis);
+        getChildren().addAll(uAxis, vAxis);
     }
 
     private void addColorHandlers() {
@@ -105,12 +135,13 @@ public class BSplineEditor extends Pane {
                 Color.WHITE, colorContainer, serifs));
     }
 
-    private void zoom() {
-        //TODO
+    private void changeScale(double scaleChange) {
+        scale.set(Math.max(scaleMin, Math.min(scale.get() + scaleChange, scaleMax)));
     }
 
-    private void moveVision() {
-        //TODO
+    private void moveVision(double u, double v) {
+        center.uProperty().set(center.uProperty().get() + u / scale.get());
+        center.vProperty().set(center.vProperty().get() + v / scale.get());
     }
 
     private void selectAnchorPoint() {
@@ -156,16 +187,18 @@ public class BSplineEditor extends Pane {
             e.consume();
         });
         anchorPointsCircle.setOnMouseReleased(e -> {
-            if (Math.pow(e.getX() - anchorPointsCircle.getCenterX(),2) +
-                    Math.pow(e.getY() - anchorPointsCircle.getCenterY(),2) > Math.pow(anchorPointROnRollover.get(),2)) {
+            if (Math.pow(e.getX() - anchorPointsCircle.getCenterX(), 2) +
+                    Math.pow(e.getY() - anchorPointsCircle.getCenterY(), 2) > Math.pow(anchorPointROnRollover.get(), 2)) {
                 anchorPointsCircle.radiusProperty().bind(anchorPointR);
             } else {
                 anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
             }
         });
         anchorPointsCircle.setOnMouseDragged(e -> {
-            point.uProperty().set((e.getX() - widthProperty().get() / 2) / scale.get());
-            point.vProperty().set((e.getY() - heightProperty().get() / 2) / scale.get());
+            point.uProperty().set((e.getX() - widthProperty().get() / 2)
+                    / scale.get() + center.uProperty().get());
+            point.vProperty().set((e.getY() - heightProperty().get() / 2)
+                    / scale.get() + center.vProperty().get());
         });
         anchorPointsCircle.setOnMouseEntered(e -> {
             if (!e.isPrimaryButtonDown()) {
@@ -195,10 +228,14 @@ public class BSplineEditor extends Pane {
 
     private Line createLine(Point p1, Point p2, Color color, DoubleProperty strokeWidth) {
         Line line = new Line();
-        line.startXProperty().bind(p1.uProperty().multiply(scale).add(widthProperty().divide(2)));
-        line.endXProperty().bind(p2.uProperty().multiply(scale).add(widthProperty().divide(2)));
-        line.startYProperty().bind(p1.vProperty().multiply(scale).add(heightProperty().divide(2)));
-        line.endYProperty().bind(p2.vProperty().multiply(scale).add(heightProperty().divide(2)));
+        line.startXProperty().bind(p1.uProperty().multiply(scale)
+                .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
+        line.endXProperty().bind(p2.uProperty().multiply(scale)
+                .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
+        line.startYProperty().bind(p1.vProperty().multiply(scale)
+                .add(heightProperty().divide(2)).subtract(center.vProperty().multiply(scale)));
+        line.endYProperty().bind(p2.vProperty().multiply(scale)
+                .add(heightProperty().divide(2)).subtract(center.vProperty().multiply(scale)));
         line.strokeWidthProperty().bind(strokeWidth);
         line.setFill(color);
         line.setStroke(color);
@@ -207,8 +244,10 @@ public class BSplineEditor extends Pane {
 
     private Circle createCircle(Point point, DoubleProperty r, Color color) {
         Circle circle = new Circle();
-        circle.centerXProperty().bind(point.uProperty().multiply(scale).add(widthProperty().divide(2)));
-        circle.centerYProperty().bind(point.vProperty().multiply(scale).add(heightProperty().divide(2)));
+        circle.centerXProperty().bind(point.uProperty().multiply(scale)
+                .add(widthProperty().divide(2).subtract(center.uProperty().multiply(scale))));
+        circle.centerYProperty().bind(point.vProperty().multiply(scale)
+                .add(heightProperty().divide(2).subtract(center.vProperty().multiply(scale))));
         circle.radiusProperty().bind(r);
         circle.setFill(color);
         return circle;
