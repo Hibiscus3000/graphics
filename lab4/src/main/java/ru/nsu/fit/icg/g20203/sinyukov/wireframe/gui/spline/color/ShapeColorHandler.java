@@ -12,6 +12,7 @@ public class ShapeColorHandler<T extends Shape> extends ColorHandler {
             for (Shape shape : shapes) {
                 shape.setStroke(color);
                 shape.setFill(color);
+                shape.setStroke(color);
             }
         });
     }
