@@ -33,6 +33,7 @@ public class BSplineEditor extends Pane {
     private final List<Line> generatrixLines = new ArrayList<>();
 
     private final List<Circle> anchorPointsCircles = new ArrayList<>();
+    private Circle selectedAnchorPoint;
     private final List<Circle> splitPointsCircles = new ArrayList<>();
 
     private ColorContainer colorContainer = new ColorContainer();
@@ -43,6 +44,7 @@ public class BSplineEditor extends Pane {
     private final DoubleProperty generatrixStrokeWidth = new SimpleDoubleProperty(2);
     private final DoubleProperty splineStrokeWidth = new SimpleDoubleProperty(3);
 
+    private final DoubleProperty anchorPointROnRollover = new SimpleDoubleProperty(10.0);
     private final DoubleProperty anchorPointR = new SimpleDoubleProperty(6.0);
     private final DoubleProperty splitPointR = new SimpleDoubleProperty(4.0);
 
@@ -50,8 +52,7 @@ public class BSplineEditor extends Pane {
         addColorHandlers();
         createCoordinatePlane();
         colorHandlers.get("backgroundColor").setDefault();
-        minHeightProperty().bind(minWidthProperty());
-        new Background(new BackgroundFill(Color.BLACK, null, null));
+        setOnMousePressed(e -> deselectAnchorPoint());
     }
 
     private void createCoordinatePlane() {
@@ -72,28 +73,33 @@ public class BSplineEditor extends Pane {
         mainAxes.add(xAxis);
         mainAxes.add(yAxis);
 
-        colorHandlers.get("mainAxesColor").setDefault();
+        colorHandlers.get("mainAxisColor").setDefault();
         getChildren().addAll(xAxis, yAxis);
     }
 
     private void addColorHandlers() {
         colorHandlers.put("backgroundColor", new ColorHandler("backgroundColor", Color.WHITE, colorContainer,
                 color -> setBackground(new Background(new BackgroundFill(color, null, null)))));
-        colorHandlers.put("mainAxesColor", new ShapeColorHandler<>("mainAxesColor",
+        colorHandlers.put("mainAxisColor", new ShapeColorHandler<>("mainAxisColor",
                 Color.BLACK, colorContainer, mainAxes));
-        colorHandlers.put("secondaryAxesColor", new ShapeColorHandler<>("secondaryAxesColor",
+        colorHandlers.put("secondaryAxisColor", new ShapeColorHandler<>("secondaryAxisColor",
                 Color.rgb(200, 200, 200), colorContainer, secondaryAxes));
-        colorHandlers.put("splineLinesColor", new ShapeColorHandler<>("splineLinesColor",
+        colorHandlers.put("splineLineColor", new ShapeColorHandler<>("splineLineColor",
                 Color.RED, colorContainer, splineLines));
         colorHandlers.put("generatrixColor", new ShapeColorHandler<>("generatrixColor",
                 Color.BLUE, colorContainer, generatrixLines));
-        colorHandlers.put("anchorPointsColor", new ShapeColorHandler<>("anchorPointsColor",
+        colorHandlers.put("anchorPointColor", new ShapeColorHandler<>("anchorPointColor",
                 Color.ORANGE, colorContainer, anchorPointsCircles));
-//        colorHandlers.put("chosenAnchorPointColor", new ShapeColorHandler<>("anchorPointsColor",
-//                Color.GREEN, colorContainer, mainAxes));
-        colorHandlers.put("splitPointsColor", new ShapeColorHandler<>("splitPointsColor",
+        colorHandlers.put("selectedAnchorPointColor", new ColorHandler("selectedAnchorPointColor",
+                Color.GREEN, colorContainer, color -> {
+            if (null != selectedAnchorPoint) {
+                selectedAnchorPoint.setStroke(color);
+                selectedAnchorPoint.setFill(color);
+            }
+        }));
+        colorHandlers.put("splitPointColor", new ShapeColorHandler<>("splitPointColor",
                 Color.ORANGE, colorContainer, splitPointsCircles));
-        colorHandlers.put("serifs", new ShapeColorHandler<>("serifs",
+        colorHandlers.put("serif", new ShapeColorHandler<>("serif",
                 Color.WHITE, colorContainer, serifs));
     }
 
@@ -129,7 +135,7 @@ public class BSplineEditor extends Pane {
         for (List<Point> line : spline.getSplineLines()) {
             for (int i = 1; i < line.size(); ++i) {
                 Line splineLine = createLine(line.get(i - 1), line.get(i),
-                        colorContainer.getColor("splineLinesColor"),
+                        colorContainer.getColor("splineLineColor"),
                         splineStrokeWidth);
                 getChildren().add(splineLine);
                 splineLines.add(splineLine);
@@ -139,7 +145,13 @@ public class BSplineEditor extends Pane {
 
     private void addAnchorPointCircle(Point point) {
         Circle anchorPointsCircle = createCircle(point, anchorPointR,
-                colorContainer.getColor("anchorPointsColor"));
+                colorContainer.getColor("anchorPointColor"));
+        anchorPointsCircle.setOnMousePressed(e -> {
+            selectAnchorPoint(anchorPointsCircle);
+            e.consume();
+        });
+        anchorPointsCircle.setOnMouseEntered(e -> anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover));
+        anchorPointsCircle.setOnMouseExited(e -> anchorPointsCircle.radiusProperty().bind(anchorPointR));
         getChildren().add(anchorPointsCircle);
         anchorPointsCircles.add(anchorPointsCircle);
     }
@@ -163,6 +175,22 @@ public class BSplineEditor extends Pane {
         circle.radiusProperty().bind(r);
         circle.setFill(color);
         return circle;
+    }
+
+    private void selectAnchorPoint(Circle anchorPointCircle) {
+        deselectAnchorPoint();
+        Color selectedAPColor = colorContainer.getColor("selectedAnchorPointColor");
+        selectedAnchorPoint = anchorPointCircle;
+        selectedAnchorPoint.setFill(selectedAPColor);
+        selectedAnchorPoint.setStroke(selectedAPColor);
+    }
+
+    private void deselectAnchorPoint() {
+        if (null != selectedAnchorPoint) {
+            Color anchorPointColor = colorContainer.getColor("anchorPointColor");
+            selectedAnchorPoint.setStroke(anchorPointColor);
+            selectedAnchorPoint.setFill(anchorPointColor);
+        }
     }
 
     public void moveSelected(double x, double y) {
