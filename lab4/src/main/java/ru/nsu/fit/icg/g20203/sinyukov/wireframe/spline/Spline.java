@@ -2,6 +2,7 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 
@@ -13,35 +14,41 @@ import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 
 public class Spline implements Serializable {
 
+    private final IntegerProperty numberOfAnchorPoints;
     // number of lines that form one B-spline segment
     private final IntegerProperty splineSectorPartition;
     private final transient List<List<Point>> splineLines = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
 
     public Spline(int numberOfAnchorPoints, int numberOfLines) {
-        this.splineSectorPartition = new ReadOnlyIntegerWrapper(numberOfLines);
-        splineSectorPartition.addListener((observable, oldValue, newValue) -> calculateAllLines());
-        addAnchorPoints(numberOfAnchorPoints, -1);
+        this.numberOfAnchorPoints = new SimpleIntegerProperty(numberOfAnchorPoints);
+        this.splineSectorPartition = new SimpleIntegerProperty(numberOfLines);
+        addAnchorPointsToEnd(numberOfAnchorPoints);
     }
 
-    public List<Point> addAnchorPoints(int numberOfAnchorPoints, int lastAPIndex) {
-        List<Point> newAnchorPoints = new ArrayList<>();
+    public void addAnchorPointsToEnd(int numberOfAnchorPoints) {
+        addAnchorPoints(numberOfAnchorPoints, anchorPoints.size() - 1);
+    }
+
+    public void addAnchorPoints(int numberOfAnchorPoints, int lastAPIndex) {
         for (int i = 0; i < numberOfAnchorPoints; ++i) {
-            newAnchorPoints.add(addAnchorPoint(lastAPIndex + i));
+            addAnchorPoint(lastAPIndex + i);
         }
-        return newAnchorPoints;
     }
 
-//    public void deleteAnchorPoints(int numberOfAnchorPoints) {
-//        for (int i = 0; i < numberOfAnchorPoints; ++i) {
-//            anchorPoints.remove(anchorPoints.size() - i - 1);
-//            cal
-//        }
-//    }
+    public void removeAnchorPointsFromEnd(int numberOfAnchorPoints) {
+        removeAnchorPoints(numberOfAnchorPoints, anchorPoints.size() - 1);
+    }
+
+    public void removeAnchorPoints(int numberOfAnchorPoints, int lastAPIndex) {
+        for (int i = 0; i < numberOfAnchorPoints; ++i) {
+            removeAnchorPoint(lastAPIndex - i);
+        }
+    }
 
     private final static double distFromPreviousAP = 20.0;
 
-    public Point addAnchorPoint(int lastAPIndex) {
+    public void addAnchorPoint(int lastAPIndex) {
         Point newAP;
         if (lastAPIndex >= 1) {
             Point preLastAP = anchorPoints.get(lastAPIndex - 1);
@@ -61,25 +68,33 @@ public class Spline implements Serializable {
                 newAP = new Point(0, 0);
             }
         }
-        anchorPoints.add(newAP);
-        calculateAP(lastAPIndex + 1);
+        int apIndex = lastAPIndex + 1;
+        anchorPoints.add(apIndex,newAP);
+        calculateAP(apIndex);
+        calculateAP(lastAPIndex);
         ChangeListener<Number> apChangeListener =
-                (observableValue, oldValue, newValue) -> calculateAP(lastAPIndex + 1);
+                (observableValue, oldValue, newValue) -> calculateAP(apIndex);
         newAP.uProperty().addListener(apChangeListener);
         newAP.vProperty().addListener(apChangeListener);
-        return newAP;
     }
 
-    public void deleteAnchorPoint(int APIndex) {
+    public void removeAnchorPoint(int APIndex) {
         anchorPoints.remove(APIndex);
-        splineLines.remove(APIndex - 1);
-        calculateLine(APIndex + 1);
+        int splineLineInd =  Math.max(0,Math.min(APIndex - 1,splineLines.size() - 1));
+        if (anchorPoints.size() >= 3) {
+            splineLines.remove(splineLineInd);
+        }
+        if (anchorPoints.size() >= 4) {
+            calculateLine(splineLineInd);
+        }
     }
 
     private void calculateAP(int APIndex) {
-        for (int j = APIndex - 2; j < APIndex + 2; ++j) {
-            calculateLine(j);
-        }
+        calculateAllLines();
+        //TODO
+//        for (int j = APIndex - 5; j <= APIndex + 5; ++j) {
+//            calculateLine(j);
+//        }
     }
 
     // AP[i] <=> SplineLine[i - 1]
@@ -87,7 +102,7 @@ public class Spline implements Serializable {
         if (0 >= APIndex || APIndex > anchorPoints.size() - 3) {
             return;
         }
-        if (splineLines.size() < anchorPoints.size() - 3) {
+        while (splineLines.size() < anchorPoints.size() - 3) {
             List<Point> newSplineLine = new ArrayList<>();
             splineLines.add(APIndex - 1, newSplineLine);
         }
@@ -102,6 +117,10 @@ public class Spline implements Serializable {
             } else {
                 calculatedSplineLine.add(new Point(uv[0], uv[1]));
             }
+        }
+        int removeFrom = splineSectorPartition.get() + 1;
+        for (int i = removeFrom; i < calculatedSplineLine.size(); ++i) {
+            calculatedSplineLine.remove(removeFrom);
         }
     }
 
@@ -135,6 +154,10 @@ public class Spline implements Serializable {
 
     public IntegerProperty splineSectorPartitionProperty() {
         return splineSectorPartition;
+    }
+
+    public IntegerProperty numberOfAnchorPointsProperty() {
+        return numberOfAnchorPoints;
     }
 
     public List<List<Point>> getSplineLines() {

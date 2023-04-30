@@ -122,9 +122,12 @@ public class BSplineEditor extends Pane {
     }
 
     public void setSpline(Spline spline) {
+        clear();
         this.spline = spline;
         List<Point> anchorPoints = spline.getAnchorPoints();
-        addAnchorPointCircle(anchorPoints.get(0));
+        if (!anchorPoints.isEmpty()) {
+            addAnchorPointCircle(anchorPoints.get(0));
+        }
         for (int i = 1; i < anchorPoints.size(); ++i) {
             Line generatrixLine = createLine(anchorPoints.get(i - 1),
                     anchorPoints.get(i), colorContainer.getColor("generatrixColor"),
@@ -175,10 +178,16 @@ public class BSplineEditor extends Pane {
         anchorPointsCircles.add(anchorPointsCircle);
     }
 
+    private void clear() {
+        deselectAnchorPoint();
+        generatrixLines.clear();
+        splineLines.clear();
+        anchorPointsCircles.clear();
+    }
+
     private void repaint() {
-        getChildren().removeAll(anchorPointsCircles);
-        getChildren().removeAll(generatrixLines);
-        getChildren().removeAll(splineLines);
+        getChildren().clear();
+        getChildren().addAll(mainAxes);
         getChildren().addAll(generatrixLines);
         getChildren().addAll(splineLines);
         getChildren().addAll(anchorPointsCircles);
@@ -213,15 +222,26 @@ public class BSplineEditor extends Pane {
         selectedAnchorPoint.setStroke(selectedAPColor);
     }
 
+    public void selectAnchorPoint(int selectedAPIndex) {
+        if (selectedAPIndex >= 0 && anchorPointsCircles.size() > selectedAPIndex) {
+            selectAnchorPoint(anchorPointsCircles.get(selectedAPIndex));
+        }
+    }
+
     private void deselectAnchorPoint() {
         if (null != selectedAnchorPoint) {
             Color anchorPointColor = colorContainer.getColor("anchorPointColor");
             selectedAnchorPoint.setStroke(anchorPointColor);
             selectedAnchorPoint.setFill(anchorPointColor);
+            selectedAnchorPoint = null;
         }
     }
 
     public void moveSelected(double x, double y) {
         //TODO
+    }
+
+    public int getSelectedAPId() {
+        return anchorPointsCircles.indexOf(selectedAnchorPoint);
     }
 }
