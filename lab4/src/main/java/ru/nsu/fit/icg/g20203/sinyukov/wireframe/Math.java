@@ -35,7 +35,7 @@ public class Math {
 
     // v - 1xn, A - nxl
     public static double[] lineMatrixProduct(double[] v, double[][] A, int n, int l) {
-        double[] x = new double[n];
+        double[] x = new double[l];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < l; ++j) {
                 x[j] += v[i] * A[i][j];

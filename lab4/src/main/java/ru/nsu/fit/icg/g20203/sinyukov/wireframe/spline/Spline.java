@@ -43,12 +43,12 @@ public class Spline implements Serializable {
     public Point addAnchorPoint(int lastAPIndex) {
         Point newAP;
         if (lastAPIndex >= 1) {
-            Point preLastAP = anchorPoints.get(lastAPIndex);
-            Point lastAP = anchorPoints.get(lastAPIndex - 1);
+            Point preLastAP = anchorPoints.get(lastAPIndex - 1);
+            Point lastAP = anchorPoints.get(lastAPIndex);
             double lastAPU = lastAP.uProperty().get();
-            double lastAPV = preLastAP.uProperty().get();
-            double du = lastAPU - lastAPV;
-            double dv = lastAP.vProperty().get() - preLastAP.vProperty().get();
+            double lastAPV = lastAP.vProperty().get();
+            double du = lastAPU - preLastAP.uProperty().get();
+            double dv = lastAPV - preLastAP.vProperty().get();
             double angle = getAngle(du, dv);
             newAP = new Point(lastAPU + Math.cos(angle) * distFromPreviousAP,
                     lastAPV + Math.sin(angle) * distFromPreviousAP);
@@ -72,14 +72,14 @@ public class Spline implements Serializable {
     }
 
     private void calculateAP(int APIndex) {
-        for (int j = APIndex - 1; j < APIndex + 3; ++j) {
+        for (int j = APIndex - 2; j < APIndex + 2; ++j) {
             calculateLine(j);
         }
     }
 
     // AP[i] <=> SplineLine[i - 1]
     private void calculateLine(int APIndex) {
-        if (0 <= APIndex || APIndex > anchorPoints.size() - 3) {
+        if (0 >= APIndex || APIndex > anchorPoints.size() - 3) {
             return;
         }
         if (splineLines.size() < anchorPoints.size() - 3) {
@@ -130,5 +130,13 @@ public class Spline implements Serializable {
 
     public IntegerProperty splineSectorPartitionProperty() {
         return splineSectorPartition;
+    }
+
+    public List<List<Point>> getSplineLines() {
+        return splineLines;
+    }
+
+    public List<Point> getAnchorPoints() {
+        return anchorPoints;
     }
 }
