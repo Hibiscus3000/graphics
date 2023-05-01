@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.SecondaryAxisCoordinateBinding;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorContainer;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ShapeColorHandler;
@@ -43,7 +44,9 @@ public class BSplineEditor extends Pane {
     private ColorContainer colorContainer = new ColorContainer();
     private final Map<String, ColorHandler> colorHandlers = new HashMap<>();
 
-    private final DoubleProperty mainAxesStrokeWidth = new SimpleDoubleProperty(2);
+    private final DoubleProperty mainAxisStrokeWidth = new SimpleDoubleProperty(2);
+    private final DoubleProperty secondaryAxisStrokeWidth = new SimpleDoubleProperty(1);
+    private final DoubleProperty serifStrokeWidth = new SimpleDoubleProperty(1.5);
 
     private final DoubleProperty generatrixStrokeWidth = new SimpleDoubleProperty(2);
     private final DoubleProperty splineStrokeWidth = new SimpleDoubleProperty(3);
@@ -58,6 +61,7 @@ public class BSplineEditor extends Pane {
     public BSplineEditor() {
         addColorHandlers();
         createMainAxes();
+        createSecondaryAxesAndSerifs();
         colorHandlers.get("backgroundColor").setDefault();
         setOnMousePressed(e -> deselectAnchorPoint());
         widthProperty().addListener((observable, oldVal, newVal) -> {
@@ -100,7 +104,7 @@ public class BSplineEditor extends Pane {
         uAxis.endXProperty().bind(widthProperty());
         uAxis.endYProperty().bind(heightProperty().divide(2)
                 .add(center.vProperty().multiply(scale)));
-        uAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
+        uAxis.strokeWidthProperty().bind(mainAxisStrokeWidth);
 
         Line vAxis = new Line();
         vAxis.startXProperty().bind(widthProperty().divide(2)
@@ -109,13 +113,65 @@ public class BSplineEditor extends Pane {
         vAxis.endXProperty().bind(widthProperty().divide(2)
                 .subtract(center.uProperty().multiply(scale)));
         vAxis.endYProperty().bind(heightProperty());
-        vAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
+        vAxis.strokeWidthProperty().bind(mainAxisStrokeWidth);
 
         mainAxes.add(uAxis);
         mainAxes.add(vAxis);
 
         colorHandlers.get("mainAxisColor").setDefault();
         getChildren().addAll(uAxis, vAxis);
+    }
+
+    private final static int numberOfSecondaryAxes = 10;
+    private final static double serifLength = 4;
+
+    public void createSecondaryAxesAndSerifs() {
+        for (int i = 0; i < numberOfSecondaryAxes; ++i) {
+            Line uAxis = new Line();
+            SecondaryAxisCoordinateBinding vBinding = new SecondaryAxisCoordinateBinding(heightProperty(),
+                    center.vProperty().multiply(1), scale, i, numberOfSecondaryAxes);
+            uAxis.startYProperty().bind(vBinding);
+            uAxis.endYProperty().bind(vBinding);
+            uAxis.setStartX(0);
+            uAxis.endXProperty().bind(widthProperty());
+            uAxis.strokeWidthProperty().bind(secondaryAxisStrokeWidth);
+
+            Line vAxis = new Line();
+            SecondaryAxisCoordinateBinding uBinding = new SecondaryAxisCoordinateBinding(widthProperty(),
+                    center.uProperty().multiply(-1), scale, i, numberOfSecondaryAxes);
+            vAxis.startXProperty().bind(uBinding);
+            vAxis.endXProperty().bind(uBinding);
+            vAxis.setStartY(0);
+            vAxis.endYProperty().bind(heightProperty());
+            vAxis.strokeWidthProperty().bind(secondaryAxisStrokeWidth);
+
+            secondaryAxes.add(uAxis);
+            secondaryAxes.add(vAxis);
+
+            Line uSerif = new Line();
+            uSerif.startYProperty().bind(vBinding);
+            uSerif.endYProperty().bind(vBinding);
+            uSerif.startXProperty().bind(widthProperty().divide(2).subtract(serifLength)
+                    .subtract(center.uProperty().multiply(scale)));
+            uSerif.endXProperty().bind(widthProperty().divide(2).add(serifLength)
+                    .subtract(center.uProperty().multiply(scale)));
+            uSerif.strokeWidthProperty().bind(serifStrokeWidth);
+
+            Line vSerif = new Line();
+            vSerif.startXProperty().bind(uBinding);
+            vSerif.endXProperty().bind(uBinding);
+            vSerif.startYProperty().bind(heightProperty().divide(2).subtract(serifLength)
+                    .add(center.vProperty().multiply(scale)));
+            vSerif.endYProperty().bind(heightProperty().divide(2).add(serifLength)
+                    .add(center.vProperty().multiply(scale)));
+            vSerif.strokeWidthProperty().bind(serifStrokeWidth);
+
+            serifs.add(uSerif);
+            serifs.add(vSerif);
+        }
+
+        colorHandlers.get("secondaryAxisColor").setDefault();
+        colorHandlers.get("serifColor").setDefault();
     }
 
     private void addColorHandlers() {
@@ -140,8 +196,8 @@ public class BSplineEditor extends Pane {
         }));
         colorHandlers.put("splitPointColor", new ShapeColorHandler<>("splitPointColor",
                 Color.ORANGE, colorContainer, splitPointsCircles));
-        colorHandlers.put("serif", new ShapeColorHandler<>("serif",
-                Color.WHITE, colorContainer, serifs));
+        colorHandlers.put("serifColor", new ShapeColorHandler<>("serifColor",
+                Color.BLACK, colorContainer, serifs));
     }
 
     private boolean changeScale(double scaleChange) {
@@ -210,7 +266,7 @@ public class BSplineEditor extends Pane {
             point.uProperty().set((e.getX() - widthProperty().get() / 2)
                     / scale.get() + center.uProperty().get());
             point.vProperty().set((e.getY() - heightProperty().get() / 2)
-                    / scale.get() + center.vProperty().get());
+                    / scale.get() - center.vProperty().get());
         });
         anchorPointsCircle.setOnMouseEntered(e -> {
             if (!e.isPrimaryButtonDown()) {
@@ -232,7 +288,9 @@ public class BSplineEditor extends Pane {
 
     private void repaint() {
         getChildren().clear();
+        getChildren().addAll(secondaryAxes);
         getChildren().addAll(mainAxes);
+        getChildren().addAll(serifs);
         getChildren().addAll(generatrixLines);
         getChildren().addAll(splineLines);
         getChildren().addAll(anchorPointsCircles);
