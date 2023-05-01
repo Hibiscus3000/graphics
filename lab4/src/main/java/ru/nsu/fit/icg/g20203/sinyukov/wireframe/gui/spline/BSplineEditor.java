@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class BSplineEditor extends Pane {
 
-    private final static double scaleStep = 0.01;
+    public final static double scaleStep = 0.01;
     public final static double scaleMin = 0.01;
     public final static double scaleMax = 10;
     private final DoubleProperty scale = new SimpleDoubleProperty(0.5);
@@ -80,17 +80,27 @@ public class BSplineEditor extends Pane {
             prevV = null;
         });
 
-        setOnScroll(e -> changeScale(scaleStep * e.getDeltaY()));
+        setOnScroll(e -> {
+            double scaleChange = scaleStep * e.getDeltaY();
+            if (changeScale(scaleChange)) {
+                //TODO
+                double scaleVal = scale.get();
+                double du = (e.getX() - getWidth() / 2) * scaleChange / scaleVal;
+                double dv = (e.getY() - getHeight() / 2) * scaleChange / scaleVal;
+                System.out.println("(" + du + ", " + dv + ")");
+                moveVision(du, dv);
+            }
+        });
     }
 
     private void createMainAxes() {
         Line uAxis = new Line();
         uAxis.setStartX(0);
         uAxis.startYProperty().bind(heightProperty().divide(2)
-                .subtract(center.vProperty().multiply(scale)));
+                .add(center.vProperty().multiply(scale)));
         uAxis.endXProperty().bind(widthProperty());
         uAxis.endYProperty().bind(heightProperty().divide(2)
-                .subtract(center.vProperty().multiply(scale)));
+                .add(center.vProperty().multiply(scale)));
         uAxis.strokeWidthProperty().bind(mainAxesStrokeWidth);
 
         Line vAxis = new Line();
@@ -135,13 +145,16 @@ public class BSplineEditor extends Pane {
                 Color.WHITE, colorContainer, serifs));
     }
 
-    private void changeScale(double scaleChange) {
-        scale.set(Math.max(scaleMin, Math.min(scale.get() + scaleChange, scaleMax)));
+    private boolean changeScale(double scaleChange) {
+        double newScale = scale.get() + scaleChange;
+        boolean scaleChanged = newScale > scaleMin && newScale < scaleMax;
+        scale.set(Math.max(scaleMin, Math.min(newScale, scaleMax)));
+        return scaleChanged;
     }
 
-    private void moveVision(double u, double v) {
-        center.uProperty().set(center.uProperty().get() + u / scale.get());
-        center.vProperty().set(center.vProperty().get() + v / scale.get());
+    private void moveVision(double du, double dv) {
+        center.uProperty().set(center.uProperty().get() + du / scale.get());
+        center.vProperty().set(center.vProperty().get() - dv / scale.get());
     }
 
     private void selectAnchorPoint() {
@@ -233,9 +246,9 @@ public class BSplineEditor extends Pane {
         line.endXProperty().bind(p2.uProperty().multiply(scale)
                 .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
         line.startYProperty().bind(p1.vProperty().multiply(scale)
-                .add(heightProperty().divide(2)).subtract(center.vProperty().multiply(scale)));
+                .add(heightProperty().divide(2)).add(center.vProperty().multiply(scale)));
         line.endYProperty().bind(p2.vProperty().multiply(scale)
-                .add(heightProperty().divide(2)).subtract(center.vProperty().multiply(scale)));
+                .add(heightProperty().divide(2)).add(center.vProperty().multiply(scale)));
         line.strokeWidthProperty().bind(strokeWidth);
         line.setFill(color);
         line.setStroke(color);
@@ -247,7 +260,7 @@ public class BSplineEditor extends Pane {
         circle.centerXProperty().bind(point.uProperty().multiply(scale)
                 .add(widthProperty().divide(2).subtract(center.uProperty().multiply(scale))));
         circle.centerYProperty().bind(point.vProperty().multiply(scale)
-                .add(heightProperty().divide(2).subtract(center.vProperty().multiply(scale))));
+                .add(heightProperty().divide(2).add(center.vProperty().multiply(scale))));
         circle.radiusProperty().bind(r);
         circle.setFill(color);
         return circle;
@@ -282,5 +295,17 @@ public class BSplineEditor extends Pane {
 
     public int getSelectedAPId() {
         return anchorPointsCircles.indexOf(selectedAnchorPoint);
+    }
+
+    public DoubleProperty scaleProperty() {
+        return scale;
+    }
+
+    public DoubleProperty uCenterProperty() {
+        return center.uProperty();
+    }
+
+    public DoubleProperty vCenterProperty() {
+        return center.vProperty();
     }
 }
