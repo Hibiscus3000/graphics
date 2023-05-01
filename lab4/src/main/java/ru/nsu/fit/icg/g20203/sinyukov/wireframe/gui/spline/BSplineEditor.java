@@ -87,7 +87,6 @@ public class BSplineEditor extends Pane {
                 double scaleVal = scale.get();
                 double du = (e.getX() - getWidth() / 2) * scaleChange / scaleVal;
                 double dv = (e.getY() - getHeight() / 2) * scaleChange / scaleVal;
-                System.out.println("(" + du + ", " + dv + ")");
                 moveVision(du, dv);
             }
         });

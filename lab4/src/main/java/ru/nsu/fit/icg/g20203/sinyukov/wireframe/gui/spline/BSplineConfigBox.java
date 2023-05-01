@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.VBox;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.DoubleTextField;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.editbox.DoubleValueEditBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.IntegerTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
@@ -46,14 +46,14 @@ public class BSplineConfigBox extends VBox {
     }
 
     private void createEditorPropertiesFields() {
-        DoubleTextField centerUField = new DoubleTextField("U центра",
-                bSplineEditor.uCenterProperty(), -1000, 1000, 5);
-        DoubleTextField centerVField = new DoubleTextField("V центра",
-                bSplineEditor.vCenterProperty(), -1000, 1000, 5);
-        DoubleTextField scaleField = new DoubleTextField("Масштаб",
+        DoubleValueEditBox centerUEditBox = new DoubleValueEditBox("U центра",
+                bSplineEditor.uCenterProperty(), -1000.0, 1000.0, 5.0);
+        DoubleValueEditBox centerVEditBox = new DoubleValueEditBox("V центра",
+                bSplineEditor.vCenterProperty(), -1000.0, 1000.0, 5.0);
+        DoubleValueEditBox scaleEditBox = new DoubleValueEditBox("Масштаб",
                 bSplineEditor.scaleProperty(), BSplineEditor.scaleMin, BSplineEditor.scaleMax,
                 0.1);
-        getChildren().addAll(centerUField, centerVField, scaleField);
+        getChildren().addAll(centerUEditBox, centerVEditBox, scaleEditBox);
     }
 
     private void setSpline(Spline spline) {
