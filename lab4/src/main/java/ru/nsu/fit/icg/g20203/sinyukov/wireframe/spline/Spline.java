@@ -1,7 +1,6 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
@@ -9,6 +8,7 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 
@@ -19,6 +19,8 @@ public class Spline implements Serializable {
     private final IntegerProperty splineSectorPartition;
     private final transient List<List<Point>> splineLines = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
+
+    private final Random random = new Random();
 
     public Spline(int numberOfAnchorPoints, int numberOfLines) {
         this.numberOfAnchorPoints = new SimpleIntegerProperty(numberOfAnchorPoints);
@@ -46,26 +48,28 @@ public class Spline implements Serializable {
         }
     }
 
-    private final static double distFromPreviousAP = 20.0;
+    private final static double minV = 5.0;
 
     public void addAnchorPoint(int lastAPIndex) {
         Point newAP;
         if (lastAPIndex >= 1) {
-            Point preLastAP = anchorPoints.get(lastAPIndex - 1);
             Point lastAP = anchorPoints.get(lastAPIndex);
             double lastAPU = lastAP.uProperty().get();
             double lastAPV = lastAP.vProperty().get();
-            double du = lastAPU - preLastAP.uProperty().get();
-            double dv = lastAPV - preLastAP.vProperty().get();
-            double angle = getAngle(du, dv);
-            newAP = new Point(lastAPU + Math.cos(angle) * distFromPreviousAP,
-                    lastAPV + Math.sin(angle) * distFromPreviousAP);
+            if (lastAPIndex == anchorPoints.size() - 1) {
+                newAP = new Point(lastAPU + Math.abs(getRandomBias()),
+                        Math.max(minV, lastAPV + getRandomBias()));
+            } else {
+                Point nextAP = anchorPoints.get(lastAPIndex + 1);
+                double du = nextAP.uProperty().get() - lastAPU;
+                double dv = nextAP.vProperty().get() - lastAPV;
+                newAP = new Point(lastAPU + du / 2, lastAPV + dv / 2);
+            }
         } else {
             if (0 == lastAPIndex) {
-                newAP = new Point(anchorPoints.get(0).uProperty().get() + distFromPreviousAP,
-                        anchorPoints.get(0).vProperty().get());
+                newAP = new Point(-80, 20);
             } else {
-                newAP = new Point(0, 0);
+                newAP = new Point(-100, 10);
             }
         }
         int apIndex = lastAPIndex + 1;
@@ -166,5 +170,13 @@ public class Spline implements Serializable {
 
     public List<Point> getAnchorPoints() {
         return anchorPoints;
+    }
+
+    private final static double randomBiasBounds = 35;
+    private final static double minBias = 20;
+
+    private double getRandomBias() {
+        double bias = 2 * randomBiasBounds * (random.nextDouble() - 0.5);
+        return bias + Math.signum(bias) * minBias;
     }
 }

@@ -271,7 +271,7 @@ public class BSplineEditor extends Pane {
             point.uProperty().set((e.getX() - widthProperty().get() / 2)
                     / scale.get() + center.uProperty().get());
             point.vProperty().set((e.getY() - heightProperty().get() / 2)
-                    / scale.get() - center.vProperty().get());
+                    / scale.multiply(-1).get() - center.vProperty().get());
         });
         anchorPointsCircle.setOnMouseEntered(e -> {
             if (!e.isPrimaryButtonDown()) {
@@ -307,9 +307,9 @@ public class BSplineEditor extends Pane {
                 .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
         line.endXProperty().bind(p2.uProperty().multiply(scale)
                 .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
-        line.startYProperty().bind(p1.vProperty().multiply(scale)
+        line.startYProperty().bind(p1.vProperty().multiply(scale.multiply(-1))
                 .add(heightProperty().divide(2)).add(center.vProperty().multiply(scale)));
-        line.endYProperty().bind(p2.vProperty().multiply(scale)
+        line.endYProperty().bind(p2.vProperty().multiply(scale.multiply(-1))
                 .add(heightProperty().divide(2)).add(center.vProperty().multiply(scale)));
         line.strokeWidthProperty().bind(strokeWidth);
         line.setFill(color);
@@ -321,7 +321,7 @@ public class BSplineEditor extends Pane {
         Circle circle = new Circle();
         circle.centerXProperty().bind(point.uProperty().multiply(scale)
                 .add(widthProperty().divide(2).subtract(center.uProperty().multiply(scale))));
-        circle.centerYProperty().bind(point.vProperty().multiply(scale)
+        circle.centerYProperty().bind(point.vProperty().multiply(scale.multiply(-1))
                 .add(heightProperty().divide(2).add(center.vProperty().multiply(scale))));
         circle.radiusProperty().bind(r);
         circle.setFill(color);
