@@ -6,12 +6,9 @@ import javafx.util.converter.IntegerStringConverter;
 
 public class IntegerTextField extends NumberTextField {
 
-    private final IntegerProperty integerProperty;
-
     public IntegerTextField(String valueName, IntegerProperty integerProperty,
                             int min, int max, int step) {
         super(valueName, integerProperty, min, max, step);
-        this.integerProperty = integerProperty;
     }
 
     @Override
@@ -21,11 +18,17 @@ public class IntegerTextField extends NumberTextField {
 
     @Override
     protected void increment() {
-        integerProperty.set(Math.min(integerProperty.get() + step.intValue(), max.intValue()));
+        IntegerProperty integerProperty = (IntegerProperty) property;
+        if (null != integerProperty) {
+            integerProperty.set(Math.min(integerProperty.get() + step.intValue(), max.intValue()));
+        }
     }
 
     @Override
     protected void decrement() {
-        integerProperty.set(Math.max(min.intValue(), integerProperty.get() - step.intValue()));
+        IntegerProperty integerProperty = (IntegerProperty) property;
+        if (null != integerProperty) {
+            integerProperty.set(Math.max(min.intValue(), integerProperty.get() - step.intValue()));
+        }
     }
 }

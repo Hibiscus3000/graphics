@@ -14,29 +14,36 @@ public abstract class NumberTextField<T extends Number> extends VBox {
     protected final T min;
     protected final T max;
     protected final T step;
-    private final Property<T> property;
+    protected Property<T> property;
+    private final StringConverter<T> stringConverter;
+
+    private final Button decrementButton;
+    private final Button incrementButton;
+    protected final TextField textField = new TextField();
 
     public NumberTextField(String valueName, Property<T> property,
                            T min, T max, T step) {
         this.min = min;
         this.max = max;
         this.step = step;
-        this.property = property;
 
         HBox textFieldBox = new HBox();
-        TextField textField = new TextField();
-        Bindings.bindBidirectional(textField.textProperty(), property,
-                getStringConverter());
-        Button decrementButton = new Button("-");
+        stringConverter = getStringConverter();
+        decrementButton = new Button("-");
         decrementButton.setOnAction(e -> {
             e.consume();
             decrement();
         });
-        Button incrementButton = new Button("+");
+        incrementButton = new Button("+");
         incrementButton.setOnAction(e -> {
             e.consume();
             increment();
         });
+        if (null != property) {
+            bind(property);
+        } else {
+            unbind();
+        }
         textFieldBox.getChildren().addAll(decrementButton, textField, incrementButton);
         getChildren().addAll(new Label(valueName), textFieldBox);
     }
@@ -46,5 +53,27 @@ public abstract class NumberTextField<T extends Number> extends VBox {
     protected abstract void increment();
 
     protected abstract void decrement();
+
+    public void unbind() {
+        if (null != property) {
+            textField.textProperty().unbindBidirectional(property);
+            property = null;
+        }
+        textField.setText("");
+        textField.setDisable(true);
+        decrementButton.setDisable(true);
+        incrementButton.setDisable(true);
+    }
+
+    public void bind(Property<T> property) {
+        unbind();
+        if (null != property) {
+            this.property = property;
+            Bindings.bindBidirectional(textField.textProperty(), property, stringConverter);
+            textField.setDisable(false);
+            decrementButton.setDisable(false);
+            incrementButton.setDisable(false);
+        }
+    }
 
 }

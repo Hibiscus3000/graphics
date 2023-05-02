@@ -1,7 +1,9 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -28,9 +30,12 @@ public class BSplineEditor extends Pane {
     public final static double scaleMax = 10;
     private final DoubleProperty scale = new SimpleDoubleProperty(0.5);
     public final static double centerStep = 10;
-    public final static double centerMin = -1000;
-    public final static double centerMax = 1000;
+    public final static double centerMin = -1500;
+    public final static double centerMax = 1500;
     private Point center = new Point(0, 0);
+    public final static double aPCoordStep = 10;
+    public final static double aPCoordMin = -1400;
+    public final static double aPCoordsMax = 1400;
 
     private Spline spline;
 
@@ -42,6 +47,7 @@ public class BSplineEditor extends Pane {
 
     private final List<Circle> anchorPointsCircles = new ArrayList<>();
     private Circle selectedAnchorPoint;
+    private final ObjectProperty<Integer> selectedAPId = new SimpleObjectProperty<>(null);
     private final List<Circle> splitPointsCircles = new ArrayList<>();
 
     private ColorContainer colorContainer = new ColorContainer();
@@ -267,12 +273,11 @@ public class BSplineEditor extends Pane {
                 anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
             }
         });
-        anchorPointsCircle.setOnMouseDragged(e -> {
-            point.uProperty().set((e.getX() - widthProperty().get() / 2)
-                    / scale.get() + center.uProperty().get());
-            point.vProperty().set((e.getY() - heightProperty().get() / 2)
-                    / scale.multiply(-1).get() - center.vProperty().get());
-        });
+        anchorPointsCircle.setOnMouseDragged(e ->
+                setAnchorPoint(point, e.getX() - widthProperty().get() / 2
+                                / scale.get() + center.uProperty().get(),
+                        (e.getY() - heightProperty().get() / 2)
+                                / scale.multiply(-1).get() - center.vProperty().get()));
         anchorPointsCircle.setOnMouseEntered(e -> {
             if (!e.isPrimaryButtonDown()) {
                 anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
@@ -332,12 +337,13 @@ public class BSplineEditor extends Pane {
         deselectAnchorPoint();
         Color selectedAPColor = colorContainer.getColor("selectedAnchorPointColor");
         selectedAnchorPoint = anchorPointCircle;
+        selectedAPId.set(anchorPointsCircles.indexOf(selectedAnchorPoint));
         selectedAnchorPoint.setFill(selectedAPColor);
         selectedAnchorPoint.setStroke(selectedAPColor);
     }
 
-    public void selectAnchorPoint(int selectedAPIndex) {
-        if (selectedAPIndex >= 0 && anchorPointsCircles.size() > selectedAPIndex) {
+    public void selectAnchorPoint(Integer selectedAPIndex) {
+        if (null != selectedAPIndex && anchorPointsCircles.size() > selectedAPIndex) {
             selectAnchorPoint(anchorPointsCircles.get(selectedAPIndex));
         }
     }
@@ -348,15 +354,32 @@ public class BSplineEditor extends Pane {
             selectedAnchorPoint.setStroke(anchorPointColor);
             selectedAnchorPoint.setFill(anchorPointColor);
             selectedAnchorPoint = null;
+            selectedAPId.set(null);
         }
     }
 
-    public void moveSelected(double x, double y) {
-        //TODO
+    public void setAnchorPoint(Point anchorPoint, double u, double v) {
+        anchorPoint.uProperty().set(Math.max(aPCoordMin, Math.min(u, aPCoordsMax)));
+        anchorPoint.vProperty().set(Math.max(aPCoordMin, Math.min(v, aPCoordsMax)));
     }
 
-    public int getSelectedAPId() {
-        return anchorPointsCircles.indexOf(selectedAnchorPoint);
+    public void setSelectedAP(double u, double v) {
+        Point selectedAP = getSelectedAP();
+        if (null != selectedAP) {
+            setAnchorPoint(selectedAP, u, v);
+        }
+    }
+
+    public Point getSelectedAP() {
+        if (null != selectedAPId.get()) {
+            return spline.getAnchorPoints().get(selectedAPId.get());
+        } else {
+            return null;
+        }
+    }
+
+    public ObjectProperty<Integer> selectedAPIdProperty() {
+        return selectedAPId;
     }
 
     public DoubleProperty scaleProperty() {

@@ -6,12 +6,9 @@ import javafx.util.converter.DoubleStringConverter;
 
 public class DoubleTextField extends NumberTextField {
 
-    private final DoubleProperty doubleProperty;
-
     public DoubleTextField(String valueName, DoubleProperty DoubleProperty,
                            double min, double max, double step) {
         super(valueName, DoubleProperty, min, max, step);
-        this.doubleProperty = DoubleProperty;
     }
 
     @Override
@@ -21,11 +18,17 @@ public class DoubleTextField extends NumberTextField {
 
     @Override
     protected void increment() {
-        doubleProperty.set(Math.min(doubleProperty.get() + step.doubleValue(), max.doubleValue()));
+        DoubleProperty doubleProperty = (DoubleProperty) property;
+        if (null != doubleProperty) {
+            doubleProperty.set(Math.min(doubleProperty.get() + step.doubleValue(), max.doubleValue()));
+        }
     }
 
     @Override
     protected void decrement() {
-        doubleProperty.set(Math.max(min.doubleValue(), doubleProperty.get() - step.doubleValue()));
+        DoubleProperty doubleProperty = (DoubleProperty) property;
+        if (null != doubleProperty) {
+            doubleProperty.set(Math.max(min.doubleValue(), doubleProperty.get() - step.doubleValue()));
+        }
     }
 }
