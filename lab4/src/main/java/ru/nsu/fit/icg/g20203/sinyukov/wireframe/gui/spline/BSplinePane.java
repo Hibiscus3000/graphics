@@ -3,6 +3,8 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.SplitPane;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditor;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditorBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 public class BSplinePane extends SplitPane {
@@ -11,7 +13,7 @@ public class BSplinePane extends SplitPane {
     private static final int defaultSplineSectorPartition = 5;
 
     private static final double editorWidthScale = 0.6;
-    private static final double editorHeightScale = 1;
+    private static final double editorHeightScale = 0.9;
 
     public BSplinePane() {
         Spline initSpline = new Spline(defaultNumberOfAnchorPoints, defaultSplineSectorPartition);
@@ -23,6 +25,6 @@ public class BSplinePane extends SplitPane {
         bSplineEditor.minHeightProperty().bind(editorSizeBinding);
         bSplineEditor.maxHeightProperty().bind(editorSizeBinding);
         BSplineConfigBox bSplineConfigBox = new BSplineConfigBox(initSpline, bSplineEditor);
-        getItems().addAll(bSplineEditor, bSplineConfigBox);
+        getItems().addAll(new BSplineEditorBox(bSplineEditor), bSplineConfigBox);
     }
 }

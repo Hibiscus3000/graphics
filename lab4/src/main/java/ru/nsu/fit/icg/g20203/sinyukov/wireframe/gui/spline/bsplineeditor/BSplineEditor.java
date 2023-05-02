@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
+package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
