@@ -47,9 +47,9 @@ public class BSplineConfigBox extends VBox {
 
     private void createEditorPropertiesFields() {
         DoubleValueEditBox centerUEditBox = new DoubleValueEditBox("U центра",
-                bSplineEditor.uCenterProperty(), -1000.0, 1000.0, 5.0);
+                bSplineEditor.uCenterProperty(), BSplineEditor.centerMin, BSplineEditor.centerMax, BSplineEditor.centerStep);
         DoubleValueEditBox centerVEditBox = new DoubleValueEditBox("V центра",
-                bSplineEditor.vCenterProperty(), -1000.0, 1000.0, 5.0);
+                bSplineEditor.vCenterProperty(), BSplineEditor.centerMin, BSplineEditor.centerMax, BSplineEditor.centerStep);
         DoubleValueEditBox scaleEditBox = new DoubleValueEditBox("Масштаб",
                 bSplineEditor.scaleProperty(), BSplineEditor.scaleMin, BSplineEditor.scaleMax,
                 0.1);

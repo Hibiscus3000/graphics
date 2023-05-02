@@ -27,6 +27,9 @@ public class BSplineEditor extends Pane {
     public final static double scaleMin = 0.01;
     public final static double scaleMax = 10;
     private final DoubleProperty scale = new SimpleDoubleProperty(0.5);
+    public final static double centerStep = 10;
+    public final static double centerMin = -1000;
+    public final static double centerMax = 1000;
     private Point center = new Point(0, 0);
 
     private Spline spline;
@@ -74,7 +77,7 @@ public class BSplineEditor extends Pane {
         setOnMouseDragged(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
                 if (null != prevU && null != prevV)
-                    moveVision(prevU - e.getX(), prevV - e.getY());
+                    moveCenter(prevU - e.getX(), prevV - e.getY());
                 prevU = e.getX();
                 prevV = e.getY();
             }
@@ -91,7 +94,7 @@ public class BSplineEditor extends Pane {
                 double scaleVal = scale.get();
                 double du = (e.getX() - getWidth() / 2) * scaleChange / scaleVal;
                 double dv = (e.getY() - getHeight() / 2) * scaleChange / scaleVal;
-                moveVision(du, dv);
+                moveCenter(du, dv);
             }
         });
     }
@@ -207,9 +210,11 @@ public class BSplineEditor extends Pane {
         return scaleChanged;
     }
 
-    private void moveVision(double du, double dv) {
-        center.uProperty().set(center.uProperty().get() + du / scale.get());
-        center.vProperty().set(center.vProperty().get() - dv / scale.get());
+    private void moveCenter(double du, double dv) {
+        center.uProperty().set(Math.max(centerMin, Math.min(center.uProperty().get() + du / scale.get(),
+                centerMax)));
+        center.vProperty().set(Math.max(centerMin, Math.min(center.vProperty().get() - dv / scale.get(),
+                centerMax)));
     }
 
     private void selectAnchorPoint() {
