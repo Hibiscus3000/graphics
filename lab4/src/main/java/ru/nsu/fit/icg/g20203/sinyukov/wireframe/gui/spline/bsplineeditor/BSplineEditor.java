@@ -262,10 +262,10 @@ public class BSplineEditor extends Pane {
             }
         });
         anchorPointsCircle.setOnMouseDragged(e ->
-                setAnchorPoint(point, e.getX() - widthProperty().get() / 2
+                setAnchorPoint(point, (e.getX() - widthProperty().get() / 2)
                                 / scale.get() + center.uProperty().get(),
                         (e.getY() - heightProperty().get() / 2)
-                                / scale.multiply(-1).get() - center.vProperty().get()));
+                                / scale.multiply(-1).get() + center.vProperty().get()));
         anchorPointsCircle.setOnMouseEntered(e -> {
             if (!e.isPrimaryButtonDown()) {
                 anchorPointsCircle.radiusProperty().bind(anchorPointROnRollover);
@@ -347,6 +347,8 @@ public class BSplineEditor extends Pane {
     }
 
     public void setAnchorPoint(Point anchorPoint, double u, double v) {
+        System.out.println("u: " + anchorPoint.uProperty().get() + "->" + u);
+        System.out.println("v: " + anchorPoint.vProperty().get() + "->" + v);
         anchorPoint.uProperty().set(Math.max(aPCoordMin, Math.min(u, aPCoordsMax)));
         anchorPoint.vProperty().set(Math.max(aPCoordMin, Math.min(v, aPCoordsMax)));
     }
