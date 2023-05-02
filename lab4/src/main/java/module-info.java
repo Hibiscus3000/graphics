@@ -12,4 +12,6 @@ module ru.nsu.fit.icg.g20203.sinyukov.wireframe {
     opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color to javafx.fxml;
     exports ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor;
     opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor to javafx.fxml;
+    exports ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox;
+    opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox to javafx.fxml;
 }

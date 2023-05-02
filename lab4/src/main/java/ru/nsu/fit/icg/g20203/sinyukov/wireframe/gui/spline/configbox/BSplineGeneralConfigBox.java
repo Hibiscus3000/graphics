@@ -1,4 +1,4 @@
-package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
+package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,7 +12,7 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.DoubleTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.IntegerTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
-public class BSplineConfigBox extends VBox {
+public class BSplineGeneralConfigBox extends VBox {
 
     private Spline spline;
 
@@ -21,18 +21,15 @@ public class BSplineConfigBox extends VBox {
     private final IntegerProperty numberOfAnchorPoints = new SimpleIntegerProperty();
     private final IntegerProperty splineSectorPartition = new SimpleIntegerProperty();
 
-    private final IntegerTextField numberOfAPTextField;
-    private final IntegerTextField splineSectorsPartitionTextField;
-
     private final static int maxAnchorPoints = 200;
     private final static int maxSplineSectors = 100;
 
-    public BSplineConfigBox(Spline spline, BSplineEditor bSplineEditor) {
+    public BSplineGeneralConfigBox(BSplineEditor bSplineEditor) {
         this.bSplineEditor = bSplineEditor;
-        numberOfAPTextField = new IntegerTextField("Количество опорных точек",
+        IntegerTextField numberOfAPTextField = new IntegerTextField("Количество опорных точек",
                 numberOfAnchorPoints, 0, maxAnchorPoints, 1);
         numberOfAnchorPoints.addListener(new NumberOfAPChangeListener());
-        splineSectorsPartitionTextField = new IntegerTextField(
+        IntegerTextField splineSectorsPartitionTextField = new IntegerTextField(
                 "Количество ломанных на одном участке B-сплайна",
                 splineSectorPartition, 1, maxSplineSectors, 1);
         splineSectorPartition.addListener(((observableValue, oldVal, newVal) ->
@@ -46,7 +43,6 @@ public class BSplineConfigBox extends VBox {
         getChildren().addAll(numberOfAPTextField, splineSectorsPartitionTextField);
         createEditorPropertiesEditBoxes();
         createSelectedAPCoordinatesFields();
-        setSpline(spline);
     }
 
     private void createEditorPropertiesEditBoxes() {
@@ -61,9 +57,9 @@ public class BSplineConfigBox extends VBox {
     }
 
     private void createSelectedAPCoordinatesFields() {
-        DoubleTextField selectedAPUTextField = new DoubleTextField("u выбранной опорной точки",
+        DoubleTextField selectedAPUTextField = new DoubleTextField("U выбранной опорной точки",
                 null, BSplineEditor.aPCoordMin, BSplineEditor.aPCoordsMax, BSplineEditor.aPCoordStep);
-        DoubleTextField selectedAPVTextField = new DoubleTextField("v выбранной опорной точки",
+        DoubleTextField selectedAPVTextField = new DoubleTextField("V выбранной опорной точки",
                 null, BSplineEditor.aPCoordMin, BSplineEditor.aPCoordsMax, BSplineEditor.aPCoordStep);
         bSplineEditor.selectedAPIdProperty().addListener((observable, oldVal, newVal) -> {
             if (null != newVal) {
@@ -78,13 +74,12 @@ public class BSplineConfigBox extends VBox {
         getChildren().addAll(selectedAPUTextField, selectedAPVTextField);
     }
 
-    private void setSpline(Spline spline) {
+    public void setSpline(Spline spline) {
         if (null != this.spline) {
             splineSectorPartition.unbindBidirectional(spline.splineSectorPartitionProperty());
             numberOfAnchorPoints.unbindBidirectional(spline.numberOfAnchorPointsProperty());
         }
         this.spline = spline;
-        this.bSplineEditor.setSpline(spline);
         splineSectorPartition.bindBidirectional(spline.splineSectorPartitionProperty());
         numberOfAnchorPoints.bindBidirectional(spline.numberOfAnchorPointsProperty());
         numberOfAnchorPoints.set(spline.getAnchorPoints().size());

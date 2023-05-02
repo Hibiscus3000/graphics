@@ -15,7 +15,8 @@ public class WireFrameApplication extends Application {
     public void start(Stage stage) throws Exception {
         stage.setMinWidth(640);
         stage.setMinHeight(480);
-        stage.setScene(new Scene(new BSplinePane()));
+        BSplinePane splinePane = new BSplinePane();
+        stage.setScene(new Scene(splinePane));
         stage.show();
     }
 }

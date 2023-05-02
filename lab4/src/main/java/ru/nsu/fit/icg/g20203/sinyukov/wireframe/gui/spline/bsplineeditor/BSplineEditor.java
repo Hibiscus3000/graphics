@@ -14,14 +14,11 @@ import javafx.scene.shape.Line;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.SecondaryAxisCoordinateBinding;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorContainer;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ColorHandler;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ShapeColorHandler;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.color.ShapeColorListener;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BSplineEditor extends Pane {
 
@@ -51,7 +48,6 @@ public class BSplineEditor extends Pane {
     private final List<Circle> splitPointsCircles = new ArrayList<>();
 
     private ColorContainer colorContainer = new ColorContainer();
-    private final Map<String, ColorHandler> colorHandlers = new HashMap<>();
 
     private final DoubleProperty mainAxisStrokeWidth = new SimpleDoubleProperty(2);
     private final DoubleProperty secondaryAxisStrokeWidth = new SimpleDoubleProperty(1);
@@ -68,10 +64,8 @@ public class BSplineEditor extends Pane {
     private Double prevV = null;
 
     public BSplineEditor() {
-        addColorHandlers();
         createMainAxes();
         createSecondaryAxesAndSerifs();
-        colorHandlers.get("backgroundColor").setDefault();
         setOnMousePressed(e -> deselectAnchorPoint());
         widthProperty().addListener((observable, oldVal, newVal) -> {
             double mult = newVal.doubleValue() / oldVal.doubleValue();
@@ -127,7 +121,6 @@ public class BSplineEditor extends Pane {
         mainAxes.add(uAxis);
         mainAxes.add(vAxis);
 
-        colorHandlers.get("mainAxisColor").setDefault();
         getChildren().addAll(uAxis, vAxis);
     }
 
@@ -178,35 +171,6 @@ public class BSplineEditor extends Pane {
             serifs.add(uSerif);
             serifs.add(vSerif);
         }
-
-        colorHandlers.get("secondaryAxisColor").setDefault();
-        colorHandlers.get("serifColor").setDefault();
-    }
-
-    private void addColorHandlers() {
-        colorHandlers.put("backgroundColor", new ColorHandler("backgroundColor", Color.WHITE, colorContainer,
-                color -> setBackground(new Background(new BackgroundFill(color, null, null)))));
-        colorHandlers.put("mainAxisColor", new ShapeColorHandler<>("mainAxisColor",
-                Color.BLACK, colorContainer, mainAxes));
-        colorHandlers.put("secondaryAxisColor", new ShapeColorHandler<>("secondaryAxisColor",
-                Color.rgb(200, 200, 200), colorContainer, secondaryAxes));
-        colorHandlers.put("splineLineColor", new ShapeColorHandler<>("splineLineColor",
-                Color.RED, colorContainer, splineLines));
-        colorHandlers.put("generatrixColor", new ShapeColorHandler<>("generatrixColor",
-                Color.BLUE, colorContainer, generatrixLines));
-        colorHandlers.put("anchorPointColor", new ShapeColorHandler<>("anchorPointColor",
-                Color.ORANGE, colorContainer, anchorPointsCircles));
-        colorHandlers.put("selectedAnchorPointColor", new ColorHandler("selectedAnchorPointColor",
-                Color.GREEN, colorContainer, color -> {
-            if (null != selectedAnchorPoint) {
-                selectedAnchorPoint.setStroke(color);
-                selectedAnchorPoint.setFill(color);
-            }
-        }));
-        colorHandlers.put("splitPointColor", new ShapeColorHandler<>("splitPointColor",
-                Color.ORANGE, colorContainer, splitPointsCircles));
-        colorHandlers.put("serifColor", new ShapeColorHandler<>("serifColor",
-                Color.BLACK, colorContainer, serifs));
     }
 
     private boolean changeScale(double scaleChange) {
@@ -231,6 +195,11 @@ public class BSplineEditor extends Pane {
         //TODO
     }
 
+    public void setNew(Spline spline, ColorContainer colorContainer) {
+        setSpline(spline);
+        setColorContainer(colorContainer);
+    }
+
     public void setSpline(Spline spline) {
         clear();
         this.spline = spline;
@@ -240,7 +209,7 @@ public class BSplineEditor extends Pane {
         }
         for (int i = 1; i < anchorPoints.size(); ++i) {
             Line generatrixLine = createLine(anchorPoints.get(i - 1),
-                    anchorPoints.get(i), colorContainer.getColor("generatrixColor"),
+                    anchorPoints.get(i), colorContainer.getColor("generatrix"),
                     generatrixStrokeWidth);
             generatrixLines.add(generatrixLine);
             addAnchorPointCircle(anchorPoints.get(i));
@@ -249,7 +218,7 @@ public class BSplineEditor extends Pane {
         for (List<Point> line : spline.getSplineLines()) {
             for (int i = 1; i < line.size(); ++i) {
                 Line splineLine = createLine(line.get(i - 1), line.get(i),
-                        colorContainer.getColor("splineLineColor"),
+                        colorContainer.getColor("splineLine"),
                         splineStrokeWidth);
                 splineLines.add(splineLine);
             }
@@ -257,9 +226,28 @@ public class BSplineEditor extends Pane {
         repaint();
     }
 
+    private void setColorContainer(ColorContainer colorContainer) {
+        colorContainer.colorProperty("background").addListener((observable, oldColor, newColor) ->
+                setBackground(new Background(new BackgroundFill(newColor, null, null))));
+        colorContainer.colorProperty("mainAxis").addListener(new ShapeColorListener<>(mainAxes));
+        colorContainer.colorProperty("secondaryAxis").addListener(new ShapeColorListener<>(secondaryAxes));
+        colorContainer.colorProperty("splineLine").addListener(new ShapeColorListener<>(splineLines));
+        colorContainer.colorProperty("generatrix").addListener(new ShapeColorListener<>(generatrixLines));
+        colorContainer.colorProperty("anchorPoint").addListener(new ShapeColorListener<>(anchorPointsCircles));
+        colorContainer.colorProperty("selectedAnchorPoint").addListener((observable, oldColor, newColor) -> {
+            if (null != selectedAnchorPoint) {
+                selectedAnchorPoint.setStroke(newColor);
+                selectedAnchorPoint.setFill(newColor);
+            }
+        });
+        colorContainer.colorProperty("splitPoint").addListener(new ShapeColorListener<>(splitPointsCircles));
+        colorContainer.colorProperty("serif").addListener(new ShapeColorListener<>(serifs));
+        colorContainer.invokeAllListeners();
+    }
+
     private void addAnchorPointCircle(Point point) {
         Circle anchorPointsCircle = createCircle(point, anchorPointR,
-                colorContainer.getColor("anchorPointColor"));
+                colorContainer.getColor("anchorPoint"));
         anchorPointsCircle.setOnMousePressed(e -> {
             selectAnchorPoint(anchorPointsCircle);
             anchorPointsCircle.radiusProperty().bind(anchorPointR);
@@ -335,7 +323,7 @@ public class BSplineEditor extends Pane {
 
     private void selectAnchorPoint(Circle anchorPointCircle) {
         deselectAnchorPoint();
-        Color selectedAPColor = colorContainer.getColor("selectedAnchorPointColor");
+        Color selectedAPColor = colorContainer.getColor("selectedAnchorPoint");
         selectedAnchorPoint = anchorPointCircle;
         selectedAPId.set(anchorPointsCircles.indexOf(selectedAnchorPoint));
         selectedAnchorPoint.setFill(selectedAPColor);
@@ -350,7 +338,7 @@ public class BSplineEditor extends Pane {
 
     private void deselectAnchorPoint() {
         if (null != selectedAnchorPoint) {
-            Color anchorPointColor = colorContainer.getColor("anchorPointColor");
+            Color anchorPointColor = colorContainer.getColor("anchorPoint");
             selectedAnchorPoint.setStroke(anchorPointColor);
             selectedAnchorPoint.setFill(anchorPointColor);
             selectedAnchorPoint = null;
