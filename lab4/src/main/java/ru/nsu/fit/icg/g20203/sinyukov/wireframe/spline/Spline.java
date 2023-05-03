@@ -3,20 +3,20 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.util.Pair;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 
-public class Spline implements Serializable {
+public class Spline {
 
-    private final IntegerProperty numberOfAnchorPoints;
+    private transient final IntegerProperty numberOfAnchorPoints;
     // number of lines that form one B-spline segment
-    private final IntegerProperty splineSectorPartition;
+    private transient final IntegerProperty splineSectorPartition;
     private final transient List<List<Point>> splineLines = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
 
@@ -26,6 +26,15 @@ public class Spline implements Serializable {
         this.numberOfAnchorPoints = new SimpleIntegerProperty(numberOfAnchorPoints);
         this.splineSectorPartition = new SimpleIntegerProperty(numberOfLines);
         addAnchorPointsToEnd(numberOfAnchorPoints);
+    }
+
+    public Spline(SerializableSpline serializableSpline) {
+        this.numberOfAnchorPoints = new SimpleIntegerProperty(serializableSpline.getNumberOfAnchorPoints());
+        this.splineSectorPartition = new SimpleIntegerProperty(serializableSpline.getSplineSectorPartition());
+        for (Pair<Double, Double> point : serializableSpline.getAnchorPoints()) {
+            anchorPoints.add(new Point(point));
+        }
+        calculateAllLines();
     }
 
     public void addAnchorPointsToEnd(int numberOfAnchorPoints) {
@@ -178,5 +187,10 @@ public class Spline implements Serializable {
     private double getRandomBias() {
         double bias = 2 * randomBiasBounds * (random.nextDouble() - 0.5);
         return bias + Math.signum(bias) * minBias;
+    }
+
+    public SerializableSpline getSerializableSpline() {
+        return new SerializableSpline(numberOfAnchorPoints.get(), splineSectorPartition.get(),
+                anchorPoints);
     }
 }
