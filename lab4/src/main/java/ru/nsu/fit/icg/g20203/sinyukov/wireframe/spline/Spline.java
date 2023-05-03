@@ -14,10 +14,10 @@ import static ru.nsu.fit.icg.g20203.sinyukov.wireframe.Math.*;
 
 public class Spline {
 
-    private transient final IntegerProperty numberOfAnchorPoints;
+    private final IntegerProperty numberOfAnchorPoints;
     // number of lines that form one B-spline segment
-    private transient final IntegerProperty splineSectorPartition;
-    private final transient List<List<Point>> splineLines = new ArrayList<>();
+    private final IntegerProperty splineSectorPartition;
+    private final transient List<List<Point>> splineSectors = new ArrayList<>();
     private final List<Point> anchorPoints = new ArrayList<>();
 
     private final Random random = new Random();
@@ -93,9 +93,9 @@ public class Spline {
 
     public void removeAnchorPoint(int APIndex) {
         anchorPoints.remove(APIndex);
-        int splineLineInd =  Math.max(0,Math.min(APIndex - 1,splineLines.size() - 1));
+        int splineLineInd = Math.max(0, Math.min(APIndex - 1, splineSectors.size() - 1));
         if (anchorPoints.size() >= 3) {
-            splineLines.remove(splineLineInd);
+            splineSectors.remove(splineLineInd);
         }
         if (anchorPoints.size() >= 4) {
             calculateLine(splineLineInd);
@@ -115,11 +115,11 @@ public class Spline {
         if (0 >= APIndex || APIndex > anchorPoints.size() - 3) {
             return;
         }
-        while (splineLines.size() < anchorPoints.size() - 3) {
+        while (splineSectors.size() < anchorPoints.size() - 3) {
             List<Point> newSplineLine = new ArrayList<>();
-            splineLines.add(APIndex - 1, newSplineLine);
+            splineSectors.add(APIndex - 1, newSplineLine);
         }
-        List<Point> calculatedSplineLine = splineLines.get(APIndex - 1);
+        List<Point> calculatedSplineLine = splineSectors.get(APIndex - 1);
         int numberOfPoints = calculatedSplineLine.size();
         for (int i = 0; i <= splineSectorPartition.get(); ++i) {
             double[] uv = calculateSLPoint(i, APIndex);
@@ -173,8 +173,8 @@ public class Spline {
         return numberOfAnchorPoints;
     }
 
-    public List<List<Point>> getSplineLines() {
-        return splineLines;
+    public List<List<Point>> getSplineSectors() {
+        return splineSectors;
     }
 
     public List<Point> getAnchorPoints() {

@@ -238,7 +238,7 @@ public class BSplineEditor extends Pane {
             addAnchorPointCircle(anchorPoints.get(i));
         }
 
-        for (List<Point> line : spline.getSplineLines()) {
+        for (List<Point> line : spline.getSplineSectors()) {
             for (int i = 1; i < line.size(); ++i) {
                 Line splineLine = createLine(line.get(i - 1), line.get(i),
                         colorContainer.getContainedByKey("splineLine"),

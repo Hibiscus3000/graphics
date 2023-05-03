@@ -25,4 +25,12 @@ public class Point {
     public DoubleProperty vProperty() {
         return v;
     }
+
+    public double getU() {
+        return u.get();
+    }
+
+    public double getV() {
+        return v.get();
+    }
 }
