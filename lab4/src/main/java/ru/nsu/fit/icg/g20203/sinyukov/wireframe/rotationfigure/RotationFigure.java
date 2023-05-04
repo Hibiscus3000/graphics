@@ -1,6 +1,7 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.rotationfigure;
 
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.rotationfigure.point.Point3D;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 import java.util.ArrayList;
@@ -51,5 +52,25 @@ public class RotationFigure {
         double u = point.getU();
         double v = point.getV();
         return new Point3D(v * Math.cos(ang), v * Math.sin(ang), u);
+    }
+
+    private void normalizeToFixBox() {
+        double max = 0;
+        for (List<Point3D> line : lines) {
+            for (Point3D point : line) {
+                max = Math.max(max, Math.abs(point.getX()));
+                max = Math.max(max, Math.abs(point.getY()));
+                max = Math.max(max, Math.abs(point.getY()));
+            }
+        }
+        for (List<Point3D> line : lines) {
+            for (Point3D point : line) {
+                point.divide(max);
+            }
+        }
+    }
+
+    public List<List<Point3D>> getLines() {
+        return lines;
     }
 }
