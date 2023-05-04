@@ -10,9 +10,17 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container.ColorContai
 
 import java.util.Map;
 
-public class BSplineColorConfigBox extends VBox {
+public class BSplineColorConfigBox extends VBox implements ColorHandler {
 
-    public void setColorContainer(ColorContainer colorContainer, BSplineEditor bSplineEditor) {
+    private ColorContainer colorContainer;
+    private final BSplineEditor bSplineEditor;
+
+    public BSplineColorConfigBox(BSplineEditor bSplineEditor) {
+        this.bSplineEditor = bSplineEditor;
+    }
+
+    @Override
+    public void setColorContainer(ColorContainer colorContainer) {
         getChildren().clear();
         for (Map.Entry<String, Color> colorEntry : colorContainer.getAllContained().entrySet()) {
             ColorPicker colorPicker = new ColorPicker(colorEntry.getValue());
@@ -27,6 +35,11 @@ public class BSplineColorConfigBox extends VBox {
             HBox colorBox = new HBox(colorLabel, colorPicker);
             getChildren().add(colorBox);
         }
+    }
+
+    @Override
+    public ColorContainer getColorContainer() {
+        return colorContainer;
     }
 
 }

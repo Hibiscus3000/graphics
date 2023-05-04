@@ -15,6 +15,8 @@ public class RotationFigurePane extends Pane {
     private final List<Line> lines = new ArrayList<>();
 
     public void setMVPRotationFigure(MVPRotationFigure mvpRotationFigure, Color color) {
+        lines.clear();
+        getChildren().clear();
         for (List<Point2D> line : mvpRotationFigure.getLines()) {
             for (int i = 1; i < line.size(); ++i) {
                 Point2D previousPoint = line.get(i - 1);

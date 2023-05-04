@@ -2,14 +2,14 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditor;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditorBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.BSplineColorConfigBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.BSplineGeneralConfigBox;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.ColorHandler;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.SplineHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container.ColorContainer;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
@@ -25,7 +25,7 @@ public class BSplinePane extends SplitPane {
     private final BSplineGeneralConfigBox generalConfigBox;
     private final BSplineColorConfigBox colorConfigBox;
 
-    public BSplinePane() {
+    public BSplinePane(Button changeScenesButton, SaveOpenControlBox saveOpenControlBox) {
         DoubleBinding editorSizeBinding = Bindings.createDoubleBinding(() ->
                         Math.min(editorWidthScale * getWidth(), editorHeightScale * getHeight()),
                 widthProperty(), heightProperty());
@@ -33,8 +33,9 @@ public class BSplinePane extends SplitPane {
         bSplineEditor.minHeightProperty().bind(editorSizeBinding);
         bSplineEditor.maxHeightProperty().bind(editorSizeBinding);
 
-        generalConfigBox = new BSplineGeneralConfigBox(bSplineEditor);
-        colorConfigBox = new BSplineColorConfigBox();
+        generalConfigBox = new BSplineGeneralConfigBox(bSplineEditor, saveOpenControlBox,
+                changeScenesButton);
+        colorConfigBox = new BSplineColorConfigBox(bSplineEditor);
 
         TabPane tabPane = createTabPane();
         getItems().addAll(new BSplineEditorBox(bSplineEditor), tabPane);
@@ -55,6 +56,14 @@ public class BSplinePane extends SplitPane {
     private void setNew(Spline spline, ColorContainer colorContainer) {
         bSplineEditor.setNew(spline, colorContainer);
         generalConfigBox.setSpline(spline);
-        colorConfigBox.setColorContainer(colorContainer, bSplineEditor);
+        colorConfigBox.setColorContainer(colorContainer);
+    }
+
+    public ColorHandler getColorHandler() {
+        return colorConfigBox;
+    }
+
+    public SplineHandler getSplineHandler() {
+        return generalConfigBox;
     }
 }

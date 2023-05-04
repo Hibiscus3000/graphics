@@ -4,15 +4,18 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.editbox.DoubleValueEditBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditor;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.DoubleTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.IntegerTextField;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.SerializableSpline;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
-public class BSplineGeneralConfigBox extends VBox {
+public class BSplineGeneralConfigBox extends VBox implements SplineHandler {
 
     private Spline spline;
 
@@ -24,7 +27,8 @@ public class BSplineGeneralConfigBox extends VBox {
     private final static int maxAnchorPoints = 200;
     private final static int maxSplineSectors = 100;
 
-    public BSplineGeneralConfigBox(BSplineEditor bSplineEditor) {
+    public BSplineGeneralConfigBox(BSplineEditor bSplineEditor, SaveOpenControlBox saveOpenControlBox,
+                                   Button changeSceneButton) {
         this.bSplineEditor = bSplineEditor;
         IntegerTextField numberOfAPTextField = new IntegerTextField("Количество опорных точек",
                 numberOfAnchorPoints, 0, maxAnchorPoints, 1);
@@ -43,6 +47,7 @@ public class BSplineGeneralConfigBox extends VBox {
         getChildren().addAll(numberOfAPTextField, splineSectorsPartitionTextField);
         createEditorPropertiesEditBoxes();
         createSelectedAPCoordinatesFields();
+        getChildren().addAll(saveOpenControlBox, changeSceneButton);
     }
 
     private void createEditorPropertiesEditBoxes() {
@@ -80,9 +85,25 @@ public class BSplineGeneralConfigBox extends VBox {
             numberOfAnchorPoints.unbindBidirectional(spline.numberOfAnchorPointsProperty());
         }
         this.spline = spline;
+        bSplineEditor.setSpline(spline);
         splineSectorPartition.bindBidirectional(spline.splineSectorPartitionProperty());
         numberOfAnchorPoints.bindBidirectional(spline.numberOfAnchorPointsProperty());
         numberOfAnchorPoints.set(spline.getAnchorPoints().size());
+    }
+
+    @Override
+    public SerializableSpline getSerializableSpline() {
+        return spline.getSerializableSpline();
+    }
+
+    @Override
+    public void setSpline(SerializableSpline serializableSpline) {
+        setSpline(new Spline(serializableSpline));
+    }
+
+    @Override
+    public Spline getSpline() {
+        return spline;
     }
 
     private class NumberOfAPChangeListener implements ChangeListener<Number> {
