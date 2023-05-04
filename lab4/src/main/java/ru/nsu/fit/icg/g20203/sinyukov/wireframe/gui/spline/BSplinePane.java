@@ -31,14 +31,12 @@ public class BSplinePane extends SplitPane {
                 widthProperty(), heightProperty());
         bSplineEditor.minWidthProperty().bind(editorSizeBinding);
         bSplineEditor.minHeightProperty().bind(editorSizeBinding);
-        bSplineEditor.maxWidthProperty().bind(editorSizeBinding);
         bSplineEditor.maxHeightProperty().bind(editorSizeBinding);
 
         generalConfigBox = new BSplineGeneralConfigBox(bSplineEditor);
         colorConfigBox = new BSplineColorConfigBox();
 
         TabPane tabPane = createTabPane();
-        tabPane.minWidthProperty().bind(widthProperty().subtract(editorSizeBinding));
         getItems().addAll(new BSplineEditorBox(bSplineEditor), tabPane);
 
         Spline initSpline = new Spline(defaultNumberOfAnchorPoints, defaultSplineSectorPartition);

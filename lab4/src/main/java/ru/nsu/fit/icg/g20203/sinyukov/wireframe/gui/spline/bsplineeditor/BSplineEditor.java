@@ -1,18 +1,20 @@
 package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.SecondaryAxisCoordinateBinding;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.secondarysxesbinding.SecondaryAxisBinding;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.ShapeColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container.ColorContainer;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class BSplineEditor extends Pane {
+public class BSplineEditor extends AnchorPane {
 
     public final static double scaleStep = 0.01;
     public final static double scaleMin = 0.01;
@@ -69,15 +71,27 @@ public class BSplineEditor extends Pane {
 
     public BSplineEditor() {
         createMainAxes();
-        createSecondaryAxesAndSerifs();
         createColorHandlers();
         setOnMousePressed(e -> deselectAnchorPoint());
-        widthProperty().addListener((observable, oldVal, newVal) -> {
+        ChangeListener<Number> secondaryAxesListener = (observable, oldVal, newVal) -> {
+            if (Double.isInfinite(newVal.doubleValue() / oldVal.doubleValue())) {
+                return;
+            }
+            serifs.clear();
+            secondaryAxes.clear();
+            numberOfSecondaryVAxes = (int) Math.ceil(numberOfSecondaryUAxes *
+                    getWidth() / getHeight());
+            createSecondaryAxesAndSerifs();
+            repaint();
+        };
+        heightProperty().addListener((observable, oldVal, newVal) -> {
             double mult = newVal.doubleValue() / oldVal.doubleValue();
             if (Double.isFinite(mult)) {
                 scale.set(scale.get() * mult);
             }
+            secondaryAxesListener.changed(observable, oldVal, newVal);
         });
+        widthProperty().addListener(secondaryAxesListener);
 
         setOnMouseDragged(e -> {
             if (MouseButton.SECONDARY == e.getButton()) {
@@ -107,19 +121,19 @@ public class BSplineEditor extends Pane {
     private void createMainAxes() {
         Line uAxis = new Line();
         uAxis.setStartX(0);
-        uAxis.startYProperty().bind(heightProperty().divide(2)
-                .add(center.vProperty().multiply(scale)));
+        DoubleBinding uAxisYBinding = heightProperty().divide(2)
+                .add(center.vProperty().multiply(scale));
+        uAxis.startYProperty().bind(uAxisYBinding);
         uAxis.endXProperty().bind(widthProperty());
-        uAxis.endYProperty().bind(heightProperty().divide(2)
-                .add(center.vProperty().multiply(scale)));
+        uAxis.endYProperty().bind(uAxisYBinding);
         uAxis.strokeWidthProperty().bind(mainAxisStrokeWidth);
 
         Line vAxis = new Line();
-        vAxis.startXProperty().bind(widthProperty().divide(2)
-                .subtract(center.uProperty().multiply(scale)));
+        DoubleBinding vAxisXBinding = heightProperty().divide(2)
+                .subtract(center.uProperty().multiply(scale));
+        vAxis.startXProperty().bind(vAxisXBinding);
         vAxis.setStartY(0);
-        vAxis.endXProperty().bind(widthProperty().divide(2)
-                .subtract(center.uProperty().multiply(scale)));
+        vAxis.endXProperty().bind(vAxisXBinding);
         vAxis.endYProperty().bind(heightProperty());
         vAxis.strokeWidthProperty().bind(mainAxisStrokeWidth);
 
@@ -129,40 +143,47 @@ public class BSplineEditor extends Pane {
         getChildren().addAll(uAxis, vAxis);
     }
 
-    private final static int numberOfSecondaryAxes = 10;
+    private final int numberOfSecondaryUAxes = 10;
+    private int numberOfSecondaryVAxes = 10;
     private final static double serifLength = 4;
 
     private void createSecondaryAxesAndSerifs() {
-        for (int i = 0; i < numberOfSecondaryAxes; ++i) {
+        for (int i = 0; i < numberOfSecondaryUAxes; ++i) {
             Line uAxis = new Line();
-            SecondaryAxisCoordinateBinding vBinding = new SecondaryAxisCoordinateBinding(heightProperty(),
-                    center.vProperty().multiply(1), scale, i, numberOfSecondaryAxes);
+            SecondaryAxisBinding vBinding = new SecondaryAxisBinding(
+                    heightProperty().add(0),
+                    center.vProperty().multiply(1), scale, i, numberOfSecondaryUAxes);
             uAxis.startYProperty().bind(vBinding);
             uAxis.endYProperty().bind(vBinding);
             uAxis.setStartX(0);
             uAxis.endXProperty().bind(widthProperty());
             uAxis.strokeWidthProperty().bind(secondaryAxisStrokeWidth);
 
+            secondaryAxes.add(uAxis);
+
+            Line uSerif = new Line();
+            uSerif.startYProperty().bind(vBinding);
+            uSerif.endYProperty().bind(vBinding);
+            uSerif.startXProperty().bind(heightProperty().divide(2).subtract(serifLength)
+                    .subtract(center.uProperty().multiply(scale)));
+            uSerif.endXProperty().bind(heightProperty().divide(2).add(serifLength)
+                    .subtract(center.uProperty().multiply(scale)));
+            uSerif.strokeWidthProperty().bind(serifStrokeWidth);
+
+            serifs.add(uSerif);
+        }
+
+        for (int i = 0; i < numberOfSecondaryVAxes; ++i) {
             Line vAxis = new Line();
-            SecondaryAxisCoordinateBinding uBinding = new SecondaryAxisCoordinateBinding(widthProperty(),
-                    center.uProperty().multiply(-1), scale, i, numberOfSecondaryAxes);
+            SecondaryAxisBinding uBinding = new SecondaryAxisBinding(
+                    heightProperty().divide(numberOfSecondaryUAxes).multiply(numberOfSecondaryVAxes),
+                    center.uProperty().multiply(-1), scale, i, numberOfSecondaryVAxes);
             vAxis.startXProperty().bind(uBinding);
             vAxis.endXProperty().bind(uBinding);
             vAxis.setStartY(0);
             vAxis.endYProperty().bind(heightProperty());
             vAxis.strokeWidthProperty().bind(secondaryAxisStrokeWidth);
-
-            secondaryAxes.add(uAxis);
             secondaryAxes.add(vAxis);
-
-            Line uSerif = new Line();
-            uSerif.startYProperty().bind(vBinding);
-            uSerif.endYProperty().bind(vBinding);
-            uSerif.startXProperty().bind(widthProperty().divide(2).subtract(serifLength)
-                    .subtract(center.uProperty().multiply(scale)));
-            uSerif.endXProperty().bind(widthProperty().divide(2).add(serifLength)
-                    .subtract(center.uProperty().multiply(scale)));
-            uSerif.strokeWidthProperty().bind(serifStrokeWidth);
 
             Line vSerif = new Line();
             vSerif.startXProperty().bind(uBinding);
@@ -172,10 +193,10 @@ public class BSplineEditor extends Pane {
             vSerif.endYProperty().bind(heightProperty().divide(2).add(serifLength)
                     .add(center.vProperty().multiply(scale)));
             vSerif.strokeWidthProperty().bind(serifStrokeWidth);
-
-            serifs.add(uSerif);
             serifs.add(vSerif);
         }
+        colorHandlers.get("serif").accept(colorContainer.getContainedByKey("serif"));
+        colorHandlers.get("secondaryAxis").accept(colorContainer.getContainedByKey("secondaryAxis"));
     }
 
     private void createColorHandlers() {
@@ -277,7 +298,7 @@ public class BSplineEditor extends Pane {
             }
         });
         anchorPointsCircle.setOnMouseDragged(e ->
-                setAnchorPoint(point, (e.getX() - widthProperty().get() / 2)
+                setAnchorPoint(point, (e.getX() - heightProperty().get() / 2)
                                 / scale.get() + center.uProperty().get(),
                         (e.getY() - heightProperty().get() / 2)
                                 / scale.multiply(-1).get() + center.vProperty().get()));
@@ -312,9 +333,9 @@ public class BSplineEditor extends Pane {
     private Line createLine(Point p1, Point p2, Color color, DoubleProperty strokeWidth) {
         Line line = new Line();
         line.startXProperty().bind(p1.uProperty().multiply(scale)
-                .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
+                .add(heightProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
         line.endXProperty().bind(p2.uProperty().multiply(scale)
-                .add(widthProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
+                .add(heightProperty().divide(2)).subtract(center.uProperty().multiply(scale)));
         line.startYProperty().bind(p1.vProperty().multiply(scale.multiply(-1))
                 .add(heightProperty().divide(2)).add(center.vProperty().multiply(scale)));
         line.endYProperty().bind(p2.vProperty().multiply(scale.multiply(-1))
@@ -328,7 +349,7 @@ public class BSplineEditor extends Pane {
     private Circle createCircle(Point point, DoubleProperty r, Color color) {
         Circle circle = new Circle();
         circle.centerXProperty().bind(point.uProperty().multiply(scale)
-                .add(widthProperty().divide(2).subtract(center.uProperty().multiply(scale))));
+                .add(heightProperty().divide(2).subtract(center.uProperty().multiply(scale))));
         circle.centerYProperty().bind(point.vProperty().multiply(scale.multiply(-1))
                 .add(heightProperty().divide(2).add(center.vProperty().multiply(scale))));
         circle.radiusProperty().bind(r);

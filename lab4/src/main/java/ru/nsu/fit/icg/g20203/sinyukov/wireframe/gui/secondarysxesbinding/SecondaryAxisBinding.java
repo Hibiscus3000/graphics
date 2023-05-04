@@ -1,22 +1,21 @@
-package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui;
+package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.secondarysxesbinding;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 
-public class SecondaryAxisCoordinateBinding extends DoubleBinding {
+public class SecondaryAxisBinding extends DoubleBinding {
 
-    private final ReadOnlyDoubleProperty sizeProperty;
+    private final DoubleBinding sizeProperty;
     private final DoubleBinding centerBinding;
     private final DoubleProperty scaleProperty;
     private final int secondaryAxisId;
     private final int numberOfAxisTotal;
 
-    public SecondaryAxisCoordinateBinding(ReadOnlyDoubleProperty sizeProperty,
-                                          DoubleBinding centerBinding,
-                                          DoubleProperty scaleProperty,
-                                          int secondaryAxisId,
-                                          int numberOfAxisTotal) {
+    public SecondaryAxisBinding(DoubleBinding sizeProperty,
+                                DoubleBinding centerBinding,
+                                DoubleProperty scaleProperty,
+                                int secondaryAxisId,
+                                int numberOfAxisTotal) {
         this.sizeProperty = sizeProperty;
         this.centerBinding = centerBinding;
         this.scaleProperty = scaleProperty;
