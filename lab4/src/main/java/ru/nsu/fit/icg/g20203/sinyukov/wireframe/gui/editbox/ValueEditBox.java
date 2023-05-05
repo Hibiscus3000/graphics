@@ -25,9 +25,7 @@ public abstract class ValueEditBox<T extends Number> extends VBox {
             if (!slider.isValueChanging()) {
                 slider.setValue(newVal.doubleValue());
             }
-            if (null != property) {
-                property.setValue(newVal);
-            }
+            property.setValue(newVal);
         });
         property.addListener((observable, oldVal, newVal) ->
                 spinner.getValueFactory().valueProperty().set((T) newVal));

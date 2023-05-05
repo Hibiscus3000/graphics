@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.AboutAlert;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.rotationfigure.RotationFigureHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.ColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.SplineHandler;
@@ -17,13 +18,17 @@ public class SaveOpenControlBox extends VBox {
     private SplineHandler splineHandler;
     private RotationFigureHandler rotationFigureHandler;
 
+    private final AboutAlert aboutAlert = new AboutAlert();
+
     public SaveOpenControlBox() {
         Button saveButton = new Button("Сохранить");
         saveButton.setOnAction(e -> save());
         Button openButton = new Button("Открыть");
         openButton.setOnAction(e -> open());
+        Button aboutButton = new Button("О программе");
+        aboutButton.setOnAction(e -> aboutAlert.showAndWait());
 
-        getChildren().addAll(saveButton, openButton);
+        getChildren().addAll(saveButton, openButton, aboutButton);
 
         fileChooser.setTitle("Открыть файл wireframe");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Файл wireframe", "*.wrf"));
