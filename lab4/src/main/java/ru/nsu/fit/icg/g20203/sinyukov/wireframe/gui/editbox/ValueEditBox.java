@@ -21,12 +21,13 @@ public abstract class ValueEditBox<T extends Number> extends VBox {
         slider = new Slider(min.doubleValue(), max.doubleValue(), property.getValue().doubleValue());
         slider.setBlockIncrement(Double.parseDouble(String.valueOf(amountToStepBy)));
         spinner.setEditable(true);
-        // TODO check how this works in debugger
         spinner.valueProperty().addListener((observable, oldVal, newVal) -> {
             if (!slider.isValueChanging()) {
                 slider.setValue(newVal.doubleValue());
             }
-            property.setValue(newVal);
+            if (null != property) {
+                property.setValue(newVal);
+            }
         });
         property.addListener((observable, oldVal, newVal) ->
                 spinner.getValueFactory().valueProperty().set((T) newVal));

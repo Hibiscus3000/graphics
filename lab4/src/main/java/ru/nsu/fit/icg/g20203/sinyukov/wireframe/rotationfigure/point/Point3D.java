@@ -22,10 +22,8 @@ public class Point3D {
         return new Point3D(x - other.x, y - other.y, z - other.z);
     }
 
-    public void divide(double a) {
-        x /= a;
-        y /= a;
-        z /= a;
+    public Point3D divide(double a) {
+        return new Point3D(x / a, y / a, z / a);
     }
 
     public double getX() {
@@ -42,5 +40,14 @@ public class Point3D {
 
     public double[][] get4DVector() {
         return new double[][]{{x}, {y}, {z}, {1}};
+    }
+
+    public double getNorm() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f %.2f %.2f)", x, y, z);
     }
 }

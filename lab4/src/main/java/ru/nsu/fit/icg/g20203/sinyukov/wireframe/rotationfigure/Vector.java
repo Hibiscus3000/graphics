@@ -13,7 +13,7 @@ public class Vector {
     }
 
     public Vector vectorProduct(Vector other) {
-        return new Vector(y * other.z - other.y * z, z * other.x - other.z - x,
+        return new Vector(y * other.z - other.y * z, z * other.x - other.z * x,
                 x * other.y - other.x * y);
     }
 
@@ -31,5 +31,13 @@ public class Vector {
 
     public double getZ() {
         return z;
+    }
+
+    public double getNorm() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public Vector divide(double a) {
+        return new Vector(x / a, y / a, z / a);
     }
 }

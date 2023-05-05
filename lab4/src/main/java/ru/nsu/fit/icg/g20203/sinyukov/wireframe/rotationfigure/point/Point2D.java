@@ -12,7 +12,7 @@ public class Point2D {
 
     public Point2D(double[][] point4D) {
         u = point4D[0][0];
-        v = point4D[0][1];
+        v = point4D[1][0];
     }
 
     public double getU() {

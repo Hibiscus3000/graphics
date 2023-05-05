@@ -15,8 +15,8 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 public class BSplinePane extends SplitPane {
 
-    private static final int defaultNumberOfAnchorPoints = 5;
-    private static final int defaultSplineSectorPartition = 5;
+    private static final int defaultNumberOfAnchorPoints = 8;
+    private static final int defaultSplineSectorPartition = 6;
 
     private static final double editorWidthScale = 0.6;
     private static final double editorHeightScale = 0.95;
