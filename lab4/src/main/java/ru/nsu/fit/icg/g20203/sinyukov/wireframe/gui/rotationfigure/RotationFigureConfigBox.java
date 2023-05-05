@@ -106,12 +106,20 @@ public class RotationFigureConfigBox extends VBox implements RotationFigureHandl
             rotationFigurePane.setLinesColor(lineColorPicker.getValue());
         });
 
+        Button resetButton = new Button("Сброс");
+        resetButton.setOnAction(e -> {
+            angleX.set(0);
+            angleY.set(0);
+            angleZ.set(0);
+            zoom.set(mvp.getDefaultN());
+        });
+
         rotationFigurePane.setLinesColor(lineColorPicker.getValue());
         rotationFigurePane.setBackgroundColor(backGroundColorPicker.getValue());
 
         getChildren().addAll(numberOfGeneratorsTextField, numbOfLinesBetweenGensTextField,
-                angleXEditBox, angleYEditBox, angleZEditBox, zoomEditBox, strokeWidthEditBox,
-                new Label("Цвет линий"), lineColorPicker,
+                angleXEditBox, angleYEditBox, angleZEditBox, zoomEditBox, resetButton,
+                strokeWidthEditBox, new Label("Цвет линий"), lineColorPicker,
                 new Label("Цвет заднего фона"), backGroundColorPicker,
                 saveOpenControlBox, changeScenesButton);
     }

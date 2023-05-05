@@ -39,7 +39,8 @@ public class MVP {
     private final double[][] V;
 
     // near and far clipping panes
-    private ReadOnlyDoubleWrapper N = new ReadOnlyDoubleWrapper(5.5);
+    private ReadOnlyDoubleWrapper N = new ReadOnlyDoubleWrapper(defaultN);
+    private final static double defaultN = 5.5;
     public final static double Nmin = 0.1;
     public final static double Nmax = 100;
     private final double F = 20;
@@ -194,5 +195,9 @@ public class MVP {
 
     public ReadOnlyDoubleProperty nProperty() {
         return N.getReadOnlyProperty();
+    }
+
+    public double getDefaultN() {
+        return defaultN;
     }
 }
