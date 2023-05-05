@@ -37,8 +37,7 @@ public class RotationFigurePane extends Pane {
 
     public RotationFigurePane(MVP mvp) {
         Sh = Bindings.createDoubleBinding(() -> 0.0025);
-        Sw = Bindings.createDoubleBinding(() -> Sh.get() * getHeight() / getWidth(),
-                widthProperty(), heightProperty(), Sh);
+        Sw = Bindings.createDoubleBinding(() -> Sh.get(), Sh);
         setOnScroll(e -> {
             mvp.changeN(-e.getDeltaY() * zoomStep);
         });

@@ -7,11 +7,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.Point;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.editbox.DoubleValueEditBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditor;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.DoubleTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.IntegerTextField;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.SerializableSpline;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 

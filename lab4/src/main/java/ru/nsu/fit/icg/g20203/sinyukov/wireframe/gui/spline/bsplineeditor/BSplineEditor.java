@@ -71,6 +71,7 @@ public class BSplineEditor extends AnchorPane {
 
     public BSplineEditor() {
         createMainAxes();
+        createSecondaryAxesAndSerifs();
         createColorHandlers();
         setOnMousePressed(e -> deselectAnchorPoint());
         ChangeListener<Number> secondaryAxesListener = (observable, oldVal, newVal) -> {
@@ -195,8 +196,11 @@ public class BSplineEditor extends AnchorPane {
             vSerif.strokeWidthProperty().bind(serifStrokeWidth);
             serifs.add(vSerif);
         }
-        colorHandlers.get("serif").accept(colorContainer.getContainedByKey("serif"));
-        colorHandlers.get("secondaryAxis").accept(colorContainer.getContainedByKey("secondaryAxis"));
+
+        if (null != colorContainer) {
+            colorHandlers.get("serif").accept(colorContainer.getContainedByKey("serif"));
+            colorHandlers.get("secondaryAxis").accept(colorContainer.getContainedByKey("secondaryAxis"));
+        }
     }
 
     private void createColorHandlers() {

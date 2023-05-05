@@ -3,7 +3,6 @@ package ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.*;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditor;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.bsplineeditor.BSplineEditorBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.BSplineColorConfigBox;
@@ -11,6 +10,7 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.BSplineGene
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.ColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.SplineHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container.ColorContainer;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 public class BSplinePane extends SplitPane {

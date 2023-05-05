@@ -10,12 +10,12 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import ru.nsu.fit.icg.g20203.sinyukov.wireframe.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.editbox.DoubleValueEditBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.editbox.IntegerValueEditBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.textfield.IntegerTextField;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.rotationfigure.MVP;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.rotationfigure.RotationFigure;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen.SaveOpenControlBox;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.spline.Spline;
 
 public class RotationFigureConfigBox extends VBox implements RotationFigureHandler {
@@ -118,13 +118,19 @@ public class RotationFigureConfigBox extends VBox implements RotationFigureHandl
 
     @Override
     public RotationFigureParameterContainer getRotationFigureParameterContainer() {
-        return null;
+        return new RotationFigureParameterContainer(mvp.getAngleX(), mvp.getAngleY(), mvp.getAngleZ(),
+                mvp.getN(), numberOfGenerators.get(), numberOfLinesBetweenGenerators.get());
     }
 
     @Override
     public void setRotationFigureParameterContainer(RotationFigureParameterContainer
                                                             rotationFigureParameterContainer) {
-
+        numberOfGenerators.set(rotationFigureParameterContainer.getNumberOfGenerators());
+        numberOfLinesBetweenGenerators.set(rotationFigureParameterContainer.getNumberOfLinesBetweenGenerators());
+        mvp.setAngleX(rotationFigureParameterContainer.getAngleX());
+        mvp.setAngleY(rotationFigureParameterContainer.getAngleY());
+        mvp.setAngleZ(rotationFigureParameterContainer.getAngleZ());
+        mvp.setN(rotationFigureParameterContainer.getZoom());
     }
 
     @Override

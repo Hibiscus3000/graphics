@@ -14,4 +14,6 @@ module ru.nsu.fit.icg.g20203.sinyukov.wireframe {
     opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox to javafx.fxml;
     exports ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container;
     opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.container to javafx.fxml;
+    exports ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen;
+    opens ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen to javafx.fxml;
 }

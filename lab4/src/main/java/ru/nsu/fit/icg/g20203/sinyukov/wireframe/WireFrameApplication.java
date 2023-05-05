@@ -9,6 +9,7 @@ import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.rotationfigure.RotationFigur
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.BSplinePane;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.ColorHandler;
 import ru.nsu.fit.icg.g20203.sinyukov.wireframe.gui.spline.configbox.SplineHandler;
+import ru.nsu.fit.icg.g20203.sinyukov.wireframe.saveopen.SaveOpenControlBox;
 
 public class WireFrameApplication extends Application {
 
@@ -27,10 +28,10 @@ public class WireFrameApplication extends Application {
         SaveOpenControlBox saveOpenCBRotationFig = new SaveOpenControlBox();
 
         BSplinePane splinePane = new BSplinePane(changeToRotationFigureScene, saveOpenCBSpline);
-        Scene splineScene = new Scene(splinePane);
+        Scene splineScene = new Scene(splinePane, 900, 600);
         RotationFigureSplitPane rotationFigureSplitPane =
                 new RotationFigureSplitPane(changeToSplineScene, saveOpenCBRotationFig);
-        Scene rotationFigureScene = new Scene(rotationFigureSplitPane);
+        Scene rotationFigureScene = new Scene(rotationFigureSplitPane, 900, 600);
 
         SplineHandler splineHandler = splinePane.getSplineHandler();
         ColorHandler colorHandler = splinePane.getColorHandler();
@@ -48,7 +49,9 @@ public class WireFrameApplication extends Application {
             rotationFigureHandler.setSpline(splineHandler.getSpline());
             stage.setScene(rotationFigureScene);
         });
-        changeToSplineScene.setOnAction(e -> stage.setScene(splineScene));
+        changeToSplineScene.setOnAction(e -> {
+            stage.setScene(splineScene);
+        });
 
         stage.setScene(splineScene);
         stage.show();
